@@ -1,0 +1,29 @@
+﻿{
+	"version": "1.0.0-*",
+	"title": "Thinktecture.Configuration",
+	"copyright": "(c) 2017, Pawel Gerr. All rights reserved.",
+	"description": "Configuration",
+	"authors": ["Pawel Gerr"],
+	"packOptions": {
+		"projectUrl": "https://github.com/PawelGerr/Thinktecture.Configuration",
+		"iconUrl": "http://thinktecture.com/images/Logo_T_Nontransparent.png",
+		"tags": ["configuration"],
+		"licenseUrl": "https://github.com/PawelGerr/Thinktecture.Configuration/blob/master/LICENCE.md",
+		"repository": {
+			"type": "git",
+			"url": "git@github.com:PawelGerr/Thinktecture.Configuration.git"
+		}
+	},
+	"buildOptions": {
+		"xmlDoc": true
+	},
+	"frameworks": {
+		"netstandard1.0": {
+			"dependencies": {
+				"System.Runtime": "4.3.0"
+			}
+		},
+		"net45": {},
+		"net46": {}
+	}
+}
