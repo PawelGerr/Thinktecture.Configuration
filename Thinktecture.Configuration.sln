@@ -24,6 +24,10 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Thinktecture.Configuration.
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Thinktecture.Configuration.JsonFile.Tests", "test\Thinktecture.Configuration.JsonFile.Tests\Thinktecture.Configuration.JsonFile.Tests.xproj", "{61FD615D-2DDE-4578-A9E5-B0390D5EB464}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{2D13A9B4-B515-4749-8809-815260C004FE}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Thinktecture.Configuration.JsonFile.Autofac.Example", "examples\Thinktecture.Configuration.JsonFile.Autofac.Example\Thinktecture.Configuration.JsonFile.Autofac.Example.xproj", "{B2A50769-B375-4E52-AB0A-25B427478B13}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +54,10 @@ Global
 		{61FD615D-2DDE-4578-A9E5-B0390D5EB464}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61FD615D-2DDE-4578-A9E5-B0390D5EB464}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61FD615D-2DDE-4578-A9E5-B0390D5EB464}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2A50769-B375-4E52-AB0A-25B427478B13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2A50769-B375-4E52-AB0A-25B427478B13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2A50769-B375-4E52-AB0A-25B427478B13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2A50769-B375-4E52-AB0A-25B427478B13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,5 +68,6 @@ Global
 		{5E6ECC70-03DF-4959-A9FF-9051A81BD298} = {74991754-BB14-47E1-894E-06A983C9AA43}
 		{8112D8A2-131D-45CD-B44D-04E02ACAB2FF} = {523E3D6E-9196-4175-90C5-591F9697672E}
 		{61FD615D-2DDE-4578-A9E5-B0390D5EB464} = {523E3D6E-9196-4175-90C5-591F9697672E}
+		{B2A50769-B375-4E52-AB0A-25B427478B13} = {2D13A9B4-B515-4749-8809-815260C004FE}
 	EndGlobalSection
 EndGlobal

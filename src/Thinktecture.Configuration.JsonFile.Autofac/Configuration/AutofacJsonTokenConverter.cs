@@ -12,7 +12,7 @@ namespace Thinktecture.Configuration
 	/// </summary>
 	public class AutofacJsonTokenConverter : IJsonTokenConverter
 	{
-		private readonly Func<Type, JsonSerializerSettings> _jsonSerializerSettingsProvider;
+		private readonly IAutofacJsonTokenConverterJsonSettingsProvider _jsonSerializerSettingsProvider;
 		private readonly List<AutofacCreationJsonConverter> _converters;
 
 		/// <summary>
@@ -21,7 +21,7 @@ namespace Thinktecture.Configuration
 		/// <param name="scope">Autofac container.</param>
 		/// <param name="typesToConvertViaAutofac">Types that should be converted using autofac.</param>
 		/// <param name="jsonSerializerSettingsProvider">Provides <see cref="JsonSerializerSettings"/> to be used by <see cref="JsonSerializer"/>.</param>
-		public AutofacJsonTokenConverter(ILifetimeScope scope, IEnumerable<Type> typesToConvertViaAutofac, Func<Type, JsonSerializerSettings> jsonSerializerSettingsProvider = null)
+		public AutofacJsonTokenConverter(ILifetimeScope scope, IEnumerable<AutofacJsonTokenConverterType> typesToConvertViaAutofac, IAutofacJsonTokenConverterJsonSettingsProvider jsonSerializerSettingsProvider = null)
 		{
 			if (scope == null)
 				throw new ArgumentNullException(nameof(scope));
@@ -29,7 +29,7 @@ namespace Thinktecture.Configuration
 				throw new ArgumentNullException(nameof(typesToConvertViaAutofac));
 
 			_jsonSerializerSettingsProvider = jsonSerializerSettingsProvider;
-			_converters = typesToConvertViaAutofac.Select(t => new AutofacCreationJsonConverter(t, scope)).ToList();
+			_converters = typesToConvertViaAutofac.Select(t => new AutofacCreationJsonConverter(t.Type, scope)).ToList();
 		}
 
 		/// <inheritdoc />
@@ -40,7 +40,7 @@ namespace Thinktecture.Configuration
 
 			var serializer = (_jsonSerializerSettingsProvider == null)
 				? JsonSerializer.CreateDefault()
-				: JsonSerializer.CreateDefault(_jsonSerializerSettingsProvider(typeof(TConfiguration)));
+				: JsonSerializer.CreateDefault(_jsonSerializerSettingsProvider.GetSettings(typeof(TConfiguration)));
 
 			foreach (var converter in _converters)
 			{

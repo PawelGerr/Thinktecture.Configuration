@@ -30,7 +30,9 @@ namespace Thinktecture.Configuration
 			if (objectType == null)
 				throw new ArgumentNullException(nameof(objectType));
 
-			return _container.Resolve(objectType);
+			return _container.IsRegisteredWithKey(ContainerBuilderExtensions.ConfigurationRegistrationKey, objectType)
+				? _container.ResolveKeyed(ContainerBuilderExtensions.ConfigurationRegistrationKey, objectType)
+				: _container.Resolve(objectType);
 		}
 	}
 }

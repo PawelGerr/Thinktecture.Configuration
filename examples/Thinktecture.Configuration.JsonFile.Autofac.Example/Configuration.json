@@ -1,0 +1,11 @@
+﻿{
+	"ApplicationValue": "Config value!",
+
+	"MyComponent": {
+		"ComponentValue": "00:05:00",
+
+		"OtherConfiguration": {
+			"OtherComponentValue": 12.34
+		}
+	}
+}

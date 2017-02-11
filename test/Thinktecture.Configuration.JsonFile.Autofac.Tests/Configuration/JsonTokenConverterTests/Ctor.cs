@@ -21,7 +21,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_throw_argnull_if_scope_is_null()
 		{
-			Action ctor = () => new AutofacJsonTokenConverter(null, Enumerable.Empty<Type>());
+			Action ctor = () => new AutofacJsonTokenConverter(null, Enumerable.Empty<AutofacJsonTokenConverterType>());
 
 			ctor.Invoking(a => a()).ShouldThrow<ArgumentNullException>();
 		}
@@ -37,13 +37,13 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_does_not_call_any_members_on_scope_if_types_enumerable_is_empty()
 		{
-			new AutofacJsonTokenConverter(_scopeMock.Object, Enumerable.Empty<Type>());
+			new AutofacJsonTokenConverter(_scopeMock.Object, Enumerable.Empty<AutofacJsonTokenConverterType>());
 		}
 
 		[Fact]
 		public void Should_does_not_call_any_members_on_scope_if_types_enumerable_is_not_empty()
 		{
-			new AutofacJsonTokenConverter(_scopeMock.Object, new List<Type>() {typeof(ConfigurationWithDefaultCtor)});
+			new AutofacJsonTokenConverter(_scopeMock.Object, new List<AutofacJsonTokenConverterType>() {new AutofacJsonTokenConverterType(typeof(ConfigurationWithDefaultCtor))});
 		}
 	}
 }
