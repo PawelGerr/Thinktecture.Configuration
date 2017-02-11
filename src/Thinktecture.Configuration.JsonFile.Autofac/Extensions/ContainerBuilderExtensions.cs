@@ -4,7 +4,8 @@ using Autofac.Builder;
 using Newtonsoft.Json.Linq;
 using Thinktecture.Configuration;
 
-namespace Thinktecture.Extensions
+// ReSharper disable once CheckNamespace
+namespace Thinktecture
 {
 	/// <summary>
 	/// Extension for autofac container builder.
@@ -15,26 +16,17 @@ namespace Thinktecture.Extensions
 		/// Registeres a type that will be used with <see cref="IConfigurationProvider{TRawData}.GetConfiguration{T}"/>.
 		/// </summary>
 		/// <typeparam name="T">Type of the configuration</typeparam>
-		/// <param name="builder">Instance of a container builder.</param>
-		/// <param name="propertyName"></param>
-		/// <returns></returns>
-		public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterConfiguration<T>(this ContainerBuilder builder, string propertyName = null)
-			where T : IConfiguration
+		/// <param name="builder">Container builder.</param>
+		/// <param name="propertyName">Tne name of the json property to use to build the configuration.</param>
+		/// <returns>Autofac registration builder.</returns>
+		public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterJsonFileConfiguration<T>(this ContainerBuilder builder, string propertyName = null)
 		{
 			if(builder == null)
 				throw new ArgumentNullException(nameof(builder));
 
-			var selector = propertyName == null ? null : new JsonFileConfigurationSelector(propertyName);
+			var selector = String.IsNullOrWhiteSpace(propertyName) ? null : new JsonFileConfigurationSelector(propertyName.Trim());
 
-			return builder.Register(context =>
-			{
-				var config = context.Resolve<IConfigurationProvider<JToken>>().GetConfiguration<T>(selector);
-
-				if(config == null)
-					throw new ConfigurationNotFoundExeption(typeof(T), propertyName);
-
-				return config;
-			});
+			return builder.Register(context => context.Resolve<IConfigurationProvider<JToken>>().GetConfiguration<T>(selector));
 		}
 	}
 }

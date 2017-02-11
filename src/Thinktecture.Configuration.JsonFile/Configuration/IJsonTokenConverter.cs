@@ -13,7 +13,6 @@ namespace Thinktecture.Configuration
 		/// <typeparam name="TConfiguration">Type of the configuration.</typeparam>
 		/// <param name="token">Token to convert.</param>
 		/// <returns>An instance of <typeparamref name="TConfiguration"/>.</returns>
-		TConfiguration Convert<TConfiguration>(JToken token)
-			where TConfiguration : IConfiguration;
+		TConfiguration Convert<TConfiguration>(JToken token);
 	}
 }

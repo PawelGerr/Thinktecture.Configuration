@@ -36,7 +36,7 @@ namespace Thinktecture.Configuration
 		/// <param name="serializer">The calling serializer.</param>
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
 		{
-			throw new NotSupportedException("CustomCreationConverter should only be used while deserializing.");
+			throw new NotSupportedException("CustomCreationConverter should be used for deserialization only.");
 		}
 
 		/// <summary>Reads the JSON representation of the object.</summary>
@@ -47,6 +47,11 @@ namespace Thinktecture.Configuration
 		/// <returns>The object value.</returns>
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 		{
+			if (reader == null)
+				throw new ArgumentNullException(nameof(reader));
+			if (serializer == null)
+				throw new ArgumentNullException(nameof(serializer));
+
 			if (reader.TokenType == JsonToken.Null)
 				return null;
 
@@ -75,6 +80,9 @@ namespace Thinktecture.Configuration
 		/// </returns>
 		public override bool CanConvert(Type objectType)
 		{
+			if (objectType == null)
+				throw new ArgumentNullException(nameof(objectType));
+
 #if NETSTANDARD1_3
 			return _type.GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo());
 #else

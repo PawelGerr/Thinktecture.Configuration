@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Thinktecture.Configuration
@@ -8,18 +9,24 @@ namespace Thinktecture.Configuration
 	/// </summary>
 	public class JsonFileConfigurationSelector : IConfigurationSelector<JToken>
 	{
-		private readonly string _propertyName;
+		private readonly string[] _pathFragments;
 
 		/// <summary>
 		/// Creates new <see cref="JsonFileConfigurationSelector"/>.
 		/// </summary>
-		/// <param name="propertyName">The name of the property to select.</param>
-		public JsonFileConfigurationSelector(string propertyName)
+		/// <param name="propertyPath">The path of the property to select, e.g. <c>MyProperty.AnotherProperty</c> </param>
+		public JsonFileConfigurationSelector(string propertyPath)
 		{
-			if (propertyName == null)
-				throw new ArgumentNullException(nameof(propertyName));
+			if (propertyPath == null)
+				throw new ArgumentNullException(nameof(propertyPath));
 
-			_propertyName = propertyName;
+			if (String.IsNullOrWhiteSpace(propertyPath))
+				throw new ArgumentException("Property path must not be empty.", nameof(propertyPath));
+
+			_pathFragments = propertyPath.Trim().Split(new char[] {'.'}, StringSplitOptions.None);
+
+			if(_pathFragments.Contains(String.Empty))
+				throw new ArgumentException("Property path must not contains multiple dots next to each other.");
 		}
 
 		/// <inheritdoc />
@@ -28,15 +35,33 @@ namespace Thinktecture.Configuration
 			if (token == null)
 				throw new ArgumentNullException(nameof(token));
 
+			foreach (var propertyName in _pathFragments)
+			{
+				token = GetChild(token, propertyName);
+				if (token == null)
+					return null;
+			}
+
+			return token;
+		}
+
+		private JToken GetChild(JToken token, string propertyName)
+		{
+			if (token == null)
+				throw new ArgumentNullException(nameof(token));
+			if (propertyName == null)
+				throw new ArgumentNullException(nameof(propertyName));
+
 			foreach (var child in token)
 			{
 				var prop = child as JProperty;
 
-				if ((prop != null) && StringComparer.OrdinalIgnoreCase.Equals(prop.Name, _propertyName))
+				if ((prop != null) && StringComparer.OrdinalIgnoreCase.Equals(prop.Name, propertyName))
+				{
 					return prop.Value;
+				}
 			}
-
-			return token[_propertyName];
+			return null;
 		}
 	}
 }
