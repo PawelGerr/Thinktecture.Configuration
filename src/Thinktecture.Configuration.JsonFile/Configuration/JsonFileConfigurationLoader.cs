@@ -17,7 +17,7 @@ namespace Thinktecture.Configuration
 		private readonly IFile _file;
 		private readonly string _filePath;
 		private readonly IJsonTokenConverter _tokenConverter;
-		private readonly Func<JsonSerializerSettings> _jsonSerializerProvider;
+		private readonly Func<JsonSerializerSettings> _jsonSerializerSettingsProvider;
 		private readonly Func<JToken, IJsonTokenConverter, IConfigurationProvider<JToken>> _jsonConfigurationProviderFactory;
 		private readonly IEncoding _encoding;
 
@@ -28,10 +28,10 @@ namespace Thinktecture.Configuration
 		/// <param name="filePath">Json file path.</param>
 		/// <param name="tokenConverter">Json token converter.</param>
 		/// <param name="encoding">Encoding to be used for reading json file.</param>
-		/// <param name="jsonSerializerProvider">Provides <see cref="JsonSerializerSettings"/> for deserialization of file content to <see cref="JToken"/>.</param>
+		/// <param name="jsonSerializerSettingsProvider">Provides <see cref="JsonSerializerSettings"/> for deserialization of file content to <see cref="JToken"/>.</param>
 		/// <param name="jsonConfigurationProviderFactory">A factory for creation of <see cref="IConfigurationProvider{JToken}"/>.</param>
 		public JsonFileConfigurationLoader(IFile file, string filePath, IJsonTokenConverter tokenConverter, IEncoding encoding = null,
-			Func<JsonSerializerSettings> jsonSerializerProvider = null,
+			Func<JsonSerializerSettings> jsonSerializerSettingsProvider = null,
 			Func<JToken, IJsonTokenConverter, IConfigurationProvider<JToken>> jsonConfigurationProviderFactory = null)
 		{
 			if (file == null)
@@ -44,7 +44,7 @@ namespace Thinktecture.Configuration
 			_file = file;
 			_filePath = filePath;
 			_tokenConverter = tokenConverter;
-			_jsonSerializerProvider = jsonSerializerProvider;
+			_jsonSerializerSettingsProvider = jsonSerializerSettingsProvider;
 			_encoding = encoding ?? new UTF8Encoding(false, true).ToInterface();
 			_jsonConfigurationProviderFactory = jsonConfigurationProviderFactory ?? ((token, converter) => new JsonFileConfigurationProvider(token, converter));
 		}
@@ -52,7 +52,7 @@ namespace Thinktecture.Configuration
 		/// <inheritdoc />
 		public IConfigurationProvider<JToken> Load()
 		{
-			var serializer = (_jsonSerializerProvider == null) ? JsonSerializer.CreateDefault() : JsonSerializer.CreateDefault(_jsonSerializerProvider());
+			var serializer = (_jsonSerializerSettingsProvider == null) ? JsonSerializer.CreateDefault() : JsonSerializer.CreateDefault(_jsonSerializerSettingsProvider());
 
 			using (var stream = _file.Open(_filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
 			using (var textReader = new StreamReaderAdapter(stream, _encoding, true))
