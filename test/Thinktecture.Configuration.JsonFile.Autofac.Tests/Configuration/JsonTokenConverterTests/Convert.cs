@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Autofac;
 using Autofac.Core;
 using Autofac.Core.Registration;
@@ -27,8 +28,13 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 			return new AutofacJsonTokenConverter(_builder.Build(), _typesToConvertViaAutofac);
 		}
 
+		private JToken[] GetTokens(params object[] objects)
+		{
+			return objects.Select(o => o == null ? null : JToken.FromObject(o)).ToArray();
+		}
+
 		[Fact]
-		public void Should_throw_argnull_if_jtoken_is_null()
+		public void Should_throw_argnull_if_jtokens_are_null()
 		{
 			Create()
 				.Invoking(c => c.Convert<ConfigurationWithDefaultCtor>(null))
@@ -36,21 +42,37 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		}
 
 		[Fact]
+		public void Should_return_null_if_token_is_null()
+		{
+			var config = Create().Convert<ConfigurationWithDefaultCtor>(new JToken[] {null});
+			config.Should().BeNull();
+		}
+
+		[Fact]
 		public void Should_convert_concrete_type_without_autofac_using_default_ctor()
 		{
-			var token = JToken.FromObject(new {});
+			var tokens = GetTokens(new {});
 
-			var config = Create().Convert<ConfigurationWithDefaultCtor>(token);
+			var config = Create().Convert<ConfigurationWithDefaultCtor>(tokens);
 			config.Should().NotBeNull();
+		}
+
+		[Fact]
+		public void Should_return_null_if_the_first_token_is_null()
+		{
+			var tokens = GetTokens(null, new {});
+
+			var config = Create().Convert<ConfigurationWithDefaultCtor>(tokens);
+			config.Should().BeNull();
 		}
 
 		[Fact]
 		public void Should_throw_when_converting_interface_without_autofac()
 		{
-			var token = JToken.FromObject(new {});
+			var tokens = GetTokens(new {});
 
 			Create()
-				.Invoking(c => c.Convert<IConfigurationWithDefaultCtor>(token))
+				.Invoking(c => c.Convert<IConfigurationWithDefaultCtor>(tokens))
 				.ShouldThrow<JsonSerializationException>();
 		}
 
@@ -58,10 +80,10 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		public void Should_throw_when_converting_concrete_type_with_autofac_without_registration()
 		{
 			_typesToConvertViaAutofac.Add(new AutofacJsonTokenConverterType(typeof(ConfigurationWithDefaultCtor)));
-			var token = JToken.FromObject(new {});
+			var tokens = GetTokens(new {});
 
 			Create()
-				.Invoking(c => c.Convert<ConfigurationWithDefaultCtor>(token))
+				.Invoking(c => c.Convert<ConfigurationWithDefaultCtor>(tokens))
 				.ShouldThrow<ComponentNotRegisteredException>();
 		}
 
@@ -69,10 +91,10 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		public void Should_throw_when_converting_interface_with_autofac_without_registration()
 		{
 			_typesToConvertViaAutofac.Add(new AutofacJsonTokenConverterType(typeof(IConfigurationWithDefaultCtor)));
-			var token = JToken.FromObject(new {});
+			var tokens = GetTokens(new {});
 
 			Create()
-				.Invoking(c => c.Convert<IConfigurationWithDefaultCtor>(token))
+				.Invoking(c => c.Convert<IConfigurationWithDefaultCtor>(tokens))
 				.ShouldThrow<ComponentNotRegisteredException>();
 		}
 
@@ -81,9 +103,9 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		{
 			_typesToConvertViaAutofac.Add(new AutofacJsonTokenConverterType(typeof(ConfigurationWithDefaultCtor)));
 			_builder.RegisterType<ConfigurationWithDefaultCtor>().AsSelf();
-			var token = JToken.FromObject(new {});
+			var tokens = GetTokens(new {});
 
-			var config = Create().Convert<ConfigurationWithDefaultCtor>(token);
+			var config = Create().Convert<ConfigurationWithDefaultCtor>(tokens);
 			config.Should().NotBeNull();
 		}
 
@@ -92,17 +114,17 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		{
 			_typesToConvertViaAutofac.Add(new AutofacJsonTokenConverterType(typeof(IConfigurationWithDefaultCtor)));
 			_builder.RegisterType<ConfigurationWithDefaultCtor>().AsImplementedInterfaces();
-			var token = JToken.FromObject(new {});
+			var tokens = GetTokens(new {});
 
-			var config = Create().Convert<IConfigurationWithDefaultCtor>(token);
+			var config = Create().Convert<IConfigurationWithDefaultCtor>(tokens);
 			config.Should().NotBeNull();
 		}
 
 		[Fact]
 		public void Should_convert_concrete_type_without_autofac_having_non_default_ctor()
 		{
-			var token = JToken.FromObject(new {});
-			var config = Create().Convert<ConfigurationWithNonDefaultCtor>(token);
+			var tokens = GetTokens(new {});
+			var config = Create().Convert<ConfigurationWithNonDefaultCtor>(tokens);
 			config.Should().NotBeNull();
 			config.SimpleDependency.Should().BeNull();
 		}
@@ -112,10 +134,10 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		{
 			_typesToConvertViaAutofac.Add(new AutofacJsonTokenConverterType(typeof(ConfigurationWithNonDefaultCtor)));
 			_builder.RegisterType<ConfigurationWithNonDefaultCtor>().AsSelf();
-			var token = JToken.FromObject(new {});
+			var tokens = GetTokens(new {});
 
 			Create()
-				.Invoking(c => c.Convert<ConfigurationWithNonDefaultCtor>(token))
+				.Invoking(c => c.Convert<ConfigurationWithNonDefaultCtor>(tokens))
 				.ShouldThrow<DependencyResolutionException>();
 		}
 
@@ -126,9 +148,9 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 			_typesToConvertViaAutofac.Add(new AutofacJsonTokenConverterType(typeof(ConfigurationWithNonDefaultCtor)));
 			_builder.RegisterType<ConfigurationWithNonDefaultCtor>().AsSelf();
 			_builder.RegisterInstance(simpleDep);
-			var token = JToken.FromObject(new {});
+			var tokens = GetTokens(new {});
 
-			var config = Create().Convert<ConfigurationWithNonDefaultCtor>(token);
+			var config = Create().Convert<ConfigurationWithNonDefaultCtor>(tokens);
 			config.Should().NotBeNull();
 			config.SimpleDependency.Should().Be(simpleDep);
 		}
@@ -140,9 +162,9 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 			_typesToConvertViaAutofac.Add(new AutofacJsonTokenConverterType(typeof(IConfigurationWithNonDefaultCtor)));
 			_builder.RegisterType<ConfigurationWithNonDefaultCtor>().AsImplementedInterfaces();
 			_builder.RegisterInstance(simpleDep);
-			var token = JToken.FromObject(new {});
+			var tokens = GetTokens(new {});
 
-			var config = Create().Convert<IConfigurationWithNonDefaultCtor>(token);
+			var config = Create().Convert<IConfigurationWithNonDefaultCtor>(tokens);
 			config.Should().NotBeNull();
 			config.SimpleDependency.Should().Be(simpleDep);
 		}
@@ -150,9 +172,39 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_convert_concrete_type_without_autofac_having_concrete_propery()
 		{
-			var token = JToken.FromObject(new {InnerConfiguration = new {}});
+			var tokens = GetTokens(new {InnerConfiguration = new {}});
 
-			var config = Create().Convert<ConfigurationWithPropertyOfConcreteType>(token);
+			var config = Create().Convert<ConfigurationWithPropertyOfConcreteType>(tokens);
+			config.Should().NotBeNull();
+			config.InnerConfiguration.Should().NotBeNull();
+		}
+
+		[Fact]
+		public void Should_set_inner_property_to_null_by_override()
+		{
+			var tokens = GetTokens(new {InnerConfiguration = new ConfigurationWithDefaultCtor()}, new {InnerConfiguration = (ConfigurationWithDefaultCtor) null});
+
+			var config = Create().Convert<ConfigurationWithPropertyOfConcreteType>(tokens);
+			config.Should().NotBeNull();
+			config.InnerConfiguration.Should().BeNull();
+		}
+
+		[Fact]
+		public void Should_set_inner_property_by_override()
+		{
+			var tokens = GetTokens(new {InnerConfiguration = (ConfigurationWithDefaultCtor) null}, new {InnerConfiguration = new ConfigurationWithDefaultCtor()});
+
+			var config = Create().Convert<ConfigurationWithPropertyOfConcreteType>(tokens);
+			config.Should().NotBeNull();
+			config.InnerConfiguration.Should().NotBeNull();
+		}
+
+		[Fact]
+		public void Should_dont_change_inner_property_by_override()
+		{
+			var tokens = GetTokens(new {InnerConfiguration = new ConfigurationWithDefaultCtor()}, new {});
+
+			var config = Create().Convert<ConfigurationWithPropertyOfConcreteType>(tokens);
 			config.Should().NotBeNull();
 			config.InnerConfiguration.Should().NotBeNull();
 		}
@@ -160,10 +212,10 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_should_throw_when_converting_concrete_type_without_autofac_having_abstract_propery()
 		{
-			var token = JToken.FromObject(new {InnerConfiguration = new {}});
+			var tokens = GetTokens(new {InnerConfiguration = new {}});
 
 			Create()
-				.Invoking(c => c.Convert<ConfigurationWithPropertyOfAbstractType>(token))
+				.Invoking(c => c.Convert<ConfigurationWithPropertyOfAbstractType>(tokens))
 				.ShouldThrow<JsonSerializationException>();
 		}
 
@@ -174,9 +226,9 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 			_typesToConvertViaAutofac.Add(new AutofacJsonTokenConverterType(typeof(ConfigurationWithDefaultCtor)));
 			_builder.RegisterType<ConfigurationWithPropertyOfConcreteType>().AsSelf();
 			_builder.RegisterType<ConfigurationWithDefaultCtor>().AsSelf();
-			var token = JToken.FromObject(new {InnerConfiguration = new {}});
+			var tokens = GetTokens(new {InnerConfiguration = new {}});
 
-			var config = Create().Convert<ConfigurationWithPropertyOfConcreteType>(token);
+			var config = Create().Convert<ConfigurationWithPropertyOfConcreteType>(tokens);
 			config.Should().NotBeNull();
 			config.InnerConfiguration.Should().NotBeNull();
 		}
@@ -188,9 +240,9 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 			_typesToConvertViaAutofac.Add(new AutofacJsonTokenConverterType(typeof(IConfigurationWithDefaultCtor)));
 			_builder.RegisterType<ConfigurationWithPropertyOfAbstractType>().AsSelf();
 			_builder.RegisterType<ConfigurationWithDefaultCtor>().AsImplementedInterfaces();
-			var token = JToken.FromObject(new {InnerConfiguration = new {}});
+			var tokens = GetTokens(new {InnerConfiguration = new {}});
 
-			var config = Create().Convert<ConfigurationWithPropertyOfAbstractType>(token);
+			var config = Create().Convert<ConfigurationWithPropertyOfAbstractType>(tokens);
 			config.Should().NotBeNull();
 			config.InnerConfiguration.Should().NotBeNull();
 		}
@@ -202,9 +254,9 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 			_typesToConvertViaAutofac.Add(new AutofacJsonTokenConverterType(typeof(IConfigurationWithDefaultCtor)));
 			_builder.RegisterType<ConfigurationWithPropertyOfAbstractType>().AsImplementedInterfaces();
 			_builder.RegisterType<ConfigurationWithDefaultCtor>().AsImplementedInterfaces();
-			var token = JToken.FromObject(new {InnerConfiguration = new {}});
+			var tokens = GetTokens(new {InnerConfiguration = new {}});
 
-			var config = Create().Convert<IConfigurationWithPropertyOfAbstractType>(token);
+			var config = Create().Convert<IConfigurationWithPropertyOfAbstractType>(tokens);
 			config.Should().NotBeNull();
 			config.InnerConfiguration.Should().NotBeNull();
 		}

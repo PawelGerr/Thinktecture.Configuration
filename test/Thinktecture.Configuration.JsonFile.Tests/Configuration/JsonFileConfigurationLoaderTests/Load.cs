@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
@@ -16,23 +14,23 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 	public class Load : JsonFileConfigurationLoaderTestsBase
 	{
 		private readonly Mock<IConfigurationProvider<JToken>> _providerMock;
-		private JToken _token;
+		private JToken[] _tokens;
 
 		public Load()
 		{
 			_providerMock = new Mock<IConfigurationProvider<JToken>>(MockBehavior.Strict);
 		}
 
-		private JsonFileConfigurationLoader CreateLoader()
+		private JsonFileConfigurationLoader CreateLoader(params string[] filePaths)
 		{
-			return new JsonFileConfigurationLoader(FileMock.Object, FilePath, ConverterMock.Object, null, null, (token, converter) =>
+			return new JsonFileConfigurationLoader(FileMock.Object, ConverterMock.Object, filePaths, null, null, (token, converter) =>
 			{
-				_token = token;
+				_tokens = token;
 				return _providerMock.Object;
 			});
 		}
 
-		private static IFileStream GetStream(string content)
+		private IFileStream GetStream(string content)
 		{
 			var stream = new MemoryStream(Encoding.UTF8.GetBytes(content));
 
@@ -49,7 +47,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 			FileMock.Setup(f => f.Open(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
 				.Throws<FileNotFoundException>();
 
-			CreateLoader()
+			CreateLoader(FilePath)
 				.Invoking(l => l.Load())
 				.ShouldThrow<FileNotFoundException>();
 		}
@@ -62,7 +60,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 				FileMock.Setup(f => f.Open(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
 					.Returns(stream);
 
-				CreateLoader()
+				CreateLoader(FilePath)
 					.Invoking(l => l.Load())
 					.ShouldThrow<JsonReaderException>();
 			}
@@ -76,7 +74,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 				FileMock.Setup(f => f.Open(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
 					.Returns(stream);
 
-				CreateLoader().Load().Should().Be(_providerMock.Object);
+				CreateLoader(FilePath).Load().Should().Be(_providerMock.Object);
 			}
 		}
 
@@ -88,8 +86,9 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 				FileMock.Setup(f => f.Open(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
 					.Returns(stream);
 
-				CreateLoader().Load();
-				_token.Should().BeNull();
+				CreateLoader(FilePath).Load();
+				_tokens.Should().HaveCount(1)
+					.And.Contain((JToken) null);
 			}
 		}
 
@@ -100,10 +99,10 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 			{
 				FileMock.Setup(f => f.Open(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
 					.Returns(stream);
-				ConverterMock.Setup(c => c.Convert<JToken>(It.IsAny<JToken>())).Returns<JToken>(token => token);
 
-				CreateLoader().Load();
-				_token.Type.Should().Be(JTokenType.Null);
+				CreateLoader(FilePath).Load();
+				_tokens.Should().HaveCount(1)
+					.And.Subject.First().Type.Should().Be(JTokenType.Null);
 			}
 		}
 
@@ -114,10 +113,31 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 			{
 				FileMock.Setup(f => f.Open(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
 					.Returns(stream);
-				ConverterMock.Setup(c => c.Convert<JToken>(It.IsAny<JToken>())).Returns<JToken>(token => token);
 
-				CreateLoader().Load();
-				_token.Value<string>().Should().Be("content");
+				CreateLoader(FilePath).Load();
+				_tokens.First().Value<string>().Should().Be("content");
+			}
+		}
+
+		[Fact]
+		public void Should_create_provider_with_2_token_if_2_filepaths_are_provided()
+		{
+			using (var stream = GetStream("\"content\""))
+			using (var stream2 = GetStream("\"content2\""))
+			{
+				var nextStream = stream;
+				FileMock.Setup(f => f.Open(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
+					.Returns(() =>
+					{
+						var currentStream = nextStream;
+						nextStream = stream2;
+						return currentStream;
+					});
+
+				CreateLoader(FilePath, OverrideFilePath).Load();
+				_tokens.Should().HaveCount(2);
+				_tokens[0].Value<string>().Should().Be("content");
+				_tokens[1].Value<string>().Should().Be("content2");
 			}
 		}
 	}

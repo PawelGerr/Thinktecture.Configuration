@@ -9,6 +9,7 @@ namespace Thinktecture.Configuration.JsonFile.Autofac.Example
 	public class Program
 	{
 		private const string _CONFIG_FILE_PATH = "Configuration.json";
+		private const string _CONFIG_OVERRIDE_FILE_PATH = "ConfigurationOverride.json";
 		private const string _OTHER_CONFIG_FILE_PATH = "AnotherConfiguration.json";
 
 		public static void Main(string[] args)
@@ -22,6 +23,7 @@ namespace Thinktecture.Configuration.JsonFile.Autofac.Example
 
 				var otherConfig = scope.Resolve<IMyComponentOtherConfiguration>();
 				Console.WriteLine($"{Environment.NewLine}Direct resolution of \"IMyComponentOtherConfiguration\": {otherConfig.OtherComponentValue}");
+				Console.WriteLine($"{Environment.NewLine}Overriden value: {otherConfig.OtherComponentValue}");
 
 				var componentConfig = scope.Resolve<IMyComponentConfiguration>();
 				Console.WriteLine($"{Environment.NewLine}Is \"IMyComponentConfiguration.OtherConfiguration\" == \"IMyComponentOtherConfiguration\": {(componentConfig.OtherConfiguration == otherConfig ? "yes" : "no")}");
@@ -44,7 +46,7 @@ namespace Thinktecture.Configuration.JsonFile.Autofac.Example
 			// IFile is required by JsonFileConfigurationLoader to access the file system
 			builder.RegisterType<FileAdapter>().As<IFile>().SingleInstance();
 
-			builder.RegisterJsonFileConfigurationProvider(_CONFIG_FILE_PATH);
+			builder.RegisterJsonFileConfigurationProvider(_CONFIG_FILE_PATH, _CONFIG_OVERRIDE_FILE_PATH);
 			builder.RegisterJsonFileConfiguration<MyApplicationConfiguration>().AsImplementedInterfaces().SingleInstance();
 			builder.RegisterJsonFileConfiguration<MyComponentConfiguration>("MyComponent").AsImplementedInterfaces().SingleInstance();
 			builder.RegisterJsonFileConfigurationType<MyComponentOtherConfiguration>();
@@ -57,7 +59,8 @@ namespace Thinktecture.Configuration.JsonFile.Autofac.Example
 			// We register an new config provider with a key to distinguish between them
 			var providerKey = builder.RegisterKeyedJsonFileConfigurationProvider(_OTHER_CONFIG_FILE_PATH);
 			builder.RegisterJsonFileConfiguration<ConfigurationFromOtherFile>(providerKey, "ConfiguationFromOtherFile").AsImplementedInterfaces().SingleInstance();
-			
+
+
 			return builder.Build();
 		}
 	}

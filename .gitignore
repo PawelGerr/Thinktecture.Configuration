@@ -1,5 +1,6 @@
 .vs/
 project.lock.json
 *.xproj.user
+*.sln.DotSettings.user
 **/bin/**
 **/obj/**

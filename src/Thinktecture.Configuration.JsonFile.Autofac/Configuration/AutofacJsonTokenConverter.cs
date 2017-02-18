@@ -33,10 +33,12 @@ namespace Thinktecture.Configuration
 		}
 
 		/// <inheritdoc />
-		public TConfiguration Convert<TConfiguration>(JToken token)
+		public TConfiguration Convert<TConfiguration>(JToken[] tokens)
 		{
-			if (token == null)
-				throw new ArgumentNullException(nameof(token));
+			if (tokens == null)
+				throw new ArgumentNullException(nameof(tokens));
+			if (tokens.Length == 0)
+				throw new ArgumentException("The token collection must contains at least 1 token.");
 
 			var serializer = (_jsonSerializerSettingsProvider == null)
 				? JsonSerializer.CreateDefault()
@@ -47,7 +49,21 @@ namespace Thinktecture.Configuration
 				serializer.Converters.Add(converter);
 			}
 
-			return token.ToObject<TConfiguration>(serializer);
+			var mainToken = tokens[0];
+			var mainConfig = (mainToken == null) ? default(TConfiguration) : mainToken.ToObject<TConfiguration>(serializer);
+
+			if (mainConfig != null)
+			{
+				for (var i = 1; i < tokens.Length; i++)
+				{
+					using (var reader = new JTokenReader(tokens[i]))
+					{
+						serializer.Populate(reader, mainConfig);
+					}
+				}
+			}
+
+			return mainConfig;
 		}
 	}
 }

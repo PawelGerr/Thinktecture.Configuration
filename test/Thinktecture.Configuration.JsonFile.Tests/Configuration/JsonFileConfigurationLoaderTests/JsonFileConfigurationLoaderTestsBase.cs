@@ -14,18 +14,15 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 		protected readonly Mock<IFile> FileMock;
 		protected readonly Mock<IJsonTokenConverter> ConverterMock;
 		protected readonly string FilePath;
+		protected readonly string OverrideFilePath;
 
 		protected JsonFileConfigurationLoaderTestsBase()
 		{
 			FileMock = new Mock<IFile>(MockBehavior.Strict);
 			ConverterMock = new Mock<IJsonTokenConverter>(MockBehavior.Strict);
 			FilePath = "/file.json";
+			OverrideFilePath = "/override.json";
 		}
 
-		protected JsonFileConfigurationProvider CreateProvider(object o)
-		{
-			var token = o == null ? null : JToken.FromObject(o);
-			return new JsonFileConfigurationProvider(token, ConverterMock.Object);
-		}
 	}
 }

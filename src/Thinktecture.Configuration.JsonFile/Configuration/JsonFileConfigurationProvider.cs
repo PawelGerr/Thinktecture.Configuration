@@ -8,40 +8,54 @@ namespace Thinktecture.Configuration
 	/// </summary>
 	public class JsonFileConfigurationProvider : IConfigurationProvider<JToken>
 	{
-		private readonly JToken _token; // may be null
+		private readonly JToken[] _tokens; // one of the token may be null
 		private readonly IJsonTokenConverter _tokenConverter;
 
 		/// <summary>
 		/// Creates new instance of <see cref="JsonFileConfigurationProvider"/>.
 		/// </summary>
-		/// <param name="token">Configuration data.</param>
+		/// <param name="tokens">Tokens the configurations are deserialized from. The first token is considered to be the main file, the others act as overrides.</param>
 		/// <param name="tokenConverter">Json deserializer.</param>
-		/// <exception cref="ArgumentNullException">Thrown when the <paramref name="token"/> is <c>null</c>.</exception>
-		public JsonFileConfigurationProvider(JToken token, IJsonTokenConverter tokenConverter)
+		/// <exception cref="ArgumentNullException">Thrown when the <paramref name="tokens"/> or <paramref name="tokenConverter"/> is <c>null</c>.</exception>
+		public JsonFileConfigurationProvider(JToken[] tokens, IJsonTokenConverter tokenConverter)
 		{
+			if (tokens == null)
+				throw new ArgumentNullException(nameof(tokens));
 			if (tokenConverter == null)
 				throw new ArgumentNullException(nameof(tokenConverter));
+			if (tokens.Length == 0)
+				throw new ArgumentException("Token collection can not be empty.", nameof(tokens));
 
-			_token = token;
+			_tokens = tokens;
 			_tokenConverter = tokenConverter;
 		}
 
 		/// <inheritdoc />
 		public TConfiguration GetConfiguration<TConfiguration>(IConfigurationSelector<JToken> selector = null)
 		{
-			var token = GetToken(selector);
+			var tokens = SelectTokens(selector);
 
-			return (token == null) ? default(TConfiguration) : _tokenConverter.Convert<TConfiguration>(token);
+			return _tokenConverter.Convert<TConfiguration>(tokens);
 		}
 
-		private JToken GetToken(IConfigurationSelector<JToken> selector)
+		private JToken[] SelectTokens(IConfigurationSelector<JToken> selector)
 		{
-			var config = _token;
+			if (selector == null)
+				return _tokens;
 
-			if (config != null && selector != null)
-				config = selector.Select(config);
+			var configs = new JToken[_tokens.Length];
 
-			return config;
+			for (var i = 0; i < _tokens.Length; i++)
+			{
+				var config = _tokens[i];
+
+				if (config != null)
+					config = selector.Select(config);
+
+				configs[i] = config;
+			}
+
+			return configs;
 		}
 	}
 }

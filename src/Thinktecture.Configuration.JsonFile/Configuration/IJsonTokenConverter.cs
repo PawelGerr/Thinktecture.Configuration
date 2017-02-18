@@ -8,11 +8,11 @@ namespace Thinktecture.Configuration
 	public interface IJsonTokenConverter
 	{
 		/// <summary>
-		/// Converts provided <paramref name="token"/> to instance of <typeparamref name="TConfiguration"/>.
+		/// Converts provided <paramref name="tokens"/> to instance of <typeparamref name="TConfiguration"/>.
 		/// </summary>
 		/// <typeparam name="TConfiguration">Type of the configuration.</typeparam>
-		/// <param name="token">Token to convert.</param>
+		/// <param name="tokens">The first token is considered to be the main token, the others act as overrides.</param>
 		/// <returns>An instance of <typeparamref name="TConfiguration"/>.</returns>
-		TConfiguration Convert<TConfiguration>(JToken token);
+		TConfiguration Convert<TConfiguration>(JToken[] tokens);
 	}
 }

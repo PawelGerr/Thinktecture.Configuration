@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Autofac;
 using Autofac.Builder;
@@ -24,20 +25,20 @@ namespace Thinktecture
 		/// Registers <see cref="JsonFileConfigurationLoader"/> and <see cref="JsonFileConfigurationProvider"/>.
 		/// </summary>
 		/// <param name="builder">Autofac container builder.</param>
-		/// <param name="configurationFilePath">Path to the configuration file.</param>
-		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> or the <paramref name="configurationFilePath"/> is null.</exception>
-		/// <exception cref="ArgumentException">Is thrown if the <paramref name="configurationFilePath"/> is an empty string.</exception>
-		public static void RegisterJsonFileConfigurationProvider(this ContainerBuilder builder, string configurationFilePath)
+		/// <param name="configurationFilePaths">Paths to the configuration files. The first file is considred to be the main file, the others are overrides.</param>
+		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> or the <paramref name="configurationFilePaths"/> is null.</exception>
+		/// <exception cref="ArgumentException">Is thrown if the <paramref name="configurationFilePaths"/> contains an empty string.</exception>
+		public static void RegisterJsonFileConfigurationProvider(this ContainerBuilder builder, params string[] configurationFilePaths)
 		{
 			if (builder == null)
 				throw new ArgumentNullException(nameof(builder));
-			if (configurationFilePath == null)
-				throw new ArgumentNullException(nameof(configurationFilePath));
-			if (String.IsNullOrWhiteSpace(configurationFilePath))
-				throw new ArgumentException("Configuration file path cannot be empty.", nameof(configurationFilePath));
+			if (configurationFilePaths == null)
+				throw new ArgumentNullException(nameof(configurationFilePaths));
+			if (configurationFilePaths.Any(path => String.IsNullOrWhiteSpace(path)))
+				throw new ArgumentException("At least one of the configuration file path is empty.", nameof(configurationFilePaths));
 
 			RegisterConverterOnce(builder);
-			builder.Register(context => new JsonFileConfigurationLoader(context.Resolve<IFile>(), configurationFilePath, context.Resolve<IJsonTokenConverter>()))
+			builder.Register(context => new JsonFileConfigurationLoader(context.Resolve<IFile>(), context.Resolve<IJsonTokenConverter>(), configurationFilePaths))
 				.As<IConfigurationLoader<JToken>>()
 				.SingleInstance();
 			builder.Register(context => context.Resolve<IConfigurationLoader<JToken>>().Load())
@@ -49,22 +50,22 @@ namespace Thinktecture
 		/// Registers <see cref="JsonFileConfigurationLoader"/> and <see cref="JsonFileConfigurationProvider"/> with a specific registrationKey.
 		/// </summary>
 		/// <param name="builder">Autofac container builder.</param>
-		/// <param name="configurationFilePath">Path to the configuration file.</param>
-		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> or the <paramref name="configurationFilePath"/> is null.</exception>
-		/// <exception cref="ArgumentException">Is thrown if the <paramref name="configurationFilePath"/> is an empty string.</exception>
+		/// <param name="configurationFilePaths">Paths to the configuration files. The first file is considred to be the main file, the others are overrides.</param>
+		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> or the <paramref name="configurationFilePaths"/> is null.</exception>
+		/// <exception cref="ArgumentException">Is thrown if the <paramref name="configurationFilePaths"/> is an empty string.</exception>
 		/// <returns>A registrationKey the <see cref="IConfigurationProvider{TRawData}"/> is registered with.</returns>
-		public static AutofacConfigurationProviderKey RegisterKeyedJsonFileConfigurationProvider(this ContainerBuilder builder, string configurationFilePath)
+		public static AutofacConfigurationProviderKey RegisterKeyedJsonFileConfigurationProvider(this ContainerBuilder builder, params string[] configurationFilePaths)
 		{
 			if (builder == null)
 				throw new ArgumentNullException(nameof(builder));
-			if (configurationFilePath == null)
-				throw new ArgumentNullException(nameof(configurationFilePath));
-			if (String.IsNullOrWhiteSpace(configurationFilePath))
-				throw new ArgumentException("Configuration file path cannot be empty.", nameof(configurationFilePath));
+			if (configurationFilePaths == null)
+				throw new ArgumentNullException(nameof(configurationFilePaths));
+			if (configurationFilePaths.Any(path => String.IsNullOrWhiteSpace(path)))
+				throw new ArgumentException("At least one of the configuration file path is empty.", nameof(configurationFilePaths));
 
 			var key = new AutofacConfigurationProviderKey();
 			RegisterConverterOnce(builder);
-			builder.Register(context => new JsonFileConfigurationLoader(context.Resolve<IFile>(), configurationFilePath, context.Resolve<IJsonTokenConverter>()))
+			builder.Register(context => new JsonFileConfigurationLoader(context.Resolve<IFile>(), context.Resolve<IJsonTokenConverter>(), configurationFilePaths))
 				.Keyed<IConfigurationLoader<JToken>>(key)
 				.SingleInstance();
 			builder.Register(context => context.ResolveKeyed<IConfigurationLoader<JToken>>(key).Load())
