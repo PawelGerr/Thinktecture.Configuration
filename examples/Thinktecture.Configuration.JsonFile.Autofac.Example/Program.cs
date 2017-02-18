@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Autofac;
 using Thinktecture.Configuration.JsonFile.Autofac.Example.Configuration;
 using Thinktecture.IO;
@@ -11,7 +8,8 @@ namespace Thinktecture.Configuration.JsonFile.Autofac.Example
 {
 	public class Program
 	{
-		const string _CONFIG_FILE_PATH = "Configuration.json";
+		private const string _CONFIG_FILE_PATH = "Configuration.json";
+		private const string _OTHER_CONFIG_FILE_PATH = "AnotherConfiguration.json";
 
 		public static void Main(string[] args)
 		{
@@ -27,6 +25,9 @@ namespace Thinktecture.Configuration.JsonFile.Autofac.Example
 
 				var componentConfig = scope.Resolve<IMyComponentConfiguration>();
 				Console.WriteLine($"{Environment.NewLine}Is \"IMyComponentConfiguration.OtherConfiguration\" == \"IMyComponentOtherConfiguration\": {(componentConfig.OtherConfiguration == otherConfig ? "yes" : "no")}");
+
+				var configFromOtherFile = scope.Resolve<IConfigurationFromOtherFile>();
+				Console.WriteLine($"{Environment.NewLine}\"IConfigurationFromOtherFile\": {configFromOtherFile.Value}");
 
 				Console.WriteLine(Environment.NewLine + "Press ENTER to exit.");
 				Console.ReadLine();
@@ -53,6 +54,10 @@ namespace Thinktecture.Configuration.JsonFile.Autofac.Example
 			// In case we want to use/resolve IMyComponentOtherConfiguration directly and want to create a new instance instead of reusing it from "IMyComponentConfiguration.OtherConfiguration"
 			//builder.RegisterJsonFileConfiguration<MyComponentOtherConfiguration>("MyComponent.OtherConfiguration").AsImplementedInterfaces().SingleInstance();
 
+			// We register an new config provider with a key to distinguish between them
+			var providerKey = builder.RegisterKeyedJsonFileConfigurationProvider(_OTHER_CONFIG_FILE_PATH);
+			builder.RegisterJsonFileConfiguration<ConfigurationFromOtherFile>(providerKey, "ConfiguationFromOtherFile").AsImplementedInterfaces().SingleInstance();
+			
 			return builder.Build();
 		}
 	}
