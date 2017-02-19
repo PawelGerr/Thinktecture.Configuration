@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Moq;
-using Newtonsoft.Json.Linq;
 using Thinktecture.IO;
 
 namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests

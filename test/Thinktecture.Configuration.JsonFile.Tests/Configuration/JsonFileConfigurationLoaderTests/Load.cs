@@ -130,6 +130,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 					.Returns(() =>
 					{
 						var currentStream = nextStream;
+						// ReSharper disable once AccessToDisposedClosure
 						nextStream = stream2;
 						return currentStream;
 					});

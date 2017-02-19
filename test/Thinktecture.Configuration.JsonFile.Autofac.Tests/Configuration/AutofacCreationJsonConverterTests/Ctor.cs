@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using FluentAssertions;
 using Moq;
@@ -7,6 +8,7 @@ using Xunit;
 
 namespace Thinktecture.Configuration.AutofacCreationJsonConverterTests
 {
+	[SuppressMessage("ReSharper", "ObjectCreationAsStatement")]
 	public class Ctor
 	{
 		private readonly Mock<IComponentContext> _containerMock;

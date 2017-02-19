@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 using Xunit;
 
 namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 {
+	[SuppressMessage("ReSharper", "ObjectCreationAsStatement")]
 	public class Ctor : JsonFileConfigurationLoaderTestsBase
 	{
 		[Fact]

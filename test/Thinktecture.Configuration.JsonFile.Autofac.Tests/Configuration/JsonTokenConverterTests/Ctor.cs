@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac;
 using FluentAssertions;
@@ -9,6 +10,7 @@ using Xunit;
 
 namespace Thinktecture.Configuration.JsonTokenConverterTests
 {
+	[SuppressMessage("ReSharper", "ObjectCreationAsStatement")]
 	public class Ctor
 	{
 		private readonly Mock<ILifetimeScope> _scopeMock;
