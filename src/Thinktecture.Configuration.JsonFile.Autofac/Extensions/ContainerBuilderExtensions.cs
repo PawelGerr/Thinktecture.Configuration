@@ -34,6 +34,8 @@ namespace Thinktecture
 				throw new ArgumentNullException(nameof(builder));
 			if (configurationFilePaths == null)
 				throw new ArgumentNullException(nameof(configurationFilePaths));
+			if(configurationFilePaths.Length == 0)
+				throw new ArgumentException("The number of configuration file paths cannot 0.");
 			if (configurationFilePaths.Any(path => String.IsNullOrWhiteSpace(path)))
 				throw new ArgumentException("At least one of the configuration file path is empty.", nameof(configurationFilePaths));
 
