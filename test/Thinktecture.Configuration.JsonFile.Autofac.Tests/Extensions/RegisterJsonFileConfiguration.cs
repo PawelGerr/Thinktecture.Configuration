@@ -13,12 +13,12 @@ namespace Thinktecture.Extensions
 	public class RegisterJsonFileConfiguration
 	{
 		private readonly ContainerBuilder _builder;
-		private readonly Mock<IConfigurationProvider<JToken>> _providerMock;
+		private readonly Mock<IConfigurationProvider<JToken, JToken>> _providerMock;
 
 		public RegisterJsonFileConfiguration()
 		{
 			_builder = new ContainerBuilder();
-			_providerMock = new Mock<IConfigurationProvider<JToken>>(MockBehavior.Strict);
+			_providerMock = new Mock<IConfigurationProvider<JToken, JToken>>(MockBehavior.Strict);
 		}
 
 		[Fact]
@@ -43,7 +43,7 @@ namespace Thinktecture.Extensions
 		public void Should_delegate_config_resolution_to_configuration_provider()
 		{
 			var config = new ConfigurationWithDefaultCtor();
-			_providerMock.Setup(p => p.GetConfiguration<ConfigurationWithDefaultCtor>(It.IsAny<IConfigurationSelector<JToken>>())).Returns(config);
+			_providerMock.Setup(p => p.GetConfiguration<ConfigurationWithDefaultCtor>(It.IsAny<IConfigurationSelector<JToken, JToken>>())).Returns(config);
 			_builder.RegisterInstance(_providerMock.Object);
 			_builder.RegisterJsonFileConfiguration<ConfigurationWithDefaultCtor>().AsSelf();
 
@@ -51,7 +51,7 @@ namespace Thinktecture.Extensions
 				.Resolve<ConfigurationWithDefaultCtor>()
 				.Should().Be(config);
 
-			_providerMock.Verify(p => p.GetConfiguration<ConfigurationWithDefaultCtor>(It.IsAny<IConfigurationSelector<JToken>>()), Times.Once);
+			_providerMock.Verify(p => p.GetConfiguration<ConfigurationWithDefaultCtor>(It.IsAny<IConfigurationSelector<JToken, JToken>>()), Times.Once);
 		}
 	}
 }

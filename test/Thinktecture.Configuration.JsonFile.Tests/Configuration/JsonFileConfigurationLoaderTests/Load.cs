@@ -13,12 +13,12 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 {
 	public class Load : JsonFileConfigurationLoaderTestsBase
 	{
-		private readonly Mock<IConfigurationProvider<JToken>> _providerMock;
+		private readonly Mock<IConfigurationProvider<JToken, JToken>> _providerMock;
 		private JToken[] _tokens;
 
 		public Load()
 		{
-			_providerMock = new Mock<IConfigurationProvider<JToken>>(MockBehavior.Strict);
+			_providerMock = new Mock<IConfigurationProvider<JToken, JToken>>(MockBehavior.Strict);
 		}
 
 		private JsonFileConfigurationLoader CreateLoader(params string[] filePaths)

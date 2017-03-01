@@ -13,13 +13,13 @@ namespace Thinktecture.Configuration
 	/// <summary>
 	/// Loads configuration from a json file.
 	/// </summary>
-	public class JsonFileConfigurationLoader : IConfigurationLoader<JToken>
+	public class JsonFileConfigurationLoader : IConfigurationLoader<JToken, JToken>
 	{
 		private readonly IFile _file;
 		private readonly string[] _filePaths;
 		private readonly IJsonTokenConverter _tokenConverter;
 		private readonly Func<JsonSerializerSettings> _jsonSerializerSettingsProvider;
-		private readonly Func<JToken[], IJsonTokenConverter, IConfigurationProvider<JToken>> _jsonConfigurationProviderFactory;
+		private readonly Func<JToken[], IJsonTokenConverter, IConfigurationProvider<JToken, JToken>> _jsonConfigurationProviderFactory;
 		private readonly IEncoding _encoding;
 
 		/// <summary>
@@ -30,8 +30,8 @@ namespace Thinktecture.Configuration
 		/// <param name="filePaths">Json file paths. The first file is considered the main file, the others act as overrides.</param>
 		/// <param name="encoding">Encoding to be used for reading json file.</param>
 		/// <param name="jsonSerializerSettingsProvider">Provides <see cref="JsonSerializerSettings"/> for deserialization of file content to <see cref="JToken"/>.</param>
-		/// <param name="jsonConfigurationProviderFactory">A factory for creation of <see cref="IConfigurationProvider{JToken}"/>.</param>
-		public JsonFileConfigurationLoader(IFile file, IJsonTokenConverter tokenConverter, string[] filePaths, IEncoding encoding = null, Func<JsonSerializerSettings> jsonSerializerSettingsProvider = null, Func<JToken[], IJsonTokenConverter, IConfigurationProvider<JToken>> jsonConfigurationProviderFactory = null)
+		/// <param name="jsonConfigurationProviderFactory">A factory for creation of <see cref="IConfigurationProvider{TRawDataIn,TRawDataOut}"/>.</param>
+		public JsonFileConfigurationLoader(IFile file, IJsonTokenConverter tokenConverter, string[] filePaths, IEncoding encoding = null, Func<JsonSerializerSettings> jsonSerializerSettingsProvider = null, Func<JToken[], IJsonTokenConverter, IConfigurationProvider<JToken, JToken>> jsonConfigurationProviderFactory = null)
 		{
 			if (file == null)
 				throw new ArgumentNullException(nameof(file));
@@ -51,7 +51,7 @@ namespace Thinktecture.Configuration
 		}
 
 		/// <inheritdoc />
-		public IConfigurationProvider<JToken> Load()
+		public IConfigurationProvider<JToken, JToken> Load()
 		{
 			var tokens = GetTokens();
 			return _jsonConfigurationProviderFactory(tokens, _tokenConverter);

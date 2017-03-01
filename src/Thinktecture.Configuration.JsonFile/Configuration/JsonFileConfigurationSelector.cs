@@ -7,7 +7,7 @@ namespace Thinktecture.Configuration
 	/// <summary>
 	/// Selects the value of provided property name.
 	/// </summary>
-	public class JsonFileConfigurationSelector : IConfigurationSelector<JToken>
+	public class JsonFileConfigurationSelector : IConfigurationSelector<JToken, JToken>
 	{
 		private readonly string[] _pathFragments;
 

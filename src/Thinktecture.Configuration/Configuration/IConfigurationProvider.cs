@@ -5,14 +5,15 @@ namespace Thinktecture.Configuration
 	/// <summary>
 	/// Provides configurations.
 	/// </summary>
-	/// <typeparam name="TRawData">Type of the data the <see cref="IConfigurationProvider{T}"/> works on.</typeparam>
-	public interface IConfigurationProvider<TRawData>
+	/// <typeparam name="TRawDataIn">Type of the data the <see cref="IConfigurationSelector{TRawDataIn,TRawDataOut}"/> selects from.</typeparam>
+	/// <typeparam name="TRawDataOut">Type of the data the <see cref="IConfigurationSelector{TRawDataIn,TRawDataOut}"/> returns.</typeparam>
+	public interface IConfigurationProvider<out TRawDataIn, in TRawDataOut>
 	{
 		/// <summary>
 		/// Gets the value as a type <typeparam name="TConfiguration">TConfiguration</typeparam>
 		/// </summary>
 		/// <param name="selector">Identifies the configuration.</param>
 		/// <returns>Configuration value.</returns>
-		TConfiguration GetConfiguration<TConfiguration>(IConfigurationSelector<TRawData> selector = null);
+		TConfiguration GetConfiguration<TConfiguration>(IConfigurationSelector<TRawDataIn, TRawDataOut> selector = null);
 	}
 }

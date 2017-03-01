@@ -6,7 +6,7 @@ namespace Thinktecture.Configuration
 	/// <summary>
 	/// Reads configuration from <see cref="JToken"/>.
 	/// </summary>
-	public class JsonFileConfigurationProvider : IConfigurationProvider<JToken>
+	public class JsonFileConfigurationProvider : IConfigurationProvider<JToken, JToken>
 	{
 		private readonly JToken[] _tokens; // one of the token may be null
 		private readonly IJsonTokenConverter _tokenConverter;
@@ -31,14 +31,14 @@ namespace Thinktecture.Configuration
 		}
 
 		/// <inheritdoc />
-		public TConfiguration GetConfiguration<TConfiguration>(IConfigurationSelector<JToken> selector = null)
+		public TConfiguration GetConfiguration<TConfiguration>(IConfigurationSelector<JToken, JToken> selector = null)
 		{
 			var tokens = SelectTokens(selector);
 
 			return _tokenConverter.Convert<TConfiguration>(tokens);
 		}
 
-		private JToken[] SelectTokens(IConfigurationSelector<JToken> selector)
+		private JToken[] SelectTokens(IConfigurationSelector<JToken, JToken> selector)
 		{
 			if (selector == null)
 				return _tokens;

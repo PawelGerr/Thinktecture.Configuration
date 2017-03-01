@@ -41,10 +41,10 @@ namespace Thinktecture
 
 			RegisterConverterOnce(builder);
 			builder.Register(context => new JsonFileConfigurationLoader(context.Resolve<IFile>(), context.Resolve<IJsonTokenConverter>(), configurationFilePaths))
-				.As<IConfigurationLoader<JToken>>()
+				.As<IConfigurationLoader<JToken, JToken>>()
 				.SingleInstance();
-			builder.Register(context => context.Resolve<IConfigurationLoader<JToken>>().Load())
-				.As<IConfigurationProvider<JToken>>()
+			builder.Register(context => context.Resolve<IConfigurationLoader<JToken, JToken>>().Load())
+				.As<IConfigurationProvider<JToken, JToken>>()
 				.SingleInstance();
 		}
 
@@ -55,7 +55,7 @@ namespace Thinktecture
 		/// <param name="configurationFilePaths">Paths to the configuration files. The first file is considred to be the main file, the others are overrides.</param>
 		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> or the <paramref name="configurationFilePaths"/> is null.</exception>
 		/// <exception cref="ArgumentException">Is thrown if the <paramref name="configurationFilePaths"/> is an empty string.</exception>
-		/// <returns>A registrationKey the <see cref="IConfigurationProvider{TRawData}"/> is registered with.</returns>
+		/// <returns>A registrationKey the <see cref="IConfigurationProvider{TRawDataIn,TRawDataOut}"/> is registered with.</returns>
 		public static AutofacConfigurationProviderKey RegisterKeyedJsonFileConfigurationProvider(this ContainerBuilder builder, params string[] configurationFilePaths)
 		{
 			if (builder == null)
@@ -68,10 +68,10 @@ namespace Thinktecture
 			var key = new AutofacConfigurationProviderKey();
 			RegisterConverterOnce(builder);
 			builder.Register(context => new JsonFileConfigurationLoader(context.Resolve<IFile>(), context.Resolve<IJsonTokenConverter>(), configurationFilePaths))
-				.Keyed<IConfigurationLoader<JToken>>(key)
+				.Keyed<IConfigurationLoader<JToken, JToken>>(key)
 				.SingleInstance();
-			builder.Register(context => context.ResolveKeyed<IConfigurationLoader<JToken>>(key).Load())
-				.Keyed<IConfigurationProvider<JToken>>(key)
+			builder.Register(context => context.ResolveKeyed<IConfigurationLoader<JToken, JToken>>(key).Load())
+				.Keyed<IConfigurationProvider<JToken, JToken>>(key)
 				.SingleInstance();
 
 			return key;
@@ -88,7 +88,7 @@ namespace Thinktecture
 		}
 
 		/// <summary>
-		/// Registeres a type that will be used with <see cref="IConfigurationProvider{TRawData}.GetConfiguration{T}"/>.
+		/// Registeres a type that will be used with <see cref="IConfigurationProvider{TRawDataIn,TRawDataOut}.GetConfiguration{T}"/>.
 		/// </summary>
 		/// <typeparam name="T">Type of the configuration</typeparam>
 		/// <param name="builder">Container builder.</param>
@@ -103,15 +103,15 @@ namespace Thinktecture
 			var selector = String.IsNullOrWhiteSpace(propertyName) ? null : new JsonFileConfigurationSelector(propertyName.Trim());
 			RegisterTypeOnce<T>(builder);
 
-			return builder.Register(context => context.Resolve<IConfigurationProvider<JToken>>().GetConfiguration<T>(selector));
+			return builder.Register(context => context.Resolve<IConfigurationProvider<JToken, JToken>>().GetConfiguration<T>(selector));
 		}
 
 		/// <summary>
-		/// Registeres a type that will be used with <see cref="IConfigurationProvider{TRawData}.GetConfiguration{T}"/>.
+		/// Registeres a type that will be used with <see cref="IConfigurationProvider{TRawDataIn,TRawDataOut}.GetConfiguration{T}"/>.
 		/// </summary>
 		/// <typeparam name="T">Type of the configuration</typeparam>
 		/// <param name="builder">Container builder.</param>
-		/// <param name="registrationKey">The key of a <see cref="IConfigurationProvider{TRawData}"/>.</param>
+		/// <param name="registrationKey">The key of a <see cref="IConfigurationProvider{TRawDataIn,TRawDataOut}"/>.</param>
 		/// <param name="propertyName">Tne name of the json property to use to build the configuration.</param>
 		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> or the <paramref name="registrationKey"/> is null.</exception>
 		/// <returns>Autofac registration builder.</returns>
@@ -125,7 +125,7 @@ namespace Thinktecture
 			var selector = String.IsNullOrWhiteSpace(propertyName) ? null : new JsonFileConfigurationSelector(propertyName.Trim());
 			RegisterTypeOnce<T>(builder);
 
-			return builder.Register(context => context.ResolveKeyed<IConfigurationProvider<JToken>>(registrationKey).GetConfiguration<T>(selector));
+			return builder.Register(context => context.ResolveKeyed<IConfigurationProvider<JToken, JToken>>(registrationKey).GetConfiguration<T>(selector));
 		}
 
 		/// <summary>

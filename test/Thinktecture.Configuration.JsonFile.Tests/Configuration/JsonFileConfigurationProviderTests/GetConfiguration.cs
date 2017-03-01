@@ -37,7 +37,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationProviderTests
 		[Fact]
 		public void Should_select_property_for_deserialization()
 		{
-			var selectorMock = new Mock<IConfigurationSelector<JToken>>(MockBehavior.Strict);
+			var selectorMock = new Mock<IConfigurationSelector<JToken, JToken>>(MockBehavior.Strict);
 			selectorMock.Setup(s => s.Select(It.IsAny<JToken>())).Returns<JToken>(token => token["Property"]);
 			ConverterMock.Setup(c => c.Convert<string>(It.IsAny<JToken[]>())).Returns<JToken[]>(tokens => tokens.First().Value<string>());
 
@@ -49,7 +49,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationProviderTests
 		[Fact]
 		public void Should_select_sub_property_for_deserialization()
 		{
-			var selectorMock = new Mock<IConfigurationSelector<JToken>>(MockBehavior.Strict);
+			var selectorMock = new Mock<IConfigurationSelector<JToken, JToken>>(MockBehavior.Strict);
 			selectorMock.Setup(s => s.Select(It.IsAny<JToken>())).Returns<JToken>(token => token["Parent"]["Child"]);
 			ConverterMock.Setup(c => c.Convert<string>(It.IsAny<JToken[]>())).Returns<JToken[]>(tokens => tokens.First().Value<string>());
 
