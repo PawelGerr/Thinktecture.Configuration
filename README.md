@@ -336,7 +336,7 @@ To use a different DI framwork than Autofac use the package `Thinktecture.Config
 
 To load `JToken` from other storages than the file system just implement the interface `IConfigurationLoader<JToken, JToken>`. For example, if the JSON configuration are in a database then inject the database context or a data access layer and select corresponding data rows.
 
-Use different data models
+## Use different data models
 
 If you are using other data model than JSON then reference the package Thinktecture.Configuration and implement the interfaces `IConfigurationLoader<TRawDataIn,TRawDataOut>`, `IConfigurationProvider<TRawDataIn,TRawDataOut>` and `IConfigurationSelector<TRawDataIn,TRawDataOut>`. It sounds like much but if you look into the code of the corresponding JSON-based classes you will see that the classes are pretty small and trivial.
 
