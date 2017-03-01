@@ -338,8 +338,8 @@ To load `JToken` from other storages than the file system just implement the int
 
 Use different data models
 
-If you are using other data model than JSON then reference the package Thinktecture.Configuration and implement the interfaces IConfigurationLoader<JToken>, IConfigurationProvider<TRawData> and  IConfigurationSelector<TRawData>. It sounds like much but if you look into the code of the corresponding JSON-based classes you will see that the classes are pretty small and trivial.
+If you are using other data model than JSON then reference the package Thinktecture.Configuration and implement the interfaces `IConfigurationLoader<TRawDataIn,TRawDataOut>`, `IConfigurationProvider<TRawDataIn,TRawDataOut>` and `IConfigurationSelector<TRawDataIn,TRawDataOut>`. It sounds like much but if you look into the code of the corresponding JSON-based classes you will see that the classes are pretty small and trivial.
 
-Some final words...
+# Some final words...
 
-Although the configuration is an important part of the software development it is not the most exciting one. Therefore, a software developer may be inclined to take shortcuts and work with meaningful hardcoded values. Thinktecture.Configuration gives you the means to work with .NET types without thinking too much how to load and parse the values. This saves time, improves the reusability of the components and the software architecture.
+Although the configuration is an important part of the software development it is not the most exciting one. Therefore, a software developer may be inclined to take shortcuts and work with meaningful hardcoded values. `Thinktecture.Configuration` gives you the means to work with .NET types without thinking too much how to load and parse the values. This saves time, improves the reusability of the components and the software architecture.
