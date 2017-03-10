@@ -1,32 +1,31 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{74991754-BB14-47E1-894E-06A983C9AA43}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FB110B99-8EA4-48E5-B318-911E4868FD48}"
 	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
 		LICENCE.md = LICENCE.md
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Thinktecture.Configuration", "src\Thinktecture.Configuration\Thinktecture.Configuration.xproj", "{173C00D2-A193-4E45-9BF2-2FB5EEA9C89B}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Thinktecture.Configuration.JsonFile", "src\Thinktecture.Configuration.JsonFile\Thinktecture.Configuration.JsonFile.xproj", "{53E7D9E7-7582-4B18-B9B3-6C9C3798B72B}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Thinktecture.Configuration.JsonFile.Autofac", "src\Thinktecture.Configuration.JsonFile.Autofac\Thinktecture.Configuration.JsonFile.Autofac.xproj", "{5E6ECC70-03DF-4959-A9FF-9051A81BD298}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{523E3D6E-9196-4175-90C5-591F9697672E}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Thinktecture.Configuration.JsonFile.Autofac.Tests", "test\Thinktecture.Configuration.JsonFile.Autofac.Tests\Thinktecture.Configuration.JsonFile.Autofac.Tests.xproj", "{8112D8A2-131D-45CD-B44D-04E02ACAB2FF}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Thinktecture.Configuration.JsonFile.Tests", "test\Thinktecture.Configuration.JsonFile.Tests\Thinktecture.Configuration.JsonFile.Tests.xproj", "{61FD615D-2DDE-4578-A9E5-B0390D5EB464}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{2D13A9B4-B515-4749-8809-815260C004FE}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Thinktecture.Configuration.JsonFile.Autofac.Example", "examples\Thinktecture.Configuration.JsonFile.Autofac.Example\Thinktecture.Configuration.JsonFile.Autofac.Example.xproj", "{B2A50769-B375-4E52-AB0A-25B427478B13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thinktecture.Configuration", "src\Thinktecture.Configuration\Thinktecture.Configuration.csproj", "{173C00D2-A193-4E45-9BF2-2FB5EEA9C89B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thinktecture.Configuration.JsonFile", "src\Thinktecture.Configuration.JsonFile\Thinktecture.Configuration.JsonFile.csproj", "{53E7D9E7-7582-4B18-B9B3-6C9C3798B72B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thinktecture.Configuration.JsonFile.Autofac", "src\Thinktecture.Configuration.JsonFile.Autofac\Thinktecture.Configuration.JsonFile.Autofac.csproj", "{5E6ECC70-03DF-4959-A9FF-9051A81BD298}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thinktecture.Configuration.JsonFile.Autofac.Tests", "test\Thinktecture.Configuration.JsonFile.Autofac.Tests\Thinktecture.Configuration.JsonFile.Autofac.Tests.csproj", "{8112D8A2-131D-45CD-B44D-04E02ACAB2FF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thinktecture.Configuration.JsonFile.Tests", "test\Thinktecture.Configuration.JsonFile.Tests\Thinktecture.Configuration.JsonFile.Tests.csproj", "{61FD615D-2DDE-4578-A9E5-B0390D5EB464}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thinktecture.Configuration.JsonFile.Autofac.Example", "examples\Thinktecture.Configuration.JsonFile.Autofac.Example\Thinktecture.Configuration.JsonFile.Autofac.Example.csproj", "{B2A50769-B375-4E52-AB0A-25B427478B13}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
