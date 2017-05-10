@@ -19,7 +19,7 @@
     <ProjectReference Include="..\Thinktecture.Configuration.JsonFile\Thinktecture.Configuration.JsonFile.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.4.0" />
+    <PackageReference Include="Autofac" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <Reference Include="System" />
