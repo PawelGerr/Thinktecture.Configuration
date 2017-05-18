@@ -34,7 +34,7 @@ namespace Thinktecture
 				throw new ArgumentNullException(nameof(builder));
 			if (configurationFilePaths == null)
 				throw new ArgumentNullException(nameof(configurationFilePaths));
-			if(configurationFilePaths.Length == 0)
+			if (configurationFilePaths.Length == 0)
 				throw new ArgumentException("The number of configuration file paths cannot 0.");
 			if (configurationFilePaths.Any(path => String.IsNullOrWhiteSpace(path)))
 				throw new ArgumentException("At least one of the configuration file path is empty.", nameof(configurationFilePaths));
@@ -93,9 +93,10 @@ namespace Thinktecture
 		/// <typeparam name="T">Type of the configuration</typeparam>
 		/// <param name="builder">Container builder.</param>
 		/// <param name="propertyName">Tne name of the json property to use to build the configuration.</param>
+		/// <param name="resolveNewInstanceIfNull">If <c>true</c> then a new instance of <typeparamref name="T"/> is returned even if the configuration is missing or is <c>null</c>; otherwise Autofac will raise an error.</param>
 		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> is null.</exception>
 		/// <returns>Autofac registration builder.</returns>
-		public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterJsonFileConfiguration<T>(this ContainerBuilder builder, string propertyName = null)
+		public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterJsonFileConfiguration<T>(this ContainerBuilder builder, string propertyName = null, bool resolveNewInstanceIfNull = true)
 		{
 			if (builder == null)
 				throw new ArgumentNullException(nameof(builder));
@@ -103,7 +104,11 @@ namespace Thinktecture
 			var selector = String.IsNullOrWhiteSpace(propertyName) ? null : new JsonFileConfigurationSelector(propertyName.Trim());
 			RegisterTypeOnce<T>(builder);
 
-			return builder.Register(context => context.Resolve<IConfigurationProvider<JToken, JToken>>().GetConfiguration<T>(selector));
+			return builder.Register(context =>
+			{
+				var config = context.Resolve<IConfigurationProvider<JToken, JToken>>().GetConfiguration<T>(selector);
+				return config == null && resolveNewInstanceIfNull ? context.ResolveConfigurationType<T>() : config;
+			});
 		}
 
 		/// <summary>
@@ -113,9 +118,10 @@ namespace Thinktecture
 		/// <param name="builder">Container builder.</param>
 		/// <param name="registrationKey">The key of a <see cref="IConfigurationProvider{TRawDataIn,TRawDataOut}"/>.</param>
 		/// <param name="propertyName">Tne name of the json property to use to build the configuration.</param>
+		/// <param name="resolveNewInstanceIfNull">If <c>true</c> then a new instance of <typeparamref name="T"/> is returned even if the configuration is missing or is <c>null</c>; otherwise Autofac will raise an error.</param>
 		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> or the <paramref name="registrationKey"/> is null.</exception>
 		/// <returns>Autofac registration builder.</returns>
-		public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterJsonFileConfiguration<T>(this ContainerBuilder builder, AutofacConfigurationProviderKey registrationKey, string propertyName = null)
+		public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterJsonFileConfiguration<T>(this ContainerBuilder builder, AutofacConfigurationProviderKey registrationKey, string propertyName = null, bool resolveNewInstanceIfNull = true)
 		{
 			if (builder == null)
 				throw new ArgumentNullException(nameof(builder));
@@ -125,7 +131,11 @@ namespace Thinktecture
 			var selector = String.IsNullOrWhiteSpace(propertyName) ? null : new JsonFileConfigurationSelector(propertyName.Trim());
 			RegisterTypeOnce<T>(builder);
 
-			return builder.Register(context => context.ResolveKeyed<IConfigurationProvider<JToken, JToken>>(registrationKey).GetConfiguration<T>(selector));
+			return builder.Register(context =>
+			{
+				var config = context.ResolveKeyed<IConfigurationProvider<JToken, JToken>>(registrationKey).GetConfiguration<T>(selector);
+				return config == null && resolveNewInstanceIfNull ? context.ResolveConfigurationType<T>() : config;
+			});
 		}
 
 		/// <summary>

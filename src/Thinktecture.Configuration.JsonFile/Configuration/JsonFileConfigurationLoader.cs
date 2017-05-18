@@ -33,18 +33,14 @@ namespace Thinktecture.Configuration
 		/// <param name="jsonConfigurationProviderFactory">A factory for creation of <see cref="IConfigurationProvider{TRawDataIn,TRawDataOut}"/>.</param>
 		public JsonFileConfigurationLoader(IFile file, IJsonTokenConverter tokenConverter, string[] filePaths, IEncoding encoding = null, Func<JsonSerializerSettings> jsonSerializerSettingsProvider = null, Func<JToken[], IJsonTokenConverter, IConfigurationProvider<JToken, JToken>> jsonConfigurationProviderFactory = null)
 		{
-			if (file == null)
-				throw new ArgumentNullException(nameof(file));
 			if (filePaths == null)
 				throw new ArgumentNullException(nameof(filePaths));
-			if (tokenConverter == null)
-				throw new ArgumentNullException(nameof(tokenConverter));
 			if (filePaths.Any(path => String.IsNullOrWhiteSpace(path)))
 				throw new ArgumentException("At least one of the configuration file path is empty.", nameof(filePaths));
 
-			_file = file;
+			_file = file ?? throw new ArgumentNullException(nameof(file));
 			_filePaths = filePaths;
-			_tokenConverter = tokenConverter;
+			_tokenConverter = tokenConverter ?? throw new ArgumentNullException(nameof(tokenConverter));
 			_jsonSerializerSettingsProvider = jsonSerializerSettingsProvider;
 			_encoding = encoding ?? new UTF8Encoding(false, true).ToInterface();
 			_jsonConfigurationProviderFactory = jsonConfigurationProviderFactory ?? ((tokens, converter) => new JsonFileConfigurationProvider(tokens, converter));

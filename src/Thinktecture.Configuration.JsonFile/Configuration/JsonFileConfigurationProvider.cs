@@ -21,13 +21,11 @@ namespace Thinktecture.Configuration
 		{
 			if (tokens == null)
 				throw new ArgumentNullException(nameof(tokens));
-			if (tokenConverter == null)
-				throw new ArgumentNullException(nameof(tokenConverter));
 			if (tokens.Length == 0)
 				throw new ArgumentException("Token collection can not be empty.", nameof(tokens));
 
 			_tokens = tokens;
-			_tokenConverter = tokenConverter;
+			_tokenConverter = tokenConverter ?? throw new ArgumentNullException(nameof(tokenConverter));
 		}
 
 		/// <inheritdoc />

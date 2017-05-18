@@ -53,5 +53,32 @@ namespace Thinktecture.Extensions
 
 			_providerMock.Verify(p => p.GetConfiguration<ConfigurationWithDefaultCtor>(It.IsAny<IConfigurationSelector<JToken, JToken>>()), Times.Once);
 		}
+
+		[Fact]
+		public void Should_return_new_istance_even_if_configurationprovider_returned_null()
+		{
+			_providerMock.Setup(p => p.GetConfiguration<ConfigurationWithDefaultCtor>(It.IsAny<IConfigurationSelector<JToken, JToken>>())).Returns((ConfigurationWithDefaultCtor)null);
+			_builder.RegisterInstance(_providerMock.Object);
+			_builder.RegisterJsonFileConfiguration<ConfigurationWithDefaultCtor>(null, true).AsSelf();
+
+			_builder.Build()
+				.Resolve<ConfigurationWithDefaultCtor>()
+				.Should().NotBeNull();
+		}
+
+		[Fact]
+		public void Should_raise_an_error_on_resolve_if_configurationprovider_returned_null_and_resolveNewInstanceIfNull_is_false()
+		{
+			_providerMock.Setup(p => p.GetConfiguration<ConfigurationWithDefaultCtor>(It.IsAny<IConfigurationSelector<JToken, JToken>>())).Returns((ConfigurationWithDefaultCtor)null);
+			_builder.RegisterInstance(_providerMock.Object);
+			_builder.RegisterJsonFileConfiguration<ConfigurationWithDefaultCtor>(null, false).AsSelf();
+
+			var container = _builder.Build();
+
+			container.Invoking(c => c.Resolve<ConfigurationWithDefaultCtor>())
+				.ShouldThrow<DependencyResolutionException>()
+				.WithInnerException<DependencyResolutionException>()
+				.WithInnerMessage($"A delegate registered to create instances of '{typeof(ConfigurationWithDefaultCtor).FullName}' returned null.");
+		}
 	}
 }

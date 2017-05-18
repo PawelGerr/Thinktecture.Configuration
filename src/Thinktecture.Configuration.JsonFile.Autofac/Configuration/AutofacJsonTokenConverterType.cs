@@ -22,10 +22,7 @@ namespace Thinktecture.Configuration
 		/// <param name="type">Type to resolve.</param>
 		public AutofacJsonTokenConverterType(Type type)
 		{
-			if (type == null)
-				throw new ArgumentNullException(nameof(type));
-
-			Type = type;
+			Type = type ?? throw new ArgumentNullException(nameof(type));
 		}
 	}
 }

@@ -25,11 +25,9 @@ namespace Thinktecture.Configuration
 		{
 			if (scope == null)
 				throw new ArgumentNullException(nameof(scope));
-			if (typesToConvertViaAutofac == null)
-				throw new ArgumentNullException(nameof(typesToConvertViaAutofac));
 
 			_jsonSerializerSettingsProvider = jsonSerializerSettingsProvider;
-			_converters = typesToConvertViaAutofac.Select(t => new AutofacCreationJsonConverter(t.Type, scope)).ToList();
+			_converters = typesToConvertViaAutofac?.Select(t => new AutofacCreationJsonConverter(t.Type, scope)).ToList() ?? throw new ArgumentNullException(nameof(typesToConvertViaAutofac));
 		}
 
 		/// <inheritdoc />
@@ -49,21 +47,50 @@ namespace Thinktecture.Configuration
 				serializer.Converters.Add(converter);
 			}
 
-			var mainToken = tokens[0];
-			var mainConfig = (mainToken == null) ? default(TConfiguration) : mainToken.ToObject<TConfiguration>(serializer);
+			var lastToken = tokens.LastOrDefault(t => t != null);
 
-			if (mainConfig != null)
+			if (IsNull(lastToken))
+				return default(TConfiguration);
+
+			var startIndex = GetStartIndex(tokens);
+			var startToken = tokens.Skip(startIndex).First(t => t != null && t.Type != JTokenType.Null);
+			var config = startToken.ToObject<TConfiguration>(serializer);
+
+			if (config != null)
 			{
-				for (var i = 1; i < tokens.Length; i++)
+				for (var i = startIndex + 1; i < tokens.Length; i++)
 				{
-					using (var reader = new JTokenReader(tokens[i]))
+					var token = tokens[i];
+
+					if (!IsNull(token))
 					{
-						serializer.Populate(reader, mainConfig);
+						using (var reader = new JTokenReader(token))
+						{
+							serializer.Populate(reader, config);
+						}
 					}
 				}
 			}
 
-			return mainConfig;
+			return config;
+		}
+
+		private int GetStartIndex(JToken[] tokens)
+		{
+			for (int i = tokens.Length - 1; i >= 0; i--)
+			{
+				var token = tokens[i];
+
+				if (token != null && token.Type == JTokenType.Null)
+					return i + 1;
+			}
+
+			return 0;
+		}
+
+		private bool IsNull(JToken token)
+		{
+			return token == null || token.Type == JTokenType.Null;
 		}
 	}
 }

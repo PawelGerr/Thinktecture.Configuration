@@ -16,10 +16,7 @@ namespace Thinktecture.Configuration
 		/// <exception cref="ArgumentNullException">Thrown if the provided <paramref name="type"/> is <c>null</c>.</exception>
 		protected CustomCreationConverter(Type type)
 		{
-			if (type == null)
-				throw new ArgumentNullException(nameof(type));
-
-			_type = type;
+			_type = type ?? throw new ArgumentNullException(nameof(type));
 		}
 
 		/// <summary>

@@ -18,10 +18,7 @@ namespace Thinktecture.Configuration
 		public AutofacCreationJsonConverter(Type type, IComponentContext container)
 			: base(type)
 		{
-			if (container == null)
-				throw new ArgumentNullException(nameof(container));
-
-			_container = container;
+			_container = container ?? throw new ArgumentNullException(nameof(container));
 		}
 
 		/// <inheritdoc />
@@ -30,9 +27,7 @@ namespace Thinktecture.Configuration
 			if (objectType == null)
 				throw new ArgumentNullException(nameof(objectType));
 
-			return _container.IsRegisteredWithKey(ContainerBuilderExtensions.ConfigurationRegistrationKey, objectType)
-				? _container.ResolveKeyed(ContainerBuilderExtensions.ConfigurationRegistrationKey, objectType)
-				: _container.Resolve(objectType);
+			return _container.ResolveConfigurationType(objectType);
 		}
 	}
 }
