@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Description>Converts JSON tokens using autofac.</Description>
     <Copyright>(c) 2017, Pawel Gerr. All rights reserved.</Copyright>
-    <VersionPrefix>1.0.1</VersionPrefix>
+    <VersionPrefix>1.1.0</VersionPrefix>
     <Authors>Pawel Gerr</Authors>
     <TargetFrameworks>netstandard1.3;net45;net46</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -19,7 +19,7 @@
     <ProjectReference Include="..\Thinktecture.Configuration.JsonFile\Thinktecture.Configuration.JsonFile.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.5.0" />
+    <PackageReference Include="Autofac" Version="4.6.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <Reference Include="System" />
