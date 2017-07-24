@@ -1,0 +1,13 @@
+{
+	"value": 42,
+	"boolean": true,
+	"innerConfiguration": {
+		"innerValue": "foo"
+	},
+	"intArray": null,
+	"intCollection": [10, 11],
+	"stringIntDictionary": {
+		"a": 1,
+		"b": 2
+	}
+}

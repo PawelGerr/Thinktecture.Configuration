@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{74991754-BB14-47E1-894E-06A983C9AA43}"
 EndProject
@@ -26,6 +26,16 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thinktecture.Configuration.JsonFile.Tests", "test\Thinktecture.Configuration.JsonFile.Tests\Thinktecture.Configuration.JsonFile.Tests.csproj", "{61FD615D-2DDE-4578-A9E5-B0390D5EB464}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thinktecture.Configuration.JsonFile.Autofac.Example", "examples\Thinktecture.Configuration.JsonFile.Autofac.Example\Thinktecture.Configuration.JsonFile.Autofac.Example.csproj", "{B2A50769-B375-4E52-AB0A-25B427478B13}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thinktecture.Extensions.Configuration", "src\Thinktecture.Extensions.Configuration\Thinktecture.Extensions.Configuration.csproj", "{73BB82CE-EAFD-4C3F-903A-29109969D86E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thinktecture.Extensions.Configuration.Example", "examples\Thinktecture.Extensions.Configuration.Example\Thinktecture.Extensions.Configuration.Example.csproj", "{D03B1AB7-FD73-4A31-9AED-770D1857965B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thinktecture.Extensions.Configuration.Autofac", "src\Thinktecture.Extensions.Configuration.Autofac\Thinktecture.Extensions.Configuration.Autofac.csproj", "{E1A228AA-278B-497E-AED1-EEDDB7DBD3C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thinktecture.Extensions.Configuration.Autofac.Tests", "test\Thinktecture.Extensions.Configuration.Autofac.Tests\Thinktecture.Extensions.Configuration.Autofac.Tests.csproj", "{AC8B5379-D7B2-4985-9092-A737098E415B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thinktecture.Extensions.Configuration.Tests", "test\Thinktecture.Extensions.Configuration.Tests\Thinktecture.Extensions.Configuration.Tests.csproj", "{D17EC9FE-49EE-45D8-BF21-E303D6D03AFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +67,26 @@ Global
 		{B2A50769-B375-4E52-AB0A-25B427478B13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2A50769-B375-4E52-AB0A-25B427478B13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2A50769-B375-4E52-AB0A-25B427478B13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73BB82CE-EAFD-4C3F-903A-29109969D86E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73BB82CE-EAFD-4C3F-903A-29109969D86E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73BB82CE-EAFD-4C3F-903A-29109969D86E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73BB82CE-EAFD-4C3F-903A-29109969D86E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D03B1AB7-FD73-4A31-9AED-770D1857965B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D03B1AB7-FD73-4A31-9AED-770D1857965B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D03B1AB7-FD73-4A31-9AED-770D1857965B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D03B1AB7-FD73-4A31-9AED-770D1857965B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1A228AA-278B-497E-AED1-EEDDB7DBD3C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1A228AA-278B-497E-AED1-EEDDB7DBD3C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1A228AA-278B-497E-AED1-EEDDB7DBD3C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1A228AA-278B-497E-AED1-EEDDB7DBD3C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC8B5379-D7B2-4985-9092-A737098E415B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC8B5379-D7B2-4985-9092-A737098E415B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC8B5379-D7B2-4985-9092-A737098E415B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC8B5379-D7B2-4985-9092-A737098E415B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D17EC9FE-49EE-45D8-BF21-E303D6D03AFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D17EC9FE-49EE-45D8-BF21-E303D6D03AFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D17EC9FE-49EE-45D8-BF21-E303D6D03AFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D17EC9FE-49EE-45D8-BF21-E303D6D03AFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,5 +98,10 @@ Global
 		{8112D8A2-131D-45CD-B44D-04E02ACAB2FF} = {523E3D6E-9196-4175-90C5-591F9697672E}
 		{61FD615D-2DDE-4578-A9E5-B0390D5EB464} = {523E3D6E-9196-4175-90C5-591F9697672E}
 		{B2A50769-B375-4E52-AB0A-25B427478B13} = {2D13A9B4-B515-4749-8809-815260C004FE}
+		{73BB82CE-EAFD-4C3F-903A-29109969D86E} = {74991754-BB14-47E1-894E-06A983C9AA43}
+		{D03B1AB7-FD73-4A31-9AED-770D1857965B} = {2D13A9B4-B515-4749-8809-815260C004FE}
+		{E1A228AA-278B-497E-AED1-EEDDB7DBD3C5} = {74991754-BB14-47E1-894E-06A983C9AA43}
+		{AC8B5379-D7B2-4985-9092-A737098E415B} = {523E3D6E-9196-4175-90C5-591F9697672E}
+		{D17EC9FE-49EE-45D8-BF21-E303D6D03AFD} = {523E3D6E-9196-4175-90C5-591F9697672E}
 	EndGlobalSection
 EndGlobal

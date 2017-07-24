@@ -13,10 +13,7 @@ namespace Thinktecture.Configuration.JsonFile.Autofac.Example
 
 		public MyComponent(IMyComponentConfiguration config)
 		{
-			if (config == null)
-				throw new ArgumentNullException(nameof(config));
-
-			_config = config;
+			_config = config ?? throw new ArgumentNullException(nameof(config));
 		}
 		
 		public void PrintConfiguration()
