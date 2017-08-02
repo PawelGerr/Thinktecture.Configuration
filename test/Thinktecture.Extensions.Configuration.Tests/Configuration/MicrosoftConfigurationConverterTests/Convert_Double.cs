@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using FluentAssertions;
 using Thinktecture.Helpers;
 using Xunit;
@@ -9,44 +8,46 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 	public class Convert_Double : ConvertBase
 	{
 		[Fact]
-		public void Should_convert_double_property_with_decimal_places()
+		public void Should_convert_when_value_is_not_empty()
 		{
-			InstanceCreatorMock.Setup(c => c.Create(typeof(double), "42.1")).Returns(42.1);
+			SetupCreateFromString<double>("42.1", new ConversionResult(42.1));
 
-			var result = RoundtripConvert<TestConfiguration<double>>("P1", "42.1");
-			result.ShouldBeEquivalentTo(new TestConfiguration<double>() {P1 = 42.1});
+			RoundtripConvert<TestConfiguration<double>>("P1", "42.1")
+				.P1.ShouldBeEquivalentTo(42.1d);
 		}
 
 		[Fact]
 		public void Should_convert_double_property()
 		{
-			InstanceCreatorMock.Setup(c => c.Create(typeof(double), "42")).Returns(42);
+			SetupCreateFromString<double>("42", new ConversionResult(42d));
 
-			var result = RoundtripConvert<TestConfiguration<double>>("P1", "42");
-			result.ShouldBeEquivalentTo(new TestConfiguration<double>() {P1 = 42});
+			RoundtripConvert<TestConfiguration<double>>("P1", "42")
+				.P1.ShouldBeEquivalentTo(42d);
 		}
 
 		[Fact]
 		public void Should_convert_nullable_double_property_if_value_is_not_null()
 		{
-			InstanceCreatorMock.Setup(c => c.Create(typeof(double), "42")).Returns(42d);
+			SetupCreateFromString<double?>("42", new ConversionResult(42d));
 
-			var result = RoundtripConvert<TestConfiguration<double?>>("P1", "42");
-			result.ShouldBeEquivalentTo(new TestConfiguration<double?>() {P1 = 42});
+			RoundtripConvert<TestConfiguration<double?>>("P1", "42")
+				.P1.ShouldBeEquivalentTo(42d);
 		}
 
 		[Fact]
 		public void Should_convert_nullable_double_property_if_value_is_null()
 		{
-			var result = RoundtripConvert<TestConfiguration<double?>>("P1", null);
-			result.ShouldBeEquivalentTo(new TestConfiguration<double?>() {P1 = null});
+			RoundtripConvert<TestConfiguration<double?>>("P1", null)
+				.P1.Should().BeNull();
 		}
 
 		[Fact]
 		public void Should_convert_nullable_double_property_if_value_is_empty_string()
 		{
-			var result = RoundtripConvert<TestConfiguration<double?>>("P1", String.Empty);
-			result.ShouldBeEquivalentTo(new TestConfiguration<double?>() {P1 = null});
+			SetupCreateFromString<double?>(String.Empty, new ConversionResult(null));
+
+			RoundtripConvert<TestConfiguration<double?>>("P1", String.Empty)
+				.P1.Should().BeNull();
 		}
 	}
 }

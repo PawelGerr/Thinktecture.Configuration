@@ -1,5 +1,6 @@
 ﻿using System;
 using FluentAssertions;
+using Moq;
 using Thinktecture.Helpers;
 using Xunit;
 
@@ -10,61 +11,69 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_int_property_if_value_is_not_null()
 		{
-			InstanceCreatorMock.Setup(c => c.Create(typeof(int), "42")).Returns(42);
+			SetupCreateFromString<int>("42", new ConversionResult(42));
 
-			var result = RoundtripConvert<TestConfiguration<int>>("P1", "42");
-			result.ShouldBeEquivalentTo(new TestConfiguration<int>() {P1 = 42});
+			RoundtripConvert<TestConfiguration<int>>("P1", "42")
+				.P1.ShouldBeEquivalentTo(42);
 		}
 
 		[Fact]
-		public void Should_throw_if_int_property_is_floating_point_number()
+		public void Should_throw_if_creator_throws()
 		{
-			Action action = () => RoundtripConvert<TestConfiguration<int>>("P1", "42.1");
-			action.ShouldThrow<InvalidOperationException>();
+			SetupCreateFromString<int>("42", v => throw new Exception("Error!"));
+
+			Action action = () => RoundtripConvert<TestConfiguration<int>>("P1", "42");
+			action.ShouldThrow<Exception>().WithMessage("Error!");
 		}
 
 		[Fact]
-		public void Should_convert_int_property_if_value_is_null()
+		public void Should_throw_if_value_is_null_but_the_type_is_not_nullable()
 		{
-			var result = RoundtripConvert<TestConfiguration<int>>("P1", null);
-			result.ShouldBeEquivalentTo(new TestConfiguration<int>() {P1 = 0});
+			Action action = () => RoundtripConvert<TestConfiguration<int>>("P1", null);
+			action.ShouldThrow<ConfigurationSerializationException>().WithMessage("Cannot assign null to non-nullable type System.Int32. Path: P1");
 		}
 
 		[Fact]
-		public void Should_convert_int_property_if_value_is_empty_string()
+		public void Should_convert_value_using_instance_creator_when_value_is_empty_string()
 		{
-			Action action = () => RoundtripConvert<TestConfiguration<int>>("P1", String.Empty);
-			action.ShouldThrow<InvalidOperationException>();
+			SetupCreateFromString<int>(String.Empty, new ConversionResult(42));
+
+			RoundtripConvert<TestConfiguration<int>>("P1", String.Empty)
+				.P1.Should().Be(42);
 		}
 
 		[Fact]
-		public void Should_throw_if_int_property_is_not_a_number()
+		public void Should_convert_value_using_instance_creator_when_value_is_an_invalid_integer()
 		{
-			Action action = () => RoundtripConvert<TestConfiguration<int>>("P1", "value");
-			action.ShouldThrow<InvalidOperationException>();
+			SetupCreateFromString<int>("not-an-int", new ConversionResult(42));
+
+			RoundtripConvert<TestConfiguration<int>>("P1", "not-an-int")
+				.P1.Should().Be(42);
 		}
 
 		[Fact]
 		public void Should_convert_nullable_int_property_if_value_is_not_null()
 		{
-			InstanceCreatorMock.Setup(c => c.Create(typeof(int), "42")).Returns(42);
+			SetupCreateFromString<int?>("42", new ConversionResult(42));
 
-			var result = RoundtripConvert<TestConfiguration<int?>>("P1", "42");
-			result.ShouldBeEquivalentTo(new TestConfiguration<int?>() {P1 = 42});
+			RoundtripConvert<TestConfiguration<int?>>("P1", "42")
+				.P1.Should().Be(42);
 		}
 
 		[Fact]
 		public void Should_convert_nullable_int_property_if_value_is_null()
 		{
-			var result = RoundtripConvert<TestConfiguration<int?>>("P1", null);
-			result.ShouldBeEquivalentTo(new TestConfiguration<int?>() {P1 = null});
+			RoundtripConvert<TestConfiguration<int?>>("P1", null)
+				.P1.Should().BeNull();
 		}
 
 		[Fact]
 		public void Should_convert_nullable_int_property_if_value_is_empty_string()
 		{
-			var result = RoundtripConvert<TestConfiguration<int?>>("P1", String.Empty);
-			result.ShouldBeEquivalentTo(new TestConfiguration<int?>() {P1 = null});
+			SetupCreateFromString<int?>(String.Empty, new ConversionResult(null));
+
+			RoundtripConvert<TestConfiguration<int?>>("P1", String.Empty)
+				.P1.Should().BeNull();
 		}
 	}
 }

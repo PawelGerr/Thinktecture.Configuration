@@ -8,31 +8,25 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
 	public class Convert_String : ConvertBase
 	{
-		public Convert_String()
+		[Fact]
+		public void Should_convert_non_empty_string()
 		{
-			InstanceCreatorMock.Setup(c => c.Create(typeof(string), It.IsAny<string>()))
-				.Returns<Type, string>((type, value) => value);
+			RoundtripConvert<TestConfiguration<string>>("P1", "value")
+				.P1.Should().Be("value");
 		}
 
 		[Fact]
-		public void Should_convert_non_empty_string_property()
+		public void Should_convert_empty_string()
 		{
-			var result = RoundtripConvert<TestConfiguration<string>>("P1", "value");
-			result.ShouldBeEquivalentTo(new TestConfiguration<string>() {P1 = "value"});
+			RoundtripConvert<TestConfiguration<string>>("P1", String.Empty)
+				.P1.Should().BeEmpty();
 		}
 
 		[Fact]
-		public void Should_convert_empty_string_property()
+		public void Should_convert_null_string()
 		{
-			var result = RoundtripConvert<TestConfiguration<string>>("P1", String.Empty);
-			result.ShouldBeEquivalentTo(new TestConfiguration<string>() {P1 = String.Empty});
-		}
-
-		[Fact]
-		public void Should_convert_null_string_property()
-		{
-			var result = RoundtripConvert<TestConfiguration<string>>("P1", null);
-			result.ShouldBeEquivalentTo(new TestConfiguration<string>() {P1 = null});
+			RoundtripConvert<TestConfiguration<string>>("P1", null)
+				.P1.Should().BeNull();
 		}
 	}
 }

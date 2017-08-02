@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Moq;
 using Thinktecture.Helpers;
 using Xunit;
 
@@ -12,26 +13,64 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 	public class Convert_Boolean : ConvertBase
 	{
 		[Fact]
-		public void Should_convert_true_string()
+		public void Should_throw_if_value_is_null_but_the_type_is_not_nullable()
 		{
-			InstanceCreatorMock.Setup(c => c.Create(typeof(bool), "True")).Returns(true);
-
-			var result = RoundtripConvert<TestConfiguration<bool>>("P1", "True");
-			result.ShouldBeEquivalentTo(new TestConfiguration<bool>() {P1 = true});
+			Action action = () => RoundtripConvert<TestConfiguration<bool>>("P1", null);
+			action.ShouldThrow<ConfigurationSerializationException>().WithMessage("Cannot assign null to non-nullable type System.Boolean. Path: P1");
 		}
 
 		[Fact]
-		public void Should_convert_empty_string_property()
+		public void Should_set_property_when_creator_returns_valid_result()
 		{
-			Action action = () => RoundtripConvert<TestConfiguration<bool>>("P1", String.Empty);
-			action.ShouldThrow<InvalidOperationException>();
+			SetupCreateFromString<bool>("true", new ConversionResult(true));
+
+			RoundtripConvert<TestConfiguration<bool>>("P1", "true")
+				.P1.Should().BeTrue();
 		}
 
 		[Fact]
-		public void Should_convert_null_string_property()
+		public void Should_not_set_property_when_creator_returns_invalid_result()
 		{
-			var result = RoundtripConvert<TestConfiguration<bool>>("P1", null);
-			result.ShouldBeEquivalentTo(new TestConfiguration<bool>() {P1 = false});
+			SetupCreateFromString<bool>("true", ConversionResult.Invalid);
+
+			RoundtripConvert<TestConfiguration<bool>>("P1", "true")
+				.P1.Should().BeFalse();
+		}
+
+		[Fact]
+		public void Should_throw_when_creator_throws()
+		{
+			SetupCreateFromString<bool>("true", s => throw new Exception("Error!"));
+
+			Action action = () => RoundtripConvert<TestConfiguration<bool>>("P1", "true");
+			action.ShouldThrow<Exception>().WithMessage("Error!");
+		}
+
+		[Fact]
+		public void Should_convert_value_using_instance_creator_when_value_is_empty_string()
+		{
+			SetupCreateFromString(String.Empty, true);
+
+			RoundtripConvert<TestConfiguration<bool>>("P1", String.Empty)
+				.P1.Should().BeTrue();
+
+			InstanceCreatorMock.Verify(c => c.Create(typeof(bool), String.Empty), Times.Once);
+		}
+
+		[Fact]
+		public void Should_convert_nullable_boolean_using_instance_creator_if_value_is_not_null()
+		{
+			SetupCreateFromString<bool?>("true", true);
+
+			RoundtripConvert<TestConfiguration<bool?>>("P1", "true")
+				.P1.Should().BeTrue();
+		}
+
+		[Fact]
+		public void Should_convert_nullable_boolean_when_value_is_null()
+		{
+			RoundtripConvert<TestConfiguration<bool?>>("P1", null)
+				.P1.Should().BeNull();
 		}
 	}
 }

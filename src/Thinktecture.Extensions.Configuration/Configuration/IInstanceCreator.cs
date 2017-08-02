@@ -12,7 +12,7 @@ namespace Thinktecture.Configuration
 		/// </summary>
 		/// <param name="type">Type an instance to create of.</param>
 		/// <returns>New instance of type <paramref name="type"/>.</returns>
-		object Create(Type type);
+		IConversionResult Create(Type type);
 
 		/// <summary>
 		/// Creates new instance of provided <paramref name="type"/> using the provided <paramref name="value"/>.
@@ -20,7 +20,7 @@ namespace Thinktecture.Configuration
 		/// <param name="type">Type an instance to create of.</param>
 		/// <param name="value">Value to use when creating an instance of type <paramref name="type"/>.</param>
 		/// <returns>New instance of type <paramref name="type"/>.</returns>
-		object Create(Type type, string value);
+		IConversionResult Create(Type type, string value);
 
 		/// <summary>
 		/// Creates a new array of provided <paramref name="elementType"/> and with provided <paramref name="length"/>.
@@ -29,5 +29,12 @@ namespace Thinktecture.Configuration
 		/// <param name="length">The length of the array.</param>
 		/// <returns>New instance of <see cref="Array"/>.</returns>
 		Array CreateArray(Type elementType, int length);
+
+		/// <summary>
+		/// Create a default value of provided <paramref name="type"/>.
+		/// </summary>
+		/// <param name="type">Type to create the default value of.</param>
+		/// <returns>Default value of provided <paramref name="type"/>.</returns>
+		object CreateDefaultValue(Type type);
 	}
 }

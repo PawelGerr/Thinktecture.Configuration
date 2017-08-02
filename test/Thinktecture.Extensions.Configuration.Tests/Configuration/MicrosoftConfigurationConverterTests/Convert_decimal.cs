@@ -11,42 +11,44 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_decimal_property_if_value_is_not_null()
 		{
-			InstanceCreatorMock.Setup(c => c.Create(typeof(decimal), "42.1")).Returns(42.1m);
+			SetupCreateFromString<decimal>("42.1", new ConversionResult(42.1m));
 
-			var result = RoundtripConvert<TestConfiguration<decimal>>("P1", "42.1");
-			result.ShouldBeEquivalentTo(new TestConfiguration<decimal>() {P1 = 42.1m});
+			RoundtripConvert<TestConfiguration<decimal>>("P1", "42.1")
+				.P1.ShouldBeEquivalentTo(42.1m);
 		}
 
 		[Fact]
 		public void Should_convert_decimal_property()
 		{
-			InstanceCreatorMock.Setup(c => c.Create(typeof(decimal), "42")).Returns(42m);
+			SetupCreateFromString<decimal>("42", new ConversionResult(42m));
 
-			var result = RoundtripConvert<TestConfiguration<decimal>>("P1", "42");
-			result.ShouldBeEquivalentTo(new TestConfiguration<decimal>() {P1 = 42});
+			RoundtripConvert<TestConfiguration<decimal>>("P1", "42")
+				.P1.ShouldBeEquivalentTo(42m);
 		}
 
 		[Fact]
 		public void Should_convert_nullable_decimal_property_if_value_is_not_null()
 		{
-			InstanceCreatorMock.Setup(c => c.Create(typeof(decimal), "42")).Returns(42m);
+			SetupCreateFromString<decimal?>("42", new ConversionResult(42m));
 
-			var result = RoundtripConvert<TestConfiguration<decimal?>>("P1", "42");
-			result.ShouldBeEquivalentTo(new TestConfiguration<decimal?>() {P1 = 42});
+			RoundtripConvert<TestConfiguration<decimal?>>("P1", "42")
+				.P1.ShouldBeEquivalentTo(42m);
 		}
 
 		[Fact]
 		public void Should_convert_nullable_decimal_property_if_value_is_null()
 		{
-			var result = RoundtripConvert<TestConfiguration<decimal?>>("P1", null);
-			result.ShouldBeEquivalentTo(new TestConfiguration<decimal?>() {P1 = null});
+			RoundtripConvert<TestConfiguration<decimal?>>("P1", null)
+				.P1.Should().BeNull();
 		}
 
 		[Fact]
 		public void Should_convert_nullable_decimal_property_if_value_is_empty_string()
 		{
-			var result = RoundtripConvert<TestConfiguration<decimal?>>("P1", String.Empty);
-			result.ShouldBeEquivalentTo(new TestConfiguration<decimal?>() {P1 = null});
+			SetupCreateFromString<decimal?>(String.Empty, new ConversionResult(null));
+
+			RoundtripConvert<TestConfiguration<decimal?>>("P1", String.Empty)
+				.P1.Should().BeNull();
 		}
 	}
 }

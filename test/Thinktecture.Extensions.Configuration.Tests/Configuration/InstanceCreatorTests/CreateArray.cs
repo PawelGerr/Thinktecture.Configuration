@@ -1,18 +1,17 @@
 ﻿using System.Globalization;
-using Autofac;
 using FluentAssertions;
+using Thinktecture.Helpers;
 using Xunit;
 
-namespace Thinktecture.Configuration.AutofacInstanceCreatorTests
+namespace Thinktecture.Configuration.InstanceCreatorTests
 {
 	public class CreateArray
 	{
-		private readonly AutofacInstanceCreator _creator;
+		private readonly TestInstanceCreator _creator;
 
 		public CreateArray()
 		{
-			var builder = new ContainerBuilder();
-			_creator = new AutofacInstanceCreator(builder.Build(), CultureInfo.InvariantCulture);
+			_creator = new TestInstanceCreator(CultureInfo.InvariantCulture);
 		}
 
 		[Fact]
