@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -25,17 +24,16 @@ namespace Thinktecture
 		/// </summary>
 		/// <param name="builder">Autofac container builder.</param>
 		/// <param name="configuration">An instance of <see cref="IConfiguration"/> to be used as the source.</param>
-		/// <param name="registerWellKnownTypes">Registers some well-known types like <see cref="List{T}"/>.</param>
 		/// <param name="converterCulture">Culture to be used by <see cref="AutofacInstanceCreator"/>. Default: <see cref="CultureInfo.InvariantCulture"/>.</param>
 		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> or the <paramref name="configuration"/> is null.</exception>
-		public static void RegisterMicrosoftConfigurationProvider(this ContainerBuilder builder, IConfiguration configuration, bool registerWellKnownTypes = true, CultureInfo converterCulture = null)
+		public static void RegisterMicrosoftConfigurationProvider(this ContainerBuilder builder, IConfiguration configuration, CultureInfo converterCulture = null)
 		{
 			if (builder == null)
 				throw new ArgumentNullException(nameof(builder));
 			if (configuration == null)
 				throw new ArgumentNullException(nameof(configuration));
 
-			builder.RegisterDefaultMicrosoftConfigurationTypes(registerWellKnownTypes);
+			builder.RegisterDefaultMicrosoftConfigurationTypes();
 
 			builder.RegisterType<MicrosoftConfigurationLoader>()
 				.WithParameter(new TypedParameter(typeof(IConfiguration), configuration))
@@ -52,18 +50,17 @@ namespace Thinktecture
 		/// </summary>
 		/// <param name="builder">Autofac container builder.</param>
 		/// <param name="configuration">An instance of <see cref="IConfiguration"/> to be used as the source.</param>
-		/// <param name="registerWellKnownTypes">Registers some well-known types like <see cref="List{T}"/>.</param>
 		/// <param name="converterCulture">Culture to be used by <see cref="AutofacInstanceCreator"/>. Default: <see cref="CultureInfo.InvariantCulture"/>.</param>
 		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> or the <paramref name="configuration"/> is null.</exception>
 		/// <returns>A registrationKey the <see cref="IConfigurationProvider{TRawDataIn,TRawDataOut}"/> is registered with.</returns>
-		public static AutofacConfigurationProviderKey RegisterKeyedMicrosoftConfigurationProvider(this ContainerBuilder builder, IConfiguration configuration, bool registerWellKnownTypes = true, CultureInfo converterCulture = null)
+		public static AutofacConfigurationProviderKey RegisterKeyedMicrosoftConfigurationProvider(this ContainerBuilder builder, IConfiguration configuration, CultureInfo converterCulture = null)
 		{
 			if (builder == null)
 				throw new ArgumentNullException(nameof(builder));
 			if (configuration == null)
 				throw new ArgumentNullException(nameof(configuration));
 
-			builder.RegisterDefaultMicrosoftConfigurationTypes(registerWellKnownTypes);
+			builder.RegisterDefaultMicrosoftConfigurationTypes();
 
 			var key = new AutofacConfigurationProviderKey();
 
@@ -83,10 +80,9 @@ namespace Thinktecture
 		/// Registers default components.
 		/// </summary>
 		/// <param name="builder">Autofac container builder.</param>
-		/// <param name="registerWellKnownTypes">Registers some well-known types like <see cref="List{T}"/>.</param>
 		/// <param name="converterCulture">Culture to be used by <see cref="AutofacInstanceCreator"/>. Default: <see cref="CultureInfo.InvariantCulture"/>.</param>
 		/// <returns>Instance of <see cref="ContainerBuilder"/>.</returns>
-		public static ContainerBuilder RegisterDefaultMicrosoftConfigurationTypes(this ContainerBuilder builder, bool registerWellKnownTypes = true, CultureInfo converterCulture = null)
+		public static ContainerBuilder RegisterDefaultMicrosoftConfigurationTypes(this ContainerBuilder builder, CultureInfo converterCulture = null)
 		{
 			builder.RegisterType<MicrosoftConfigurationConverter>()
 				.As<IMicrosoftConfigurationConverter>()
@@ -97,28 +93,25 @@ namespace Thinktecture
 				.WithParameter(new TypedParameter(typeof(CultureInfo), converterCulture ?? CultureInfo.InvariantCulture))
 				.IfNotRegistered(typeof(IInstanceCreator));
 
-			if (registerWellKnownTypes)
+			if (!builder.IsTypeRegistered(typeof(List<>)))
 			{
-				if (!builder.IsTypeRegistered(typeof(List<>)))
-				{
-					builder.RegisterGeneric(typeof(List<>))
-						.Keyed(RegistrationKey, typeof(IEnumerable<>))
-						.Keyed(RegistrationKey, typeof(List<>));
-				}
+				builder.RegisterGeneric(typeof(List<>))
+					.Keyed(RegistrationKey, typeof(IEnumerable<>))
+					.Keyed(RegistrationKey, typeof(List<>));
+			}
 
-				if (!builder.IsTypeRegistered(typeof(Collection<>)))
-				{
-					builder.RegisterGeneric(typeof(Collection<>))
-						.Keyed(RegistrationKey, typeof(Collection<>));
-				}
+			if (!builder.IsTypeRegistered(typeof(Collection<>)))
+			{
+				builder.RegisterGeneric(typeof(Collection<>))
+					.Keyed(RegistrationKey, typeof(Collection<>));
+			}
 
-				if (!builder.IsTypeRegistered(typeof(Dictionary<,>)))
-				{
-					builder.RegisterGeneric(typeof(Dictionary<,>))
-						.Keyed(RegistrationKey, typeof(Dictionary<,>))
-						.Keyed(RegistrationKey, typeof(IDictionary<,>))
-						.Keyed(RegistrationKey, typeof(IReadOnlyDictionary<,>));
-				}
+			if (!builder.IsTypeRegistered(typeof(Dictionary<,>)))
+			{
+				builder.RegisterGeneric(typeof(Dictionary<,>))
+					.Keyed(RegistrationKey, typeof(Dictionary<,>))
+					.Keyed(RegistrationKey, typeof(IDictionary<,>))
+					.Keyed(RegistrationKey, typeof(IReadOnlyDictionary<,>));
 			}
 
 			return builder;
@@ -168,8 +161,8 @@ namespace Thinktecture
 		/// <summary>
 		/// Registers type so that it can be resolved by Autofac.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="builder"></param>
+		/// <typeparam name="T">Type to make resolvable.</typeparam>
+		/// <param name="builder">Container builder to register the type with.</param>
 		public static void RegisterMicrosoftConfigurationType<T>(this ContainerBuilder builder)
 		{
 			if (builder == null)
@@ -178,10 +171,25 @@ namespace Thinktecture
 			builder.TryRegisterTypeOnce<T>();
 		}
 
-		private static IRegistrationBuilder<T, ConcreteReflectionActivatorData, SingleRegistrationStyle> TryRegisterTypeOnce<T>(this ContainerBuilder builder, bool includeInterfaces = true)
+		/// <summary>
+		/// Registers type so that it can be resolved by Autofac.
+		/// </summary>
+		/// <typeparam name="TImplementation">Type to use when the type <typeparamref name="TAbstraction"/> is required.</typeparam>
+		/// <typeparam name="TAbstraction">Type to make resolvable.</typeparam>
+		/// <param name="builder">Container builder to register the type with.</param>
+		public static void RegisterMicrosoftConfigurationType<TImplementation, TAbstraction>(this ContainerBuilder builder)
+			where TImplementation : TAbstraction
+		{
+			if (builder == null)
+				throw new ArgumentNullException(nameof(builder));
+
+			builder.RegisterType<TImplementation>().Keyed<TAbstraction>(RegistrationKey);
+		}
+
+		private static void TryRegisterTypeOnce<T>(this ContainerBuilder builder, bool includeInterfaces = true)
 		{
 			if (builder.IsTypeRegistered(typeof(T)))
-				return null;
+				return;
 
 			var registration = builder.RegisterType<T>().Keyed<T>(RegistrationKey);
 
@@ -192,8 +200,6 @@ namespace Thinktecture
 					registration.Keyed(RegistrationKey, implementedInterface);
 				}
 			}
-
-			return registration;
 		}
 
 		private static bool IsTypeRegistered(this ContainerBuilder builder, Type type)
