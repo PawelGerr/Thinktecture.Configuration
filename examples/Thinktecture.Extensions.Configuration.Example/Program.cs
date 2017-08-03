@@ -15,22 +15,34 @@ namespace Thinktecture.Extensions.Configuration.Example
 				.AddConsole(LogLevel.Trace);
 
 			var config = new ConfigurationBuilder()
-				.AddJsonFile("configuration.json")
+				.AddJsonFile("configuration.json", false, true)
 				.Build();
-			
+
 			var builder = new ContainerBuilder();
 			builder.RegisterInstance(loggerConfig).As<ILoggerFactory>();
 			builder.RegisterGeneric(typeof(Logger<>)).As(typeof(ILogger<>)).SingleInstance();
 			builder.RegisterType<MyDependency>().AsSelf();
 
 			builder.RegisterMicrosoftConfigurationProvider(config);
-			builder.RegisterMicrosoftConfiguration<MyConfiguration>().AsImplementedInterfaces().SingleInstance();
+			builder.RegisterMicrosoftConfiguration<MyConfiguration>().As<IMyConfiguration>();
 			builder.RegisterMicrosoftConfigurationType<MyInnerConfiguration>();
+
+			//var key = builder.RegisterKeyedMicrosoftConfigurationProvider(config);
+			//builder.RegisterMicrosoftConfiguration<MyConfiguration>(key).As<IMyConfiguration>();
 
 			var container = builder.Build();
 			var myConfig = container.Resolve<IMyConfiguration>();
 
-			Console.WriteLine("Finished");
+			while(true)
+			{
+				var myConfig2 = container.Resolve<IMyConfiguration>();
+
+				Console.WriteLine($"myConfig.Value: {myConfig.Value}");
+				Console.WriteLine($"myConfig2.Value: {myConfig2.Value}");
+				Console.WriteLine($"myConfig == myConfig2: {ReferenceEquals(myConfig, myConfig2)}");
+				Console.WriteLine("Press ENTER to re-resolve");
+				Console.ReadLine();
+			}
 		}
 	}
 }

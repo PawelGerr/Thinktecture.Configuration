@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Reflection;
 using Autofac;
 using Autofac.Builder;
+using Autofac.Core;
 using Microsoft.Extensions.Configuration;
 using Thinktecture.Configuration;
 
@@ -35,6 +36,8 @@ namespace Thinktecture
 
 			builder.RegisterDefaultMicrosoftConfigurationTypes();
 
+			builder.RegisterInstance(new MicrosoftConfigurationChangeTokenSource(configuration)).AsSelf();
+
 			builder.RegisterType<MicrosoftConfigurationLoader>()
 				.WithParameter(new TypedParameter(typeof(IConfiguration), configuration))
 				.As<IConfigurationLoader<IConfiguration, IConfiguration>>()
@@ -63,6 +66,9 @@ namespace Thinktecture
 			builder.RegisterDefaultMicrosoftConfigurationTypes();
 
 			var key = new AutofacConfigurationProviderKey();
+
+			builder.RegisterInstance(new MicrosoftConfigurationChangeTokenSource(configuration))
+				.Keyed<MicrosoftConfigurationChangeTokenSource>(key);
 
 			builder.RegisterType<MicrosoftConfigurationLoader>()
 				.WithParameter(new TypedParameter(typeof(IConfiguration), configuration))
@@ -124,15 +130,26 @@ namespace Thinktecture
 		/// <typeparam name="T">Type of the configuration</typeparam>
 		/// <param name="builder">Container builder.</param>
 		/// <param name="key">The key of the configuration section.</param>
+		/// <param name="reuseInstance">If <c>true</c> then the configuration of type <typeparamref name="T"/> will be reused until the unterlying <see cref="IConfiguration"/> has been changed.</param>
 		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> is null.</exception>
 		/// <returns>Autofac registration builder.</returns>
-		public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterMicrosoftConfiguration<T>(this ContainerBuilder builder, string key = null)
+		public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterMicrosoftConfiguration<T>(this ContainerBuilder builder, string key = null, bool reuseInstance = true)
 		{
 			if (builder == null)
 				throw new ArgumentNullException(nameof(builder));
 
 			var selector = String.IsNullOrWhiteSpace(key) ? null : new MicrosoftConfigurationSelector(key.Trim());
 			builder.TryRegisterTypeOnce<T>();
+
+			if (reuseInstance)
+			{
+				builder.RegisterType<MicrosoftConfigurationCache<T>>()
+					.WithParameter(new TypedParameter(typeof(IConfigurationSelector<IConfiguration, IConfiguration>), selector))
+					.As<IConfigurationCache<T>>()
+					.SingleInstance();
+
+				return builder.Register(context => context.Resolve<IConfigurationCache<T>>().CurrentValue);
+			}
 
 			return builder.Register(context => context.Resolve<IConfigurationProvider<IConfiguration, IConfiguration>>().GetConfiguration<T>(selector));
 		}
@@ -144,9 +161,10 @@ namespace Thinktecture
 		/// <param name="builder">Container builder.</param>
 		/// <param name="registrationKey">The key of a <see cref="IConfigurationProvider{TRawDataIn,TRawDataOut}"/>.</param>
 		/// <param name="key">The key of the configuration section.</param>
+		/// <param name="reuseInstance">If <c>true</c> then the configuration of type <typeparamref name="T"/> will be reused until the unterlying <see cref="IConfiguration"/> has been changed.</param>
 		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> or the <paramref name="registrationKey"/> is null.</exception>
 		/// <returns>Autofac registration builder.</returns>
-		public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterMicrosoftConfiguration<T>(this ContainerBuilder builder, AutofacConfigurationProviderKey registrationKey, string key = null)
+		public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterMicrosoftConfiguration<T>(this ContainerBuilder builder, AutofacConfigurationProviderKey registrationKey, string key = null, bool reuseInstance = true)
 		{
 			if (builder == null)
 				throw new ArgumentNullException(nameof(builder));
@@ -155,6 +173,18 @@ namespace Thinktecture
 
 			var selector = String.IsNullOrWhiteSpace(key) ? null : new MicrosoftConfigurationSelector(key.Trim());
 			builder.TryRegisterTypeOnce<T>();
+
+			if (reuseInstance)
+			{
+				builder.RegisterType<MicrosoftConfigurationCache<T>>()
+					.WithParameter(new ResolvedParameter((info, context) => info.ParameterType == typeof(IConfigurationProvider<IConfiguration, IConfiguration>), (info, context) => context.ResolveKeyed<IConfigurationProvider<IConfiguration, IConfiguration>>(registrationKey)))
+					.WithParameter(new TypedParameter(typeof(IConfigurationSelector<IConfiguration, IConfiguration>), selector))
+					.WithParameter(new ResolvedParameter((info, context) => info.ParameterType == typeof(MicrosoftConfigurationChangeTokenSource), (info, context) => context.ResolveKeyed<MicrosoftConfigurationChangeTokenSource>(registrationKey)))
+					.Keyed<IConfigurationCache<T>>(registrationKey)
+					.SingleInstance();
+
+				return builder.Register(context => context.ResolveKeyed<IConfigurationCache<T>>(registrationKey).CurrentValue);
+			}
 
 			return builder.Register(context => context.ResolveKeyed<IConfigurationProvider<IConfiguration, IConfiguration>>(registrationKey).GetConfiguration<T>(selector));
 		}
