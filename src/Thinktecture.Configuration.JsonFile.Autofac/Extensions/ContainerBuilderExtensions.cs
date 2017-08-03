@@ -79,8 +79,7 @@ namespace Thinktecture
 
 		private static void RegisterConverterOnce(ContainerBuilder builder)
 		{
-			object isRegisterd;
-			if (!builder.Properties.TryGetValue(_converterKey, out isRegisterd))
+			if (!builder.Properties.ContainsKey(_converterKey))
 			{
 				builder.Properties[_converterKey] = true;
 				builder.RegisterType<AutofacJsonTokenConverter>().AsImplementedInterfaces().SingleInstance();
@@ -139,16 +138,31 @@ namespace Thinktecture
 		}
 
 		/// <summary>
-		/// Registers type so that the <see cref="AutofacJsonTokenConverter"/> is able to create instances of <typeparamref name="T"/> and its interfaces.
+		/// Registers type so that the <see cref="AutofacJsonTokenConverter"/> is able to create instances of <typeparamref name="T"/> and all its interfaces.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="builder"></param>
+		/// <typeparam name="T">Type to register.</typeparam>
+		/// <param name="builder">Container builder the type to register with.</param>
 		public static void RegisterJsonFileConfigurationType<T>(this ContainerBuilder builder)
 		{
 			if (builder == null)
 				throw new ArgumentNullException(nameof(builder));
 
 			RegisterTypeOnce<T>(builder);
+		}
+
+		/// <summary>
+		/// Registers type so that the <see cref="AutofacJsonTokenConverter"/> is able to create instances of <typeparamref name="TAbstraction"/>.
+		/// </summary>
+		/// <typeparam name="TImplementation">Type to instantiate if <typeparamref name="TAbstraction"/> is required.</typeparam>
+		/// <typeparam name="TAbstraction">Type to make resolvable.</typeparam>
+		/// <param name="builder">Contianer builder to register the type with.</param>
+		public static void RegisterJsonFileConfigurationType<TImplementation, TAbstraction>(this ContainerBuilder builder)
+			where TImplementation : TAbstraction
+		{
+			if (builder == null)
+				throw new ArgumentNullException(nameof(builder));
+
+			RegisterType<TImplementation, TAbstraction>(builder);
 		}
 
 		private static void RegisterTypeOnce<T>(ContainerBuilder builder)
@@ -158,11 +172,7 @@ namespace Thinktecture
 			if (types.Contains(typeof(T)))
 				return;
 
-			// AutofacJsonTokenConverter must create a converter for T and its interfaces
-			builder.Register(context => new AutofacJsonTokenConverterType(typeof(T))).AsSelf().SingleInstance();
-
-			// needed so that autofac is able to create instances of T and its interfaces.
-			var registration = builder.RegisterType<T>().Keyed<T>(ConfigurationRegistrationKey);
+			var registration = builder.RegisterType<T, T>();
 
 			// do the same with all implemented interfaces.
 			foreach (var implementedInterface in typeof(T).GetTypeInfo().ImplementedInterfaces)
@@ -170,6 +180,19 @@ namespace Thinktecture
 				builder.Register(context => new AutofacJsonTokenConverterType(implementedInterface)).AsSelf().SingleInstance();
 				registration.Keyed(ConfigurationRegistrationKey, implementedInterface);
 			}
+		}
+
+		private static IRegistrationBuilder<TImplementation, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterType<TImplementation, TAbstraction>(this ContainerBuilder builder)
+			where TImplementation : TAbstraction
+		{
+			if (builder == null)
+				throw new ArgumentNullException(nameof(builder));
+
+			// AutofacJsonTokenConverter must create a converter for T and its interfaces
+			builder.Register(context => new AutofacJsonTokenConverterType(typeof(TAbstraction))).AsSelf().SingleInstance();
+
+			// needed so that autofac is able to create instances of T and its interfaces.
+			return builder.RegisterType<TImplementation>().Keyed<TAbstraction>(ConfigurationRegistrationKey);
 		}
 
 		private static HashSet<Type> GetRegisteredTypes(ContainerBuilder builder)
