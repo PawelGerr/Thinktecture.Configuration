@@ -47,8 +47,8 @@ namespace Thinktecture.Configuration.JsonFile.Autofac.Example
 			builder.RegisterType<FileAdapter>().As<IFile>().SingleInstance();
 
 			builder.RegisterJsonFileConfigurationProvider(_CONFIG_FILE_PATH, _CONFIG_OVERRIDE_FILE_PATH);
-			builder.RegisterJsonFileConfiguration<MyApplicationConfiguration>().AsImplementedInterfaces().SingleInstance();
-			builder.RegisterJsonFileConfiguration<MyComponentConfiguration>("MyComponent").AsImplementedInterfaces().SingleInstance();
+			builder.RegisterJsonFileConfiguration<MyApplicationConfiguration>().As<IMyApplicationConfiguration>().SingleInstance();
+			builder.RegisterJsonFileConfiguration<MyComponentConfiguration>("MyComponent").As<IMyComponentConfiguration>().SingleInstance();
 			builder.RegisterJsonFileConfigurationType<MyComponentOtherConfiguration, IMyComponentOtherConfiguration>();
 
 			// In case we want to use/resolve IMyComponentOtherConfiguration directly without creating a new instance.

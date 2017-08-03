@@ -96,6 +96,7 @@ namespace Thinktecture
 			if (!builder.IsTypeRegistered(typeof(List<>)))
 			{
 				builder.RegisterGeneric(typeof(List<>))
+					.Keyed(RegistrationKey, typeof(ICollection<>))
 					.Keyed(RegistrationKey, typeof(IEnumerable<>))
 					.Keyed(RegistrationKey, typeof(List<>));
 			}
