@@ -33,9 +33,9 @@ In short, the features of the lib are:
 
 Although the later one seems to be unnecessary it has some benefits over `IConfiguration`.
 * `IConfiguration` suffers on information loss. For examples
-    * If you are using a json file as the source and your configuration contains an array-property then you can't differentiate between (1) the array is empty `{ "myArray": [] }` and (2) array is missing at all `{ }`. The some goes for other reference types, i.e. classes.
+    * If you are using a json file as the source and your configuration contains an array-property then you can't differentiate between (1) the array is empty `{ "myArray": [] }` and (2) array is missing at all `{ }`. The same goes for other reference types, i.e. classes.
     * Furthermore, `IConfiguration` is missing type information, it is a collection of key-value pairs of type `string`
-    * If one of the keys contain accidentally the character `:` like `my:key` then the configuration `{ "my:key": 42 }` will be interpret as `{ "my": { "key": 42 } }`
+    * If one of the keys contain accidentally the character `:` like `my:key` then the configuration `{ "my:key": 42 }` will be interpreted as `{ "my": { "key": 42 } }`
 * For deserialization of JSON you can use very powerful library [Newtonsoft JSON](http://www.newtonsoft.com/json). For `IConfiguration` we have the [ConfigurationBinder](https://github.com/aspnet/Configuration/tree/dev/src/Microsoft.Extensions.Configuration.Binder), which is being used by [IOptions\<T>](https://docs.microsoft.com/en-us/aspnet/core/api/microsoft.extensions.options.ioptions-1), but the binder is not extensible because it is a `static` class.
 
 All in all the `IConfiguration` is more versatile but using JSON files only is a more powerful approach.
@@ -351,7 +351,7 @@ The `IConfiguration` itself is more or less just a collection of key-value pairs
 
 `Thinktecture.Extensions.Configuration` is using an instance of `IConfiguration` as a data source to create and populate strongly-typed configuration classes. 
 
-The Library [Microsoft.Extensions.Options](https://www.nuget.org/packages/Microsoft.Extensions.Options/) provides similar solution but it is using static class from [Microsoft.Extensions.Configuration.Binder](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Binder/) making it hard to extend. `Thinktecture.Extensions.Configuration` provides new features like
+The Library [Microsoft.Extensions.Options](https://www.nuget.org/packages/Microsoft.Extensions.Options/) provides similar solution but it is using a static class from [Microsoft.Extensions.Configuration.Binder](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Binder/) making it hard to extend. `Thinktecture.Extensions.Configuration` provides new features like
 * DI support (e.g. for Autofac use nuget package `Thinktecture.Extensions.Configuration.Autofac`)
 * `CultureInfo` support, so that localized values like `42,1` with `,` as decimal separator are parsed correctly to `42.1`
 * Honoring of collection indexes, meaning a key-value pair `"MyIntCollection:1"`-`42` is deserialized to `new int[]{0, 42}` instead of `new int[]{42}`
