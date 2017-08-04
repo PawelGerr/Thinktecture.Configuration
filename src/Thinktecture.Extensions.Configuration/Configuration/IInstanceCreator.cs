@@ -29,12 +29,5 @@ namespace Thinktecture.Configuration
 		/// <param name="length">The length of the array.</param>
 		/// <returns>New instance of <see cref="Array"/>.</returns>
 		Array CreateArray(Type elementType, int length);
-
-		/// <summary>
-		/// Create a default value of provided <paramref name="type"/>.
-		/// </summary>
-		/// <param name="type">Type to create the default value of.</param>
-		/// <returns>Default value of provided <paramref name="type"/>.</returns>
-		object CreateDefaultValue(Type type);
 	}
 }

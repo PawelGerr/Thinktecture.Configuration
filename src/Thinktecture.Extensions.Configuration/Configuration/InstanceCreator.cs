@@ -61,17 +61,5 @@ namespace Thinktecture.Configuration
 
 			return Array.CreateInstance(elementType, length);
 		}
-
-		/// <inheritdoc />
-		public object CreateDefaultValue(Type type)
-		{
-			if (type == null)
-				throw new ArgumentNullException(nameof(type));
-
-			if (type.GetTypeInfo().IsValueType)
-				return Activator.CreateInstance(type);
-
-			return null;
-		}
 	}
 }

@@ -27,6 +27,23 @@ In short, the features of the lib are:
 
 # Use Cases
 
+**Thinktecture.Configuration** is able to use 2 kind of sources:
+* [IConfiguration](https://github.com/aspnet/Configuration) which in return has its own sources like [Environment Variables](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.EnvironmentVariables), [JSON Files](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Json), [Command Line](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.CommandLine), [XML](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Xml), etc.
+* JSON files only
+
+Although the later one seems to be unnecessary it has some benefits over `IConfiguration`.
+* `IConfiguration` suffers on information loss. For examples
+    * If you are using a json file as the source and your configuration contains an array-property then you can't differentiate between (1) the array is empty `{ "myArray": [] }` and (2) array is missing at all `{ }`. The some goes for other reference types, i.e. classes.
+    * Furthermore, `IConfiguration` is missing type information, it is a collection of key-value pairs of type `string`
+    * If one of the keys contain accidentally the character `:` like `my:key` then the configuration `{ "my:key": 42 }` will be interpret as `{ "my": { "key": 42 } }`
+* For deserialization of JSON you can use very powerful library [Newtonsoft JSON](http://www.newtonsoft.com/json). For `IConfiguration` we have the [ConfigurationBinder](https://github.com/aspnet/Configuration/tree/dev/src/Microsoft.Extensions.Configuration.Binder), which is being used by [IOptions\<T>](https://docs.microsoft.com/en-us/aspnet/core/api/microsoft.extensions.options.ioptions-1), but the binder is not extensible because it is a `static` class.
+
+All in all the `IConfiguration` is more versatile but using JSON files only is a more powerful approach.
+
+To get a better feeling of the library read the next section about how to **[Use JSON Files as Data Source](#Use-JSON-Files-as-Data-Source)** or jump right to **[Use `IConfiguration` as Data Source](#Use-IConfiguration-as-Data-Source)**
+
+## Use JSON Files as Data Source
+
 In this post I'm going to show the capabilities of the library by illustrating it with a few examples. In this concrete example I'am using a JSON file containing the configuration values (with [Newtosonf.Json](http://www.newtonsoft.com/json) in the background) and [Autofac](https://autofac.org/) for DI.
 
 But the library is not limited to these. The hints are at the end of this post if you want to use a different DI framework, other storage than the file system (i.e. JSON files) or not use JSON altogether.
@@ -35,7 +52,7 @@ The first use case is a bit lengthy to explain the basics. The others will just 
 
 Nuget: `Install-Package Thinktecture.Configuration.JsonFile.Autofac`
 
-## 1. One file containing one or more configurations
+### 1. One file containing one or more configurations
 
 Shown features in this example:
 
@@ -137,7 +154,7 @@ var component = container.Resolve<MyComponent>();
 var config = container.Resolve<IMyConfiguration>();
 ```
 
-## 2. Nesting
+### 2. Nesting
 
 Shown features in this use case:
 
@@ -199,7 +216,7 @@ builder.RegisterJsonFileConfiguration<MyClass>("MyClassValue")
     .SingleInstance();
 ```
 
-## 3. Multiple JSON files
+### 3. Multiple JSON files
 
 The configurations can be loaded from more than one file.
 
@@ -247,7 +264,7 @@ builder.RegisterJsonFileConfiguration<OtherConfiguration>(otherKey)
     .SingleInstance();
 ```
 
-## 4. Overrides
+### 4. Overrides
 
 A configuration can be assembled from one base configuration and one or more overrides.
 
@@ -300,7 +317,7 @@ builder.RegisterJsonFileConfiguration<MyConfiguration>()
     .SingleInstance();
 ```
 
-## 5. Extension of the configuration
+### 5. Extension of the configuration
 
 Let's add a property to `IInnerConfiguration` from previous paragraph.
 
@@ -327,6 +344,66 @@ Add the corresponding property to the JSON file `baseConfiguration.json`
 ```
 
 That's it.
+
+## Use [IConfiguration](https://github.com/aspnet/Configuration) as Data Source
+
+The `IConfiguration` itself is more or less just a collection of key-value pairs of type `string`. Using it as-it-is in a library is not recommended because (1) the depevelopers on both side (lib owner and lib consumer) have to know the *keys* of the configuration values and (2) how to (de)serialize the values.
+
+`Thinktecture.Extensions.Configuration` is using an instance of `IConfiguration` as a data source to create and populate strongly-typed configuration classes. 
+
+The Library [Microsoft.Extensions.Options](https://www.nuget.org/packages/Microsoft.Extensions.Options/) provides similar solution but it is using static class from [Microsoft.Extensions.Configuration.Binder](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Binder/) making it hard to extend. `Thinktecture.Extensions.Configuration` provides new features like
+* DI support (e.g. for Autofac use nuget package `Thinktecture.Extensions.Configuration.Autofac`)
+* `CultureInfo` support, so that localized values like `42,1` with `,` as decimal separator are parsed correctly to `42.1`
+* Honoring of collection indexes, meaning a key-value pair `"MyIntCollection:1"`-`42` is deserialized to `new int[]{0, 42}` instead of `new int[]{42}`
+* No polution of own code by *helper classes/interfaces* (`IOptions<T>`, `IOptionsSnapshot<T>`, etc) by default
+  * Still with reload support
+* If a property of type `int[]` (ie. an array) is comming from a json file and is set to `null`, ie. json is looking like this `{ "myIntArray": null }` then `IOptions<T>` throws an error because the provider [Microsoft.Extensions.Configuration.Json](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Json) generates an empty string if it sees `null`. This incompatibility between the provider [Microsoft.Extensions.Configuration.Json](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Json) and `IOptions<T>` is very unfortunate. `Thinktecture.Extensions.Configuration` sets the property to `null` in this case.
+
+### Registering IConfiguration as data source for `Thinktecture.Configuration`
+
+Nuget: `Install-Package Thinktecture.Extensions.Configuration.Autofac` when using [Autofac](https://autofac.org/)
+
+Use the extension method `RegisterMicrosoftConfigurationProvider` or `RegisterKeyedMicrosoftConfigurationProvider` when having more than 1 instance of `IConfiguration`. The later one is more of an edge case.
+
+```
+IConfiguration config = ...;
+ContainerBuilder builder = ...; // Autofac container builder
+
+builder.RegisterMicrosoftConfigurationProvider(config);
+```
+
+### Registering of strongly-typed Configurations
+
+Use the extension method `RegisterMicrosoftConfiguration` to register a class with the DI.
+
+```
+builder.RegisterMicrosoftConfiguration<MyConfiguration>()
+    .As<IMyConfiguration>()     // from here on we have standard Autofac registration builder
+    .InstancePerLifetimeScope();
+```
+
+If the type `IMyConfiguration` contains a property of a complex type, say `IMyOtherConfiguration` ...
+
+```
+public interface IMyConfiguration
+{
+	int MyValue { get; }
+	IMyOtherConfiguration InnerConfiguration { get; }
+}
+```
+
+... then it has to be registered with DI as well:
+
+```
+builder.RegisterMicrosoftConfigurationType<MyOtherConfiguration, IMyOtherConfiguration>();
+```
+
+The configuration of type `IMyConfiguration` can now be resolved
+
+```
+var container = builder.Build();
+var myConfig = container.Resolve<IMyConfiguration>();
+```
 
 # Working with different frameworks, storages and data models
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using FluentAssertions;
 using Moq;
 using Thinktecture.Helpers;
@@ -24,10 +23,10 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		}
 
 		[Fact]
-		public void Should_convert_empty_string_to_empty_dictionary()
+		public void Should_convert_empty_string_to_null()
 		{
-			RoundtripConvert<TestConfiguration<Dictionary<string, int>>>("P1", String.Empty)
-				.P1.Should().BeEmpty();
+			RoundtripConvert<TestConfiguration<Dictionary<string, int>>>(c => c.P1 = null)
+				.P1.Should().BeNull();
 		}
 
 		[Fact]

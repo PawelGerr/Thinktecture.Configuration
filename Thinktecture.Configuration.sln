@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{74991754-BB14-47E1-894E-06A983C9AA43}"
 EndProject
@@ -33,9 +33,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thinktecture.Extensions.Con
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thinktecture.Extensions.Configuration.Autofac", "src\Thinktecture.Extensions.Configuration.Autofac\Thinktecture.Extensions.Configuration.Autofac.csproj", "{E1A228AA-278B-497E-AED1-EEDDB7DBD3C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thinktecture.Extensions.Configuration.Autofac.Tests", "test\Thinktecture.Extensions.Configuration.Autofac.Tests\Thinktecture.Extensions.Configuration.Autofac.Tests.csproj", "{AC8B5379-D7B2-4985-9092-A737098E415B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thinktecture.Extensions.Configuration.Autofac.Tests", "test\Thinktecture.Extensions.Configuration.Autofac.Tests\Thinktecture.Extensions.Configuration.Autofac.Tests.csproj", "{AC8B5379-D7B2-4985-9092-A737098E415B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thinktecture.Extensions.Configuration.Tests", "test\Thinktecture.Extensions.Configuration.Tests\Thinktecture.Extensions.Configuration.Tests.csproj", "{D17EC9FE-49EE-45D8-BF21-E303D6D03AFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thinktecture.Extensions.Configuration.Tests", "test\Thinktecture.Extensions.Configuration.Tests\Thinktecture.Extensions.Configuration.Tests.csproj", "{D17EC9FE-49EE-45D8-BF21-E303D6D03AFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

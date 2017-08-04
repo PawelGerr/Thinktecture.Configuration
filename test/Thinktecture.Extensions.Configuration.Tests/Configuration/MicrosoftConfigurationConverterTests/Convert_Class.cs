@@ -27,16 +27,15 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		public void Should_return_default_value_if_creation_of_config_failed()
 		{
 			InstanceCreatorMock.Setup(c => c.Create(typeof(int))).Returns(ConversionResult.Invalid);
-			InstanceCreatorMock.Setup(c => c.CreateDefaultValue(typeof(int))).Returns(42);
 
 			var config = GetConfig(new object());
-			Converter.Convert<int>(config).Should().Be(42);
+			Converter.Convert<int>(config).Should().Be(0);
 		}
 
 		[Fact]
 		public void Should_convert_null_to_null()
 		{
-			var result = RoundtripConvert<TestConfiguration<TestConfiguration<int>>>("P1", null);
+			var result = RoundtripConvert<TestConfiguration<TestConfiguration<int>>>(c => c.P1 = null);
 			result.P1.Should().BeNull();
 		}
 		

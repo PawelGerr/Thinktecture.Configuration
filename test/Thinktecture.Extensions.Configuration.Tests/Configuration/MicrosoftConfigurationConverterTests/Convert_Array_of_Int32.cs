@@ -12,15 +12,19 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_null_to_null()
 		{
-			RoundtripConvert<TestConfiguration<int[]>>("P1", null)
+			RoundtripConvert<TestConfiguration<int[]>>(c => c.P1 = null) // key-value-pair in IConfiguration looks like "P1" -> ""
 				.P1.Should().BeNull();
 		}
 
 		[Fact]
-		public void Should_convert_empty_string_to_empty_array()
+		public void Should_convert_empty_string_to_null()
 		{
-			RoundtripConvert<TestConfiguration<int[]>>("P1", String.Empty)
-				.P1.Should().BeEmpty();
+			RoundtripConvert<TestConfiguration<int[], string>>(c =>
+				{
+					c.P1 = new int[0]; // key-value-pair is missing in IConfiguration
+					c.P2 = "foo"; // just to have something in IConfiguration otherwise the whole object will be null
+				})
+				.P1.Should().BeNull();
 		}
 
 		[Fact]
@@ -28,7 +32,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		{
 			SetupCreateFromString("42", 42);
 
-			RoundtripConvert<TestConfiguration<int[]>>("P1:0", "42")
+			RoundtripConvert<TestConfiguration<int[]>>(c => c.P1 = new[] {42})
 				.P1.ShouldBeEquivalentTo(new[] {42});
 		}
 
@@ -38,11 +42,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString("42", 42);
 			SetupCreateFromString("43", 43);
 
-			RoundtripConvert<TestConfiguration<int[]>>(dictionary =>
-				{
-					dictionary.Add("P1:0", "42");
-					dictionary.Add("P1:1", "43");
-				})
+			RoundtripConvert<TestConfiguration<int[]>>(c => c.P1 = new[] {42, 43})
 				.P1.ShouldBeEquivalentTo(new[] {42, 43});
 		}
 
@@ -94,19 +94,14 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_replace_non_empty_array_with_null()
 		{
-			SetupCreate(new TestConfiguration<int[]>() {P1 = new[] {1}});
+			SetupCreate(new TestConfiguration<int[], string>() {P1 = new[] {1}});
 
-			RoundtripConvert<TestConfiguration<int[]>>("P1", null, false)
+			RoundtripConvert<TestConfiguration<int[], string>>(c =>
+				{
+					c.P1 = null;
+					c.P2 = "foo";
+				}, false)
 				.P1.Should().BeNull();
-		}
-
-		[Fact]
-		public void Should_replace_non_empty_array_with_new_empty_array()
-		{
-			SetupCreate(new TestConfiguration<int[]>() {P1 = new[] {1}});
-
-			RoundtripConvert<TestConfiguration<int[]>>("P1", String.Empty, false)
-				.P1.Should().BeEmpty();
 		}
 
 		[Fact]

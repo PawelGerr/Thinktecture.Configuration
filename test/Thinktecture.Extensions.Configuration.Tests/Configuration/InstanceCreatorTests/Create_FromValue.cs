@@ -157,6 +157,12 @@ namespace Thinktecture.Configuration.InstanceCreatorTests
 		}
 
 		[Fact]
+		public void Should_throw_when_empty_string_should_be_converted_to_boolean()
+		{
+			Should_throw<bool>(String.Empty);
+		}
+
+		[Fact]
 		public void Should_create_guid()
 		{
 			Should_create("7EC124D6-B8D7-474E-AF5E-567A3FB36184", new Guid("7EC124D6-B8D7-474E-AF5E-567A3FB36184"));

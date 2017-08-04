@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Autofac;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -14,18 +13,18 @@ namespace Thinktecture.Extensions.Configuration.Example
 			var loggerConfig = new LoggerFactory()
 				.AddConsole(LogLevel.Trace);
 
-			var config = new ConfigurationBuilder()
+			IConfiguration config = new ConfigurationBuilder()
 				.AddJsonFile("configuration.json", false, true)
 				.Build();
 
-			var builder = new ContainerBuilder();
+			ContainerBuilder builder = new ContainerBuilder();
 			builder.RegisterInstance(loggerConfig).As<ILoggerFactory>();
 			builder.RegisterGeneric(typeof(Logger<>)).As(typeof(ILogger<>)).SingleInstance();
 			builder.RegisterType<MyDependency>().AsSelf();
 
 			builder.RegisterMicrosoftConfigurationProvider(config);
 			builder.RegisterMicrosoftConfiguration<MyConfiguration>().As<IMyConfiguration>();
-			builder.RegisterMicrosoftConfigurationType<MyInnerConfiguration>();
+			builder.RegisterMicrosoftConfigurationType<MyInnerConfiguration, IMyInnerConfiguration>();
 
 			//var key = builder.RegisterKeyedMicrosoftConfigurationProvider(config);
 			//builder.RegisterMicrosoftConfiguration<MyConfiguration>(key).As<IMyConfiguration>();
@@ -33,7 +32,7 @@ namespace Thinktecture.Extensions.Configuration.Example
 			var container = builder.Build();
 			var myConfig = container.Resolve<IMyConfiguration>();
 
-			while(true)
+			while (true)
 			{
 				var myConfig2 = container.Resolve<IMyConfiguration>();
 

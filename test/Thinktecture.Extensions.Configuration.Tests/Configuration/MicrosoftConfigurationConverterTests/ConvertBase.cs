@@ -62,6 +62,17 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			return RoundtripConvert<T>(dictionary => dictionary.Add(key, value), registerDefaultCreator);
 		}
 
+		protected T RoundtripConvert<T>(Action<T> populate, bool registerDefaultCreator = true)
+			where T : new()
+		{
+			if (populate == null)
+				throw new ArgumentNullException(nameof(populate));
+
+			var instance = new T();
+			populate(instance);
+			return RoundtripConvert(instance, registerDefaultCreator);
+		}
+
 		protected T RoundtripConvert<T>(Action<IDictionary<string, string>> addValues, bool registerDefaultCreator = true)
 			where T : new()
 		{

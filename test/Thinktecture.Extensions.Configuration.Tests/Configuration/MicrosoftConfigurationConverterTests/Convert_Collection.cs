@@ -26,10 +26,10 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		}
 
 		[Fact]
-		public void Should_convert_empty_string_to_empty_collection()
+		public void Should_convert_empty_string_to_null()
 		{
-			RoundtripConvert<TestConfiguration<ICollection<int>>>("P1", String.Empty)
-				.P1.Should().BeEmpty();
+			RoundtripConvert<TestConfiguration<ICollection<int>>>(c=> c.P1 = null)
+				.P1.Should().BeNull();
 		}
 
 		[Fact]

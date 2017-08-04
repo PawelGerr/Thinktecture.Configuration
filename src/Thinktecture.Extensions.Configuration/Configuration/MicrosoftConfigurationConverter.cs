@@ -41,6 +41,9 @@ namespace Thinktecture.Configuration
 
 			try
 			{
+				if (result == null)
+					return default(T);
+
 				return (T) result;
 			}
 			catch (NullReferenceException ex)
@@ -68,7 +71,7 @@ namespace Thinktecture.Configuration
 			if (result.IsValid && result.Value != null)
 				return result.Value;
 
-			return _instanceCreator.CreateDefaultValue(type);
+			return null;
 		}
 
 		private IConversionResult CreateAndPopulate(Type type, IConfiguration config, IConversionInstance instance)
@@ -101,11 +104,19 @@ This array along with its elements are going to be discarded. Please make check 
 					}
 				}
 
+				if(!hasChildConfigs && configValue == String.Empty)
+					return new ConversionResult(null);
+
 				return CreateAndPopulateArray(elementType, config);
 			}
 
 			if (IsComplexType(type, config))
+			{
+				if(!hasChildConfigs && configValue == String.Empty)
+					return new ConversionResult(null);
+
 				return ConvertComplexType(type, config, instance);
+			}
 
 			if (configValue != null)
 				return ConvertFromString(type, configValue);
