@@ -28,12 +28,12 @@ In short, the features of the lib are:
 # Use Cases
 
 **Thinktecture.Configuration** is able to use 2 kind of sources:
-* [IConfiguration](https://github.com/aspnet/Configuration) which in return has its own sources like [Environment Variables](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.EnvironmentVariables), [JSON Files](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Json), [Command Line](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.CommandLine), [XML](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Xml), etc.
+* [IConfiguration](https://github.com/aspnet/Configuration) which in turn has its own sources like [Environment Variables](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.EnvironmentVariables), [JSON Files](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Json), [Command Line](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.CommandLine), [XML](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Xml), etc.
 * JSON files only
 
-Although the later one seems to be unnecessary it has some benefits over `IConfiguration`.
-* `IConfiguration` suffers on information loss. For examples
-    * If you are using a json file as the source and your configuration contains an array-property then you can't differentiate between (1) the array is empty `{ "myArray": [] }` and (2) array is missing at all `{ }`. The same goes for other reference types, i.e. classes.
+Although the latter one seems to be unnecessary it has some benefits over `IConfiguration`.
+* `IConfiguration` suffers from information loss. For examples
+    * If you are using a JSON file as the source and your configuration contains an array-property then you can't differentiate between (1) the array is empty `{ "myArray": [] }` and (2) array is missing at all `{ }`. The same goes for other reference types, i.e. classes.
     * Furthermore, `IConfiguration` is missing type information, it is a collection of key-value pairs of type `string`
     * If one of the keys contain accidentally the character `:` like `my:key` then the configuration `{ "my:key": 42 }` will be interpreted as `{ "my": { "key": 42 } }`
 * For deserialization of JSON you can use very powerful library [Newtonsoft JSON](http://www.newtonsoft.com/json). For `IConfiguration` we have the [ConfigurationBinder](https://github.com/aspnet/Configuration/tree/dev/src/Microsoft.Extensions.Configuration.Binder), which is being used by [IOptions\<T>](https://docs.microsoft.com/en-us/aspnet/core/api/microsoft.extensions.options.ioptions-1), but the binder is not extensible because it is a `static` class.
@@ -357,13 +357,13 @@ The Library [Microsoft.Extensions.Options](https://www.nuget.org/packages/Micros
 * Honoring of collection indexes, meaning a key-value pair `"MyIntCollection:1"`-`42` is deserialized to `new int[]{0, 42}` instead of `new int[]{42}`
 * No polution of own code by *helper classes/interfaces* (`IOptions<T>`, `IOptionsSnapshot<T>`, etc) by default
   * Still with reload support
-* If a property of type `int[]` (ie. an array) is comming from a json file and is set to `null`, ie. json is looking like this `{ "myIntArray": null }` then `IOptions<T>` throws an error because the provider [Microsoft.Extensions.Configuration.Json](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Json) generates an empty string if it sees `null`. This incompatibility between the provider [Microsoft.Extensions.Configuration.Json](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Json) and `IOptions<T>` is very unfortunate. `Thinktecture.Extensions.Configuration` sets the property to `null` in this case.
+* If a property of type `int[]` (ie. an array) is comming from a JSON file and is set to `null`, ie. JSON is looking like this `{ "myIntArray": null }` then `IOptions<T>` throws an error because the provider [Microsoft.Extensions.Configuration.Json](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Json) generates an empty string if it sees `null`. This incompatibility between the provider [Microsoft.Extensions.Configuration.Json](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Json) and `IOptions<T>` is very unfortunate. `Thinktecture.Extensions.Configuration` sets the property to `null` in this case.
 
 ### Registering IConfiguration as data source for `Thinktecture.Configuration`
 
 Nuget: `Install-Package Thinktecture.Extensions.Configuration.Autofac` when using [Autofac](https://autofac.org/)
 
-Use the extension method `RegisterMicrosoftConfigurationProvider` or `RegisterKeyedMicrosoftConfigurationProvider` when having more than 1 instance of `IConfiguration`. The later one is more of an edge case.
+Use the extension method `RegisterMicrosoftConfigurationProvider` or `RegisterKeyedMicrosoftConfigurationProvider` when having more than 1 instance of `IConfiguration`. The latter one is more of an edge case.
 
 ```
 IConfiguration config = ...;
