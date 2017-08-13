@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/j4nbnc9m8yj5g6bw?svg=true)](https://ci.appveyor.com/project/PawelGerr/thinktecture-configuration)
+
 Configuration is one of the most prominent cornerstones in software systems, and especially in distributed systems. And it has been a point for discussions in .NET for quite some time.
 
 In one of our projects we have built a solution that lets different applications in different companies exchange data, although being behind firewalls, using the open source [Relay Server](http://thinktecture.com/relayserver). But, to our surprise, one of the features our customer was amazed about was the library I've developed to make configuration easier to handle.
