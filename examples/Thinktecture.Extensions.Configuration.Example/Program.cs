@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Autofac;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -17,7 +17,7 @@ namespace Thinktecture.Extensions.Configuration.Example
 				.AddJsonFile("configuration.json", false, true)
 				.Build();
 
-			ContainerBuilder builder = new ContainerBuilder();
+			var builder = new ContainerBuilder();
 			builder.RegisterInstance(loggerConfig).As<ILoggerFactory>();
 			builder.RegisterGeneric(typeof(Logger<>)).As(typeof(ILogger<>)).SingleInstance();
 			builder.RegisterType<MyDependency>().AsSelf();
