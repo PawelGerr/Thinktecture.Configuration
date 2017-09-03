@@ -35,8 +35,8 @@ namespace Thinktecture.Extensions
 			_builder.RegisterJsonFileConfiguration<ConfigurationWithDefaultCtor>().AsSelf();
 
 			_builder.Build()
-				.Invoking(c => c.Resolve<ConfigurationWithDefaultCtor>())
-				.ShouldThrow<DependencyResolutionException>();
+					.Invoking(c => c.Resolve<ConfigurationWithDefaultCtor>())
+					.ShouldThrow<DependencyResolutionException>();
 		}
 
 		[Fact]
@@ -48,8 +48,8 @@ namespace Thinktecture.Extensions
 			_builder.RegisterJsonFileConfiguration<ConfigurationWithDefaultCtor>().AsSelf();
 
 			_builder.Build()
-				.Resolve<ConfigurationWithDefaultCtor>()
-				.Should().Be(config);
+					.Resolve<ConfigurationWithDefaultCtor>()
+					.Should().Be(config);
 
 			_providerMock.Verify(p => p.GetConfiguration<ConfigurationWithDefaultCtor>(It.IsAny<IConfigurationSelector<JToken, JToken>>()), Times.Once);
 		}
@@ -62,8 +62,8 @@ namespace Thinktecture.Extensions
 			_builder.RegisterJsonFileConfiguration<ConfigurationWithDefaultCtor>(null, true).AsSelf();
 
 			_builder.Build()
-				.Resolve<ConfigurationWithDefaultCtor>()
-				.Should().NotBeNull();
+					.Resolve<ConfigurationWithDefaultCtor>()
+					.Should().NotBeNull();
 		}
 
 		[Fact]
@@ -76,9 +76,9 @@ namespace Thinktecture.Extensions
 			var container = _builder.Build();
 
 			container.Invoking(c => c.Resolve<ConfigurationWithDefaultCtor>())
-				.ShouldThrow<DependencyResolutionException>()
-				.WithInnerException<DependencyResolutionException>()
-				.WithInnerMessage($"A delegate registered to create instances of '{typeof(ConfigurationWithDefaultCtor).FullName}' returned null.");
+					.ShouldThrow<DependencyResolutionException>()
+					.WithInnerException<DependencyResolutionException>()
+					.WithInnerMessage($"A delegate registered to create instances of '{typeof(ConfigurationWithDefaultCtor).FullName}' returned null.");
 		}
 	}
 }

@@ -44,7 +44,7 @@ namespace Thinktecture.Configuration
 				if (result == null)
 					return default(T);
 
-				return (T) result;
+				return (T)result;
 			}
 			catch (NullReferenceException ex)
 			{
@@ -104,7 +104,7 @@ This array along with its elements are going to be discarded. Please make check 
 					}
 				}
 
-				if(!hasChildConfigs && configValue == String.Empty)
+				if (!hasChildConfigs && configValue == String.Empty)
 					return new ConversionResult(null);
 
 				return CreateAndPopulateArray(elementType, config);
@@ -112,7 +112,7 @@ This array along with its elements are going to be discarded. Please make check 
 
 			if (IsComplexType(type, config))
 			{
-				if(!hasChildConfigs && configValue == String.Empty)
+				if (!hasChildConfigs && configValue == String.Empty)
 					return new ConversionResult(null);
 
 				return ConvertComplexType(type, config, instance);
@@ -132,12 +132,12 @@ This array along with its elements are going to be discarded. Please make check 
 			var typeInfo = type.GetTypeInfo();
 
 			var isSimpleType = typeInfo.IsPrimitive
-			                   || type == typeof(string)
-			                   || type == typeof(decimal)
-			                   || type == typeof(DateTime)
-			                   || type == typeof(TimeSpan)
-			                   || type == typeof(Guid)
-			                   || (typeInfo.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
+								|| type == typeof(string)
+								|| type == typeof(decimal)
+								|| type == typeof(DateTime)
+								|| type == typeof(TimeSpan)
+								|| type == typeof(Guid)
+								|| (typeInfo.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
 
 			if (isSimpleType)
 				return false;
@@ -224,7 +224,7 @@ This array along with its elements are going to be discarded. Please make check 
 				return;
 
 			var propertyValue = property.GetValue(instance.Value);
-			var hasPublicSetter = property.SetMethod != null && property.SetMethod.IsPublic;
+			var hasPublicSetter = property.SetMethod?.IsPublic == true;
 
 			if (!hasPublicSetter && propertyValue == null)
 				return;
@@ -249,9 +249,8 @@ This array along with its elements are going to be discarded. Please make check 
 			if (property == null)
 				throw new ArgumentNullException(nameof(property));
 
-			return property.GetMethod != null
-			       && property.GetMethod.IsPublic
-			       && property.GetMethod.GetParameters().Length == 0;
+			return property.GetMethod?.IsPublic == true
+					&& property.GetMethod.GetParameters().Length == 0;
 		}
 
 		private void PopulateCollection(Type elementType, IConfiguration config, IConversionInstance instance)
@@ -266,7 +265,7 @@ This array along with its elements are going to be discarded. Please make check 
 			var arrayResult = CreateAndPopulateArray(elementType, config);
 
 			if (arrayResult.IsValid)
-				PopulateCollection(instance.Value, elementType, (Array) arrayResult.Value);
+				PopulateCollection(instance.Value, elementType, (Array)arrayResult.Value);
 		}
 
 		private void PopulateCollection(object collection, Type elementType, Array children)
@@ -289,7 +288,7 @@ This array along with its elements are going to be discarded. Please make check 
 			{
 				try
 				{
-					addMethod.Invoke(collection, new[] {child});
+					addMethod.Invoke(collection, new[] { child });
 				}
 				catch (Exception ex)
 				{
@@ -318,24 +317,24 @@ This array along with its elements are going to be discarded. Please make check 
 					return null;
 
 				var methodInfo = typeInfo.DeclaredMethods
-					.FirstOrDefault(m =>
-					{
-						if (!StringComparer.OrdinalIgnoreCase.Equals(m.Name, name))
-							return false;
+										.FirstOrDefault(m =>
+										{
+											if (!StringComparer.OrdinalIgnoreCase.Equals(m.Name, name))
+												return false;
 
-						var parameters = m.GetParameters();
+											var parameters = m.GetParameters();
 
-						if (parameters.Length != paramTypes.Length)
-							return false;
+											if (parameters.Length != paramTypes.Length)
+												return false;
 
-						for (int i = 0; i < parameters.Length; i++)
-						{
-							if (parameters[i].ParameterType != paramTypes[i])
-								return false;
-						}
+											for (int i = 0; i < parameters.Length; i++)
+											{
+												if (parameters[i].ParameterType != paramTypes[i])
+													return false;
+											}
 
-						return true;
-					});
+											return true;
+										});
 
 				if (methodInfo != null)
 					return methodInfo;
@@ -349,10 +348,10 @@ This array along with its elements are going to be discarded. Please make check 
 		private bool TryGetCollectionElementType(Type type, out Type elementType)
 		{
 			var collectionType = FindGenericImplementedType(typeof(IList<>), type)
-			                     ?? FindGenericImplementedType(typeof(ICollection<>), type)
-			                     ?? FindGenericImplementedType(typeof(IReadOnlyList<>), type)
-			                     ?? FindGenericImplementedType(typeof(IReadOnlyCollection<>), type)
-			                     ?? FindGenericImplementedType(typeof(IEnumerable<>), type);
+								?? FindGenericImplementedType(typeof(ICollection<>), type)
+								?? FindGenericImplementedType(typeof(IReadOnlyList<>), type)
+								?? FindGenericImplementedType(typeof(IReadOnlyCollection<>), type)
+								?? FindGenericImplementedType(typeof(IEnumerable<>), type);
 
 			elementType = collectionType?.GetTypeInfo().GenericTypeArguments[0];
 
@@ -362,7 +361,7 @@ This array along with its elements are going to be discarded. Please make check 
 		private bool TryGetDictionaryTypes(Type type, out (Type KeyType, Type ValueType) types)
 		{
 			var dictionaryInterface = FindGenericImplementedType(typeof(IDictionary<,>), type)
-			                          ?? FindGenericImplementedType(typeof(IReadOnlyDictionary<,>), type);
+									?? FindGenericImplementedType(typeof(IReadOnlyDictionary<,>), type);
 
 			if (dictionaryInterface != null)
 			{
@@ -406,7 +405,7 @@ This array along with its elements are going to be discarded. Please make check 
 				{
 					var keyResult = ConvertFromString(keyType, child.Key);
 					if (keyResult.IsValid)
-						addMethod.Invoke(dictionary, new[] {keyResult.Value, itemResult.Value});
+						addMethod.Invoke(dictionary, new[] { keyResult.Value, itemResult.Value });
 				}
 			}
 		}
@@ -419,19 +418,19 @@ This array along with its elements are going to be discarded. Please make check 
 				throw new ArgumentNullException(nameof(config));
 
 			var children = config.GetChildren()
-				.Select(c =>
-				{
-					int index;
-					if (c.Key == null || !Int32.TryParse(c.Key, out index))
-					{
-						_logger.LogWarning("The index of the collection of type {type} is not an integer. Key: {key}, path: {path}", elementType.FullName, c.Key, c.Path);
-						return null;
-					}
+								.Select(c =>
+								{
+									int index;
+									if (c.Key == null || !Int32.TryParse(c.Key, out index))
+									{
+										_logger.LogWarning("The index of the collection of type {type} is not an integer. Key: {key}, path: {path}", elementType.FullName, c.Key, c.Path);
+										return null;
+									}
 
-					return new {Index = index, Configuration = c};
-				})
-				.Where(i => i != null)
-				.ToArray();
+									return new { Index = index, Configuration = c };
+								})
+								.Where(i => i != null)
+								.ToArray();
 
 			if (children.Length == 0)
 			{

@@ -23,7 +23,7 @@ namespace Thinktecture.Configuration.InstanceCreatorTests
 		private void Should_create<T>(string input, T output)
 		{
 			_creator.Create(typeof(T), input)
-				.Value.Should().Be(output);
+					.Value.Should().Be(output);
 		}
 
 		private void Should_throw<T>(string input)

@@ -6,7 +6,7 @@ namespace Thinktecture.Helpers
 {
 	public class TestInstanceCreator : InstanceCreator
 	{
-		public TestInstanceCreator(CultureInfo culture) 
+		public TestInstanceCreator(CultureInfo culture)
 			: base(culture)
 		{
 		}

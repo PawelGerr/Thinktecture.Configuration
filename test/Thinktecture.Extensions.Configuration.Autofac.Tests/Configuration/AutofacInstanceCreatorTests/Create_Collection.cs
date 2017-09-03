@@ -30,7 +30,7 @@ namespace Thinktecture.Configuration.AutofacInstanceCreatorTests
 
 		private void Should_throw(Type collectionType)
 		{
-			Action  action = () => _creator.Create(collectionType);
+			Action action = () => _creator.Create(collectionType);
 			action.ShouldThrow<ComponentNotRegisteredException>();
 		}
 

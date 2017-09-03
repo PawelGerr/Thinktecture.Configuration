@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Autofac;
 using Autofac.Builder;
+using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 using Thinktecture.Configuration;
 using Thinktecture.IO;
@@ -41,11 +42,11 @@ namespace Thinktecture
 
 			RegisterConverterOnce(builder);
 			builder.Register(context => new JsonFileConfigurationLoader(context.Resolve<IFile>(), context.Resolve<IJsonTokenConverter>(), configurationFilePaths))
-				.As<IConfigurationLoader<JToken, JToken>>()
-				.SingleInstance();
+					.As<IConfigurationLoader<JToken, JToken>>()
+					.SingleInstance();
 			builder.Register(context => context.Resolve<IConfigurationLoader<JToken, JToken>>().Load())
-				.As<IConfigurationProvider<JToken, JToken>>()
-				.SingleInstance();
+					.As<IConfigurationProvider<JToken, JToken>>()
+					.SingleInstance();
 		}
 
 		/// <summary>
@@ -68,22 +69,22 @@ namespace Thinktecture
 			var key = new AutofacConfigurationProviderKey();
 			RegisterConverterOnce(builder);
 			builder.Register(context => new JsonFileConfigurationLoader(context.Resolve<IFile>(), context.Resolve<IJsonTokenConverter>(), configurationFilePaths))
-				.Keyed<IConfigurationLoader<JToken, JToken>>(key)
-				.SingleInstance();
+					.Keyed<IConfigurationLoader<JToken, JToken>>(key)
+					.SingleInstance();
 			builder.Register(context => context.ResolveKeyed<IConfigurationLoader<JToken, JToken>>(key).Load())
-				.Keyed<IConfigurationProvider<JToken, JToken>>(key)
-				.SingleInstance();
+					.Keyed<IConfigurationProvider<JToken, JToken>>(key)
+					.SingleInstance();
 
 			return key;
 		}
 
-		private static void RegisterConverterOnce(ContainerBuilder builder)
+		private static void RegisterConverterOnce([NotNull] ContainerBuilder builder)
 		{
-			if (!builder.Properties.ContainsKey(_converterKey))
-			{
-				builder.Properties[_converterKey] = true;
-				builder.RegisterType<AutofacJsonTokenConverter>().AsImplementedInterfaces().SingleInstance();
-			}
+			if (builder.Properties.ContainsKey(_converterKey))
+				return;
+
+			builder.Properties[_converterKey] = true;
+			builder.RegisterType<AutofacJsonTokenConverter>().As<IJsonTokenConverter>().SingleInstance();
 		}
 
 		/// <summary>
@@ -95,7 +96,7 @@ namespace Thinktecture
 		/// <param name="resolveNewInstanceIfNull">If <c>true</c> then a new instance of <typeparamref name="T"/> is returned even if the configuration is missing or is <c>null</c>; otherwise Autofac will raise an error.</param>
 		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> is null.</exception>
 		/// <returns>Autofac registration builder.</returns>
-		public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterJsonFileConfiguration<T>(this ContainerBuilder builder, string propertyName = null, bool resolveNewInstanceIfNull = true)
+		public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterJsonFileConfiguration<T>([NotNull] this ContainerBuilder builder, [CanBeNull] string propertyName = null, bool resolveNewInstanceIfNull = true)
 		{
 			if (builder == null)
 				throw new ArgumentNullException(nameof(builder));
@@ -106,7 +107,7 @@ namespace Thinktecture
 			return builder.Register(context =>
 			{
 				var config = context.Resolve<IConfigurationProvider<JToken, JToken>>().GetConfiguration<T>(selector);
-				return config == null && resolveNewInstanceIfNull ? context.ResolveConfigurationType<T>() : config;
+				return ReferenceEquals(config, null) && resolveNewInstanceIfNull ? context.ResolveConfigurationType<T>() : config;
 			});
 		}
 
@@ -120,7 +121,7 @@ namespace Thinktecture
 		/// <param name="resolveNewInstanceIfNull">If <c>true</c> then a new instance of <typeparamref name="T"/> is returned even if the configuration is missing or is <c>null</c>; otherwise Autofac will raise an error.</param>
 		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> or the <paramref name="registrationKey"/> is null.</exception>
 		/// <returns>Autofac registration builder.</returns>
-		public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterJsonFileConfiguration<T>(this ContainerBuilder builder, AutofacConfigurationProviderKey registrationKey, string propertyName = null, bool resolveNewInstanceIfNull = true)
+		public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterJsonFileConfiguration<T>([NotNull] this ContainerBuilder builder, [NotNull] AutofacConfigurationProviderKey registrationKey, string propertyName = null, bool resolveNewInstanceIfNull = true)
 		{
 			if (builder == null)
 				throw new ArgumentNullException(nameof(builder));
@@ -133,7 +134,7 @@ namespace Thinktecture
 			return builder.Register(context =>
 			{
 				var config = context.ResolveKeyed<IConfigurationProvider<JToken, JToken>>(registrationKey).GetConfiguration<T>(selector);
-				return config == null && resolveNewInstanceIfNull ? context.ResolveConfigurationType<T>() : config;
+				return ReferenceEquals(config, null) && resolveNewInstanceIfNull ? context.ResolveConfigurationType<T>() : config;
 			});
 		}
 
@@ -201,7 +202,7 @@ namespace Thinktecture
 			object value;
 			if (builder.Properties.TryGetValue(_registeredTypesKey, out value))
 			{
-				types = (HashSet<Type>) value;
+				types = (HashSet<Type>)value;
 			}
 			else
 			{

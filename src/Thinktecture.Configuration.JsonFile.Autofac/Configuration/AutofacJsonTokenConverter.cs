@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -21,7 +22,7 @@ namespace Thinktecture.Configuration
 		/// <param name="scope">Autofac container.</param>
 		/// <param name="typesToConvertViaAutofac">Types that should be converted using autofac.</param>
 		/// <param name="jsonSerializerSettingsProvider">Provides <see cref="JsonSerializerSettings"/> to be used by <see cref="JsonSerializer"/>.</param>
-		public AutofacJsonTokenConverter(ILifetimeScope scope, IEnumerable<AutofacJsonTokenConverterType> typesToConvertViaAutofac, IAutofacJsonTokenConverterJsonSettingsProvider jsonSerializerSettingsProvider = null)
+		public AutofacJsonTokenConverter([NotNull] ILifetimeScope scope, IEnumerable<AutofacJsonTokenConverterType> typesToConvertViaAutofac, [CanBeNull] IAutofacJsonTokenConverterJsonSettingsProvider jsonSerializerSettingsProvider = null)
 		{
 			if (scope == null)
 				throw new ArgumentNullException(nameof(scope));
@@ -31,7 +32,8 @@ namespace Thinktecture.Configuration
 		}
 
 		/// <inheritdoc />
-		public TConfiguration Convert<TConfiguration>(JToken[] tokens)
+		[CanBeNull]
+		public TConfiguration Convert<TConfiguration>([ItemCanBeNull, NotNull] JToken[] tokens)
 		{
 			if (tokens == null)
 				throw new ArgumentNullException(nameof(tokens));
@@ -50,13 +52,13 @@ namespace Thinktecture.Configuration
 			var lastToken = tokens.LastOrDefault(t => t != null);
 
 			if (IsNull(lastToken))
-				return default(TConfiguration);
+				return default;
 
 			var startIndex = GetStartIndex(tokens);
 			var startToken = tokens.Skip(startIndex).First(t => t != null && t.Type != JTokenType.Null);
 			var config = startToken.ToObject<TConfiguration>(serializer);
 
-			if (config != null)
+			if (!ReferenceEquals(config, null))
 			{
 				for (var i = startIndex + 1; i < tokens.Length; i++)
 				{
@@ -75,20 +77,23 @@ namespace Thinktecture.Configuration
 			return config;
 		}
 
-		private int GetStartIndex(JToken[] tokens)
+		private static int GetStartIndex([NotNull] JToken[] tokens)
 		{
-			for (int i = tokens.Length - 1; i >= 0; i--)
+			if (tokens == null)
+				throw new ArgumentNullException(nameof(tokens));
+
+			for (var i = tokens.Length - 1; i >= 0; i--)
 			{
 				var token = tokens[i];
 
-				if (token != null && token.Type == JTokenType.Null)
+				if (token?.Type == JTokenType.Null)
 					return i + 1;
 			}
 
 			return 0;
 		}
 
-		private bool IsNull(JToken token)
+		private static bool IsNull([CanBeNull] JToken token)
 		{
 			return token == null || token.Type == JTokenType.Null;
 		}

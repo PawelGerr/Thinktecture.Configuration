@@ -45,7 +45,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_does_not_call_any_members_on_scope_if_types_enumerable_is_not_empty()
 		{
-			new AutofacJsonTokenConverter(_scopeMock.Object, new List<AutofacJsonTokenConverterType>() {new AutofacJsonTokenConverterType(typeof(ConfigurationWithDefaultCtor))});
+			new AutofacJsonTokenConverter(_scopeMock.Object, new List<AutofacJsonTokenConverterType>() { new AutofacJsonTokenConverterType(typeof(ConfigurationWithDefaultCtor)) });
 		}
 	}
 }

@@ -17,7 +17,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationProviderTests
 		{
 			ConverterMock.Setup(c => c.Convert<string>(It.IsAny<JToken[]>())).Throws<InvalidCastException>();
 
-			CreateProvider(new {})
+			CreateProvider(new { })
 				.Invoking(p => p.GetConfiguration<string>())
 				.ShouldThrow<InvalidCastException>();
 		}
@@ -25,7 +25,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationProviderTests
 		[Fact]
 		public void Should_delegate_conversion_to_converter()
 		{
-			ConverterMock.Setup(c => c.Convert<string>(It.IsAny<JToken[]>())).Returns<JToken[]>(tokens => String.Join(String.Empty, tokens.Select(s => s.Value<string>())));
+			ConverterMock.Setup(c => c.Convert<string>(It.IsAny<JToken[]>())).Returns<JToken[]>(tokens => String.Concat(tokens.Select(s => s.Value<string>())));
 
 			CreateProvider("con", "tent")
 				.GetConfiguration<string>()
@@ -33,7 +33,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationProviderTests
 
 			ConverterMock.Verify(c => c.Convert<string>(It.IsAny<JToken[]>()), Times.Once);
 		}
-		
+
 		[Fact]
 		public void Should_select_property_for_deserialization()
 		{
@@ -41,7 +41,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationProviderTests
 			selectorMock.Setup(s => s.Select(It.IsAny<JToken>())).Returns<JToken>(token => token["Property"]);
 			ConverterMock.Setup(c => c.Convert<string>(It.IsAny<JToken[]>())).Returns<JToken[]>(tokens => tokens.First().Value<string>());
 
-			CreateProvider(new {Property = "content"})
+			CreateProvider(new { Property = "content" })
 				.GetConfiguration<string>(selectorMock.Object)
 				.Should().Be("content");
 		}
@@ -53,7 +53,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationProviderTests
 			selectorMock.Setup(s => s.Select(It.IsAny<JToken>())).Returns<JToken>(token => token["Parent"]["Child"]);
 			ConverterMock.Setup(c => c.Convert<string>(It.IsAny<JToken[]>())).Returns<JToken[]>(tokens => tokens.First().Value<string>());
 
-			CreateProvider(new {Parent = new {Child = "content"}})
+			CreateProvider(new { Parent = new { Child = "content" } })
 				.GetConfiguration<string>(selectorMock.Object)
 				.Should().Be("content");
 		}

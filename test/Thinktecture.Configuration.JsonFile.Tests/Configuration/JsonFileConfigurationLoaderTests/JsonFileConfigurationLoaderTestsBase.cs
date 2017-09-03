@@ -22,6 +22,5 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 			FilePath = "/file.json";
 			OverrideFilePath = "/override.json";
 		}
-
 	}
 }

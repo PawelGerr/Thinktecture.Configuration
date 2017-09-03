@@ -60,7 +60,6 @@ namespace Thinktecture.Configuration.JsonFile.Autofac.Example
 			var providerKey = builder.RegisterKeyedJsonFileConfigurationProvider(_OTHER_CONFIG_FILE_PATH);
 			builder.RegisterJsonFileConfiguration<ConfigurationFromOtherFile>(providerKey, "ConfiguationFromOtherFile").AsImplementedInterfaces().SingleInstance();
 
-
 			return builder.Build();
 		}
 	}

@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace Thinktecture.Configuration
 {
-    /// <summary>
-    /// A key that identifies a registration of <see cref="IConfigurationProvider{TRawDataIn,TRawDataOut}"/>.
-    /// </summary>
-    public class AutofacConfigurationProviderKey
-    {
-    }
+	/// <summary>
+	/// A key that identifies a registration of <see cref="IConfigurationProvider{TRawDataIn,TRawDataOut}"/>.
+	/// </summary>
+	public class AutofacConfigurationProviderKey
+	{
+	}
 }

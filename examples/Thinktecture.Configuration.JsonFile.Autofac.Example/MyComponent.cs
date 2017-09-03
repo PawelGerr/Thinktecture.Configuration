@@ -15,11 +15,11 @@ namespace Thinktecture.Configuration.JsonFile.Autofac.Example
 		{
 			_config = config ?? throw new ArgumentNullException(nameof(config));
 		}
-		
+
 		public void PrintConfiguration()
 		{
-			Console.WriteLine("Component configuration: " +  _config.ComponentValue);	
-			Console.WriteLine("Component configuration -> other configuration: " +  _config.OtherConfiguration?.OtherComponentValue);	
+			Console.WriteLine("Component configuration: " + _config.ComponentValue);
+			Console.WriteLine("Component configuration -> other configuration: " + _config.OtherConfiguration?.OtherComponentValue);
 		}
 	}
 }

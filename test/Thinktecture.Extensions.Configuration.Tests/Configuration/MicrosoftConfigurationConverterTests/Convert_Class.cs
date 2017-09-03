@@ -38,7 +38,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			var result = RoundtripConvert<TestConfiguration<TestConfiguration<int>>>(c => c.P1 = null);
 			result.P1.Should().BeNull();
 		}
-		
+
 		[Fact]
 		public void Should_convert_inner_complex_property()
 		{
@@ -47,12 +47,12 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 
 			var result = RoundtripConvert(new TestConfiguration<TestConfiguration<decimal>>()
 			{
-				P1 = new TestConfiguration<decimal>() {P1 = 42}
+				P1 = new TestConfiguration<decimal>() { P1 = 42 }
 			});
 
 			result.ShouldBeEquivalentTo(new TestConfiguration<TestConfiguration<decimal>>()
 			{
-				P1 = new TestConfiguration<decimal>() {P1 = 42}
+				P1 = new TestConfiguration<decimal>() { P1 = 42 }
 			});
 		}
 	}

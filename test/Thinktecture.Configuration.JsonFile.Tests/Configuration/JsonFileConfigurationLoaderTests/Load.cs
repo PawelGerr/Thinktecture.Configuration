@@ -45,7 +45,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 		public void Should_throw_if_file_throws()
 		{
 			FileMock.Setup(f => f.Open(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
-				.Throws<FileNotFoundException>();
+					.Throws<FileNotFoundException>();
 
 			CreateLoader(FilePath)
 				.Invoking(l => l.Load())
@@ -58,7 +58,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 			using (var stream = GetStream("invalid"))
 			{
 				FileMock.Setup(f => f.Open(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
-					.Returns(stream);
+						.Returns(stream);
 
 				CreateLoader(FilePath)
 					.Invoking(l => l.Load())
@@ -72,7 +72,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 			using (var stream = GetStream(String.Empty))
 			{
 				FileMock.Setup(f => f.Open(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
-					.Returns(stream);
+						.Returns(stream);
 
 				CreateLoader(FilePath).Load().Should().Be(_providerMock.Object);
 			}
@@ -84,11 +84,11 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 			using (var stream = GetStream(String.Empty))
 			{
 				FileMock.Setup(f => f.Open(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
-					.Returns(stream);
+						.Returns(stream);
 
 				CreateLoader(FilePath).Load();
 				_tokens.Should().HaveCount(1)
-					.And.Contain((JToken) null);
+						.And.Contain((JToken)null);
 			}
 		}
 
@@ -98,11 +98,11 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 			using (var stream = GetStream("null"))
 			{
 				FileMock.Setup(f => f.Open(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
-					.Returns(stream);
+						.Returns(stream);
 
 				CreateLoader(FilePath).Load();
 				_tokens.Should().HaveCount(1)
-					.And.Subject.First().Type.Should().Be(JTokenType.Null);
+						.And.Subject.First().Type.Should().Be(JTokenType.Null);
 			}
 		}
 
@@ -112,7 +112,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 			using (var stream = GetStream("\"content\""))
 			{
 				FileMock.Setup(f => f.Open(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
-					.Returns(stream);
+						.Returns(stream);
 
 				CreateLoader(FilePath).Load();
 				_tokens.First().Value<string>().Should().Be("content");
@@ -127,13 +127,13 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 			{
 				var nextStream = stream;
 				FileMock.Setup(f => f.Open(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>()))
-					.Returns(() =>
-					{
-						var currentStream = nextStream;
-						// ReSharper disable once AccessToDisposedClosure
-						nextStream = stream2;
-						return currentStream;
-					});
+						.Returns(() =>
+						{
+							var currentStream = nextStream;
+							// ReSharper disable once AccessToDisposedClosure
+							nextStream = stream2;
+							return currentStream;
+						});
 
 				CreateLoader(FilePath, OverrideFilePath).Load();
 				_tokens.Should().HaveCount(2);

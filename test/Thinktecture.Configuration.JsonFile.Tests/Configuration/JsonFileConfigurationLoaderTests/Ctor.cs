@@ -11,7 +11,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 		[Fact]
 		public void Should_throw_if_file_is_null()
 		{
-			Action ctor = () => new JsonFileConfigurationLoader(null, ConverterMock.Object, new[] {FilePath});
+			Action ctor = () => new JsonFileConfigurationLoader(null, ConverterMock.Object, new[] { FilePath });
 
 			ctor.Invoking(c => c()).ShouldThrow<ArgumentNullException>();
 		}
@@ -27,7 +27,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 		[Fact]
 		public void Should_throw_if_one_of_the_filepaths_is_null()
 		{
-			Action ctor = () => new JsonFileConfigurationLoader(FileMock.Object, ConverterMock.Object, new string[] {null});
+			Action ctor = () => new JsonFileConfigurationLoader(FileMock.Object, ConverterMock.Object, new string[] { null });
 
 			ctor.Invoking(c => c()).ShouldThrow<ArgumentException>();
 		}
@@ -35,7 +35,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 		[Fact]
 		public void Should_throw_if_one_of_the_filepaths_is_empty()
 		{
-			Action ctor = () => new JsonFileConfigurationLoader(FileMock.Object, ConverterMock.Object, new[] {" "});
+			Action ctor = () => new JsonFileConfigurationLoader(FileMock.Object, ConverterMock.Object, new[] { " " });
 
 			ctor.Invoking(c => c()).ShouldThrow<ArgumentException>();
 		}
@@ -43,7 +43,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 		[Fact]
 		public void Should_throw_if_converter_is_null()
 		{
-			Action ctor = () => new JsonFileConfigurationLoader(FileMock.Object, null, new[] {FilePath});
+			Action ctor = () => new JsonFileConfigurationLoader(FileMock.Object, null, new[] { FilePath });
 
 			ctor.Invoking(c => c()).ShouldThrow<ArgumentNullException>();
 		}
@@ -51,13 +51,13 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 		[Fact]
 		public void Should_initialize_new_instance_without_calling_any_members()
 		{
-			new JsonFileConfigurationLoader(FileMock.Object, ConverterMock.Object, new[] {FilePath});
+			new JsonFileConfigurationLoader(FileMock.Object, ConverterMock.Object, new[] { FilePath });
 		}
 
 		[Fact]
 		public void Should_initialize_new_instance_without_calling_any_members_getting_2_filepaths()
 		{
-			new JsonFileConfigurationLoader(FileMock.Object, ConverterMock.Object, new[] {FilePath, OverrideFilePath});
+			new JsonFileConfigurationLoader(FileMock.Object, ConverterMock.Object, new[] { FilePath, OverrideFilePath });
 		}
 	}
 }

@@ -44,14 +44,14 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_return_null_if_token_is_null()
 		{
-			var config = Create().Convert<ConfigurationWithDefaultCtor>(new JToken[] {null});
+			var config = Create().Convert<ConfigurationWithDefaultCtor>(new JToken[] { null });
 			config.Should().BeNull();
 		}
 
 		[Fact]
 		public void Should_return_null_if_token_is_nulltoken()
 		{
-			var config = Create().Convert<ConfigurationWithDefaultCtor>(new JToken[] {JToken.Parse("null")});
+			var config = Create().Convert<ConfigurationWithDefaultCtor>(new JToken[] { JToken.Parse("null") });
 			config.Should().BeNull();
 		}
 
@@ -103,7 +103,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_return_null_if_last_not_null_token_is_nulltoken()
 		{
-			var tokens = GetTokens(new {}, JToken.Parse("null"));
+			var tokens = GetTokens(new { }, JToken.Parse("null"));
 
 			var config = Create().Convert<ConfigurationWithDefaultCtor>(tokens);
 			config.Should().BeNull();
@@ -112,7 +112,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_return_null_if_last_not_null_token_is_nulltoken_2()
 		{
-			var tokens = GetTokens(new {}, JToken.Parse("null"), null);
+			var tokens = GetTokens(new { }, JToken.Parse("null"), null);
 
 			var config = Create().Convert<ConfigurationWithDefaultCtor>(tokens);
 			config.Should().BeNull();
@@ -251,7 +251,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_convert_concrete_type_without_autofac_having_concrete_propery()
 		{
-			var tokens = GetTokens(new {InnerConfiguration = new { }});
+			var tokens = GetTokens(new { InnerConfiguration = new { } });
 
 			var config = Create().Convert<ConfigurationWithPropertyOfConcreteType>(tokens);
 			config.Should().NotBeNull();
@@ -261,7 +261,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_set_inner_property_to_null_by_override()
 		{
-			var tokens = GetTokens(new {InnerConfiguration = new ConfigurationWithDefaultCtor()}, new {InnerConfiguration = (ConfigurationWithDefaultCtor) null});
+			var tokens = GetTokens(new { InnerConfiguration = new ConfigurationWithDefaultCtor() }, new { InnerConfiguration = (ConfigurationWithDefaultCtor)null });
 
 			var config = Create().Convert<ConfigurationWithPropertyOfConcreteType>(tokens);
 			config.Should().NotBeNull();
@@ -271,7 +271,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_set_inner_property_by_override()
 		{
-			var tokens = GetTokens(new {InnerConfiguration = (ConfigurationWithDefaultCtor) null}, new {InnerConfiguration = new ConfigurationWithDefaultCtor()});
+			var tokens = GetTokens(new { InnerConfiguration = (ConfigurationWithDefaultCtor)null }, new { InnerConfiguration = new ConfigurationWithDefaultCtor() });
 
 			var config = Create().Convert<ConfigurationWithPropertyOfConcreteType>(tokens);
 			config.Should().NotBeNull();
@@ -281,7 +281,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_not_change_inner_property_by_override_if_property_is_missing()
 		{
-			var tokens = GetTokens(new {InnerConfiguration = new ConfigurationWithDefaultCtor()}, new { });
+			var tokens = GetTokens(new { InnerConfiguration = new ConfigurationWithDefaultCtor() }, new { });
 
 			var config = Create().Convert<ConfigurationWithPropertyOfConcreteType>(tokens);
 			config.Should().NotBeNull();
@@ -291,26 +291,25 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_set_inner_property_to_null_if_override_property_is_null()
 		{
-			var tokens = GetTokens(new {InnerConfiguration = new ConfigurationWithDefaultCtor()}, new {InnerConfiguration = (ConfigurationWithDefaultCtor)null});
+			var tokens = GetTokens(new { InnerConfiguration = new ConfigurationWithDefaultCtor() }, new { InnerConfiguration = (ConfigurationWithDefaultCtor)null });
 
 			var config = Create().Convert<ConfigurationWithPropertyOfConcreteType>(tokens);
 			config.Should().NotBeNull();
 			config.InnerConfiguration.Should().BeNull();
 		}
 
-
 		[Fact]
 		public void Should_ignore_null_values()
 		{
 			var tokens = GetTokens(new
-			{
-				InnerConfiguration = new { InnerConfiguration = new ConfigurationWithDefaultCtor() }
-			},
-			null,
-			new
-			{
-				InnerConfiguration = new { }
-			});
+									{
+										InnerConfiguration = new { InnerConfiguration = new ConfigurationWithDefaultCtor() }
+									},
+									null,
+									new
+									{
+										InnerConfiguration = new { }
+									});
 
 			var config = Create().Convert<DoubleNestedConfiguration>(tokens);
 			config.Should().NotBeNull();
@@ -322,14 +321,14 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		public void Should_start_deserializing_after_last_nulltoken()
 		{
 			var tokens = GetTokens(new
-			{
-				InnerConfiguration = new { InnerConfiguration = new ConfigurationWithDefaultCtor() }
-			},
-			JToken.Parse("null"),
-			new
-			{
-				InnerConfiguration = new { }
-			});
+									{
+										InnerConfiguration = new { InnerConfiguration = new ConfigurationWithDefaultCtor() }
+									},
+									JToken.Parse("null"),
+									new
+									{
+										InnerConfiguration = new { }
+									});
 
 			var config = Create().Convert<DoubleNestedConfiguration>(tokens);
 			config.Should().NotBeNull();
@@ -340,7 +339,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_should_throw_when_converting_concrete_type_without_autofac_having_abstract_propery()
 		{
-			var tokens = GetTokens(new {InnerConfiguration = new { }});
+			var tokens = GetTokens(new { InnerConfiguration = new { } });
 
 			Create()
 				.Invoking(c => c.Convert<ConfigurationWithPropertyOfAbstractType>(tokens))
@@ -354,7 +353,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 			_typesToConvertViaAutofac.Add(new AutofacJsonTokenConverterType(typeof(ConfigurationWithDefaultCtor)));
 			_builder.RegisterType<ConfigurationWithPropertyOfConcreteType>().AsSelf();
 			_builder.RegisterType<ConfigurationWithDefaultCtor>().AsSelf();
-			var tokens = GetTokens(new {InnerConfiguration = new { }});
+			var tokens = GetTokens(new { InnerConfiguration = new { } });
 
 			var config = Create().Convert<ConfigurationWithPropertyOfConcreteType>(tokens);
 			config.Should().NotBeNull();
@@ -368,7 +367,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 			_typesToConvertViaAutofac.Add(new AutofacJsonTokenConverterType(typeof(IConfigurationWithDefaultCtor)));
 			_builder.RegisterType<ConfigurationWithPropertyOfAbstractType>().AsSelf();
 			_builder.RegisterType<ConfigurationWithDefaultCtor>().AsImplementedInterfaces();
-			var tokens = GetTokens(new {InnerConfiguration = new { }});
+			var tokens = GetTokens(new { InnerConfiguration = new { } });
 
 			var config = Create().Convert<ConfigurationWithPropertyOfAbstractType>(tokens);
 			config.Should().NotBeNull();
@@ -382,7 +381,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 			_typesToConvertViaAutofac.Add(new AutofacJsonTokenConverterType(typeof(IConfigurationWithDefaultCtor)));
 			_builder.RegisterType<ConfigurationWithPropertyOfAbstractType>().AsImplementedInterfaces();
 			_builder.RegisterType<ConfigurationWithDefaultCtor>().AsImplementedInterfaces();
-			var tokens = GetTokens(new {InnerConfiguration = new { }});
+			var tokens = GetTokens(new { InnerConfiguration = new { } });
 
 			var config = Create().Convert<IConfigurationWithPropertyOfAbstractType>(tokens);
 			config.Should().NotBeNull();

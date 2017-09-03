@@ -23,9 +23,9 @@ namespace Thinktecture.Configuration
 			if (String.IsNullOrWhiteSpace(propertyPath))
 				throw new ArgumentException("Property path must not be empty.", nameof(propertyPath));
 
-			_pathFragments = propertyPath.Trim().Split(new[] {'.'}, StringSplitOptions.None);
+			_pathFragments = propertyPath.Trim().Split(new[] { '.' }, StringSplitOptions.None);
 
-			if(_pathFragments.Contains(String.Empty))
+			if (_pathFragments.Contains(String.Empty))
 				throw new ArgumentException("Property path must not contains multiple dots next to each other.");
 		}
 

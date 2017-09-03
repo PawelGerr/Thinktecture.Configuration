@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -15,7 +14,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		public Convert_Collection()
 		{
 			InstanceCreatorMock.Setup(c => c.Create(It.IsAny<Type>()))
-				.Returns<Type>(type => new ConversionResult(type.GetTypeInfo().IsGenericType ? (object) new List<int>() : new List<object>()));
+								.Returns<Type>(type => new ConversionResult(type.GetTypeInfo().IsGenericType ? (object)new List<int>() : new List<object>()));
 		}
 
 		[Fact]
@@ -28,7 +27,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_empty_string_to_null()
 		{
-			RoundtripConvert<TestConfiguration<ICollection<int>>>(c=> c.P1 = null)
+			RoundtripConvert<TestConfiguration<ICollection<int>>>(c => c.P1 = null)
 				.P1.Should().BeNull();
 		}
 
@@ -47,7 +46,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString<int>("42", new ConversionResult(42));
 
 			RoundtripConvert<TestConfiguration<ICollection<int>>>("P1:0", "42")
-				.P1.ShouldBeEquivalentTo(new List<int> {42});
+				.P1.ShouldBeEquivalentTo(new List<int> { 42 });
 		}
 
 		[Fact]
@@ -61,7 +60,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 					dictionary.Add("P1:0", "42");
 					dictionary.Add("P1:1", "43");
 				})
-				.P1.ShouldBeEquivalentTo(new List<int> {42, 43});
+				.P1.ShouldBeEquivalentTo(new List<int> { 42, 43 });
 		}
 
 		[Fact]
@@ -75,7 +74,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 					dictionary.Add("P1:0", "42");
 					dictionary.Add("P1:2", "43");
 				})
-				.P1.ShouldBeEquivalentTo(new List<int> {42, 0, 43});
+				.P1.ShouldBeEquivalentTo(new List<int> { 42, 0, 43 });
 		}
 
 		[Fact]
@@ -90,7 +89,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 					dictionary.Add("P1:Foo", "1");
 					dictionary.Add("P1:2", "43");
 				})
-				.P1.ShouldBeEquivalentTo(new List<int> {42, 0, 43});
+				.P1.ShouldBeEquivalentTo(new List<int> { 42, 0, 43 });
 		}
 
 		[Fact]
@@ -106,7 +105,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 					dictionary.Add("P1:1", "Foo");
 					dictionary.Add("P1:2", "43");
 				})
-				.P1.ShouldBeEquivalentTo(new List<int> {42, 0, 43});
+				.P1.ShouldBeEquivalentTo(new List<int> { 42, 0, 43 });
 		}
 
 		[Fact]
@@ -115,7 +114,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString<int>("42", new ConversionResult(42));
 
 			RoundtripConvert<TestConfiguration<IEnumerable<int>>>("P1:0", "42")
-				.P1.ShouldBeEquivalentTo(new List<int> {42});
+				.P1.ShouldBeEquivalentTo(new List<int> { 42 });
 		}
 
 		[Fact]
@@ -124,7 +123,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString<int>("42", new ConversionResult(42));
 
 			RoundtripConvert<TestConfiguration<List<int>>>("P1:0", "42")
-				.P1.ShouldBeEquivalentTo(new List<int> {42});
+				.P1.ShouldBeEquivalentTo(new List<int> { 42 });
 		}
 
 		[Fact]
@@ -133,7 +132,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString<int>("42", new ConversionResult(42));
 
 			RoundtripConvert<TestConfiguration<IReadOnlyCollection<int>>>("P1:0", "42")
-				.P1.ShouldBeEquivalentTo(new List<int> {42});
+				.P1.ShouldBeEquivalentTo(new List<int> { 42 });
 		}
 
 		[Fact]
@@ -142,7 +141,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString<int>("42", new ConversionResult(42));
 
 			RoundtripConvert<TestConfiguration<IReadOnlyList<int>>>("P1:0", "42")
-				.P1.ShouldBeEquivalentTo(new List<int> {42});
+				.P1.ShouldBeEquivalentTo(new List<int> { 42 });
 		}
 
 		[Fact]
@@ -151,7 +150,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString<int>("42", new ConversionResult(42));
 
 			RoundtripConvert<TestConfigurationWithInitializedProperty<List<int>>>("P1:0", "42")
-				.P1.ShouldBeEquivalentTo(new List<int> {42});
+				.P1.ShouldBeEquivalentTo(new List<int> { 42 });
 		}
 	}
 }

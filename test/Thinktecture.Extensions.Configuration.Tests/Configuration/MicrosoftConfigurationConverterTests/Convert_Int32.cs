@@ -1,6 +1,5 @@
 ﻿using System;
 using FluentAssertions;
-using Moq;
 using Thinktecture.Helpers;
 using Xunit;
 

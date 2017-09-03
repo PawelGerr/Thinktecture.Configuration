@@ -12,7 +12,7 @@ namespace Thinktecture
 	{
 		public static T ResolveConfigurationType<T>(this IComponentContext container)
 		{
-			return (T) container.ResolveConfigurationType(typeof(T));
+			return (T)container.ResolveConfigurationType(typeof(T));
 		}
 
 		public static object ResolveConfigurationType(this IComponentContext container, Type objectType)

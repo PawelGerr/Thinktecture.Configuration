@@ -12,7 +12,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		public Convert_Dictionary()
 		{
 			InstanceCreatorMock.Setup(c => c.Create(It.IsAny<Type>()))
-				.Returns<Type>(type => new ConversionResult(new Dictionary<string, int>()));
+								.Returns<Type>(type => new ConversionResult(new Dictionary<string, int>()));
 		}
 
 		[Fact]
@@ -35,7 +35,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString<int>("42", new ConversionResult(42));
 
 			RoundtripConvert<TestConfiguration<Dictionary<string, int>>>("P1:foo", "42")
-				.P1.ShouldBeEquivalentTo(new Dictionary<string, int>() {{"foo", 42}});
+				.P1.ShouldBeEquivalentTo(new Dictionary<string, int>() { { "foo", 42 } });
 		}
 
 		[Fact]
@@ -44,7 +44,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString<int>("42", new ConversionResult(42));
 
 			RoundtripConvert<TestConfiguration<IDictionary<string, int>>>("P1:foo", "42")
-				.P1.ShouldBeEquivalentTo(new Dictionary<string, int>() {{"foo", 42}});
+				.P1.ShouldBeEquivalentTo(new Dictionary<string, int>() { { "foo", 42 } });
 		}
 
 		[Fact]
@@ -53,7 +53,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString<int>("42", new ConversionResult(42));
 
 			RoundtripConvert<TestConfiguration<IReadOnlyDictionary<string, int>>>("P1:foo", "42")
-				.P1.ShouldBeEquivalentTo(new Dictionary<string, int>() {{"foo", 42}});
+				.P1.ShouldBeEquivalentTo(new Dictionary<string, int>() { { "foo", 42 } });
 		}
 	}
 }

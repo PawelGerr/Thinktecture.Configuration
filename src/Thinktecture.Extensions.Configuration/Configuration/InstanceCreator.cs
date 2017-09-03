@@ -35,9 +35,9 @@ namespace Thinktecture.Configuration
 
 			try
 			{
-				if(type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+				if (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
 				{
-					if(string.IsNullOrWhiteSpace(value))
+					if (string.IsNullOrWhiteSpace(value))
 						return new ConversionResult(null);
 
 					type = Nullable.GetUnderlyingType(type);

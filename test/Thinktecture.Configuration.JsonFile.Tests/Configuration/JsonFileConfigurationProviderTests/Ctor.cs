@@ -28,7 +28,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationProviderTests
 		[Fact]
 		public void Should_not_throw_if_token_is_null()
 		{
-			Action ctor = () => new JsonFileConfigurationProvider(new JToken[] {null}, ConverterMock.Object);
+			Action ctor = () => new JsonFileConfigurationProvider(new JToken[] { null }, ConverterMock.Object);
 			ctor.Invoking(c => c())
 				.ShouldNotThrow<Exception>();
 		}
@@ -36,7 +36,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationProviderTests
 		[Fact]
 		public void Should_throw_argnull_if_converter_is_null()
 		{
-			Action ctor = () => new JsonFileConfigurationProvider(GetTokens(new {}), null);
+			Action ctor = () => new JsonFileConfigurationProvider(GetTokens(new { }), null);
 			ctor.Invoking(c => c())
 				.ShouldThrow<ArgumentNullException>();
 		}
@@ -44,13 +44,13 @@ namespace Thinktecture.Configuration.JsonFileConfigurationProviderTests
 		[Fact]
 		public void Should_not_call_any_members()
 		{
-			new JsonFileConfigurationProvider(GetTokens(new {}), ConverterMock.Object);
+			new JsonFileConfigurationProvider(GetTokens(new { }), ConverterMock.Object);
 		}
 
 		[Fact]
 		public void Should_not_call_any_members_getting_2_tokens()
 		{
-			new JsonFileConfigurationProvider(GetTokens(new {}, new {}), ConverterMock.Object);
+			new JsonFileConfigurationProvider(GetTokens(new { }, new { }), ConverterMock.Object);
 		}
 	}
 }

@@ -34,7 +34,7 @@ namespace Thinktecture.Configuration
 			if (selector != null)
 				configuration = selector.Select(configuration);
 
-			var config =_converter.Convert<TConfiguration>(configuration);
+			var config = _converter.Convert<TConfiguration>(configuration);
 			return config;
 		}
 	}

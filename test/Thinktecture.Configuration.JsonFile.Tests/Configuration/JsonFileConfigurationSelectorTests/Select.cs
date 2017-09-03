@@ -24,7 +24,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationSelectorTests
 		public void Should_return_null_if_property_not_exists()
 		{
 			CreateSelector("Property")
-				.Select(JToken.FromObject(new {}))
+				.Select(JToken.FromObject(new { }))
 				.Should().BeNull();
 		}
 
@@ -32,7 +32,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationSelectorTests
 		public void Should_return_null_token_if_value_of_property_is_null()
 		{
 			CreateSelector("Property")
-				.Select(JToken.FromObject(new {Property = (string) null}))
+				.Select(JToken.FromObject(new { Property = (string)null }))
 				.Type.Should().Be(JTokenType.Null);
 		}
 
@@ -40,7 +40,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationSelectorTests
 		public void Should_return_property()
 		{
 			CreateSelector("Property")
-				.Select(JToken.FromObject(new {Property = "content"}))
+				.Select(JToken.FromObject(new { Property = "content" }))
 				.Value<string>().Should().Be("content");
 		}
 
@@ -48,7 +48,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationSelectorTests
 		public void Should_return_property_case_insensitive()
 		{
 			CreateSelector("property")
-				.Select(JToken.FromObject(new {Property = "content"}))
+				.Select(JToken.FromObject(new { Property = "content" }))
 				.Value<string>().Should().Be("content");
 		}
 
@@ -56,7 +56,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationSelectorTests
 		public void Should_return_sub_property()
 		{
 			CreateSelector("Parent.Child")
-				.Select(JToken.FromObject(new {Parent = new { Child = "content"}}))
+				.Select(JToken.FromObject(new { Parent = new { Child = "content" } }))
 				.Value<string>().Should().Be("content");
 		}
 	}

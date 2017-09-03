@@ -6,7 +6,7 @@ namespace Thinktecture.Configuration
 	/// <summary>
 	/// Selects a section.
 	/// </summary>
-	public class MicrosoftConfigurationSelector: IConfigurationSelector<IConfiguration, IConfiguration>
+	public class MicrosoftConfigurationSelector : IConfigurationSelector<IConfiguration, IConfiguration>
 	{
 		private readonly string _key;
 

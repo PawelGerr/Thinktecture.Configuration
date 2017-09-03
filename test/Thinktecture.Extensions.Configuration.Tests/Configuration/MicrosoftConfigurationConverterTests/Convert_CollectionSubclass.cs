@@ -1,6 +1,5 @@
 ﻿using System;
 using FluentAssertions;
-using Moq;
 using Thinktecture.Helpers;
 using Xunit;
 
@@ -38,7 +37,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 					dictionary.Add("P1:1", "2");
 					dictionary.Add("P1:Property", "value");
 				})
-				.P1.ShouldAllBeEquivalentTo(new TestList<int, string>() {1, 2});
+				.P1.ShouldAllBeEquivalentTo(new TestList<int, string>() { 1, 2 });
 		}
 	}
 
@@ -47,7 +46,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		public Convert_DictionarySubclass()
 		{
 			InstanceCreatorMock.Setup(c => c.Create(typeof(TestDictionary<int, string, string>)))
-				.Returns(() => new ConversionResult(new TestDictionary<int, string, string>()));
+								.Returns(() => new ConversionResult(new TestDictionary<int, string, string>()));
 		}
 
 		[Fact]
