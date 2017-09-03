@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using JetBrains.Annotations;
 
 namespace Thinktecture.Configuration
 {
@@ -12,7 +13,8 @@ namespace Thinktecture.Configuration
 		/// </summary>
 		/// <param name="type">Type an instance to create of.</param>
 		/// <returns>New instance of type <paramref name="type"/>.</returns>
-		IConversionResult Create(Type type);
+		[NotNull]
+		IConversionResult Create([NotNull] Type type);
 
 		/// <summary>
 		/// Creates new instance of provided <paramref name="type"/> using the provided <paramref name="value"/>.
@@ -20,7 +22,8 @@ namespace Thinktecture.Configuration
 		/// <param name="type">Type an instance to create of.</param>
 		/// <param name="value">Value to use when creating an instance of type <paramref name="type"/>.</param>
 		/// <returns>New instance of type <paramref name="type"/>.</returns>
-		IConversionResult Create(Type type, string value);
+		[NotNull]
+		IConversionResult Create([NotNull] Type type, [CanBeNull] string value);
 
 		/// <summary>
 		/// Creates a new array of provided <paramref name="elementType"/> and with provided <paramref name="length"/>.
@@ -28,6 +31,7 @@ namespace Thinktecture.Configuration
 		/// <param name="elementType">The type of the array elements.</param>
 		/// <param name="length">The length of the array.</param>
 		/// <returns>New instance of <see cref="Array"/>.</returns>
-		Array CreateArray(Type elementType, int length);
+		[NotNull]
+		Array CreateArray([NotNull] Type elementType, int length);
 	}
 }

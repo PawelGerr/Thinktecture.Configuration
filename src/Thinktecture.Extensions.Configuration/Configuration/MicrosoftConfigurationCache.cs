@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 
@@ -26,9 +27,9 @@ namespace Thinktecture.Configuration
 		/// <param name="selector">Configuration selector.</param>
 		/// <param name="changeTokenSource">Change token.</param>
 		public MicrosoftConfigurationCache(
-			IConfigurationProvider<IConfiguration, IConfiguration> configurationProvider,
-			IConfigurationSelector<IConfiguration, IConfiguration> selector,
-			MicrosoftConfigurationChangeTokenSource changeTokenSource)
+			[NotNull] IConfigurationProvider<IConfiguration, IConfiguration> configurationProvider,
+			[CanBeNull] IConfigurationSelector<IConfiguration, IConfiguration> selector,
+			[NotNull] MicrosoftConfigurationChangeTokenSource changeTokenSource)
 		{
 			if (changeTokenSource == null)
 				throw new ArgumentNullException(nameof(changeTokenSource));
@@ -40,6 +41,7 @@ namespace Thinktecture.Configuration
 			_lazyConfig = CreateLazyConfig();
 		}
 
+		[NotNull]
 		private Lazy<T> CreateLazyConfig()
 		{
 			return new Lazy<T>(() => _configurationProvider.GetConfiguration<T>(_selector));

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace Thinktecture.Configuration
 {
@@ -20,7 +21,7 @@ namespace Thinktecture.Configuration
 		/// Initializes new instance <see cref="AutofacJsonTokenConverter"/>.
 		/// </summary>
 		/// <param name="type">Type to resolve.</param>
-		public AutofacJsonTokenConverterType(Type type)
+		public AutofacJsonTokenConverterType([NotNull] Type type)
 		{
 			Type = type ?? throw new ArgumentNullException(nameof(type));
 		}

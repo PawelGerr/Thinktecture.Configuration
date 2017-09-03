@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -79,7 +79,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			return ConvertFrom<T>(config, registerDefaultCreator);
 		}
 
-		private T ConvertFrom<T>(IConfigurationRoot config, bool registerDefaultCreator)
+		private T ConvertFrom<T>(IConfiguration config, bool registerDefaultCreator)
 			where T : new()
 		{
 			if (registerDefaultCreator)
@@ -97,7 +97,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			return config;
 		}
 
-		private IConfigurationRoot GetConfig(Action<IDictionary<string, string>> addValues)
+		private static IConfigurationRoot GetConfig(Action<IDictionary<string, string>> addValues)
 		{
 			var values = new Dictionary<string, string>();
 			addValues?.Invoke(values);

@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace Thinktecture.Configuration
@@ -13,6 +14,7 @@ namespace Thinktecture.Configuration
 		/// <typeparam name="TConfiguration">Type of the configuration.</typeparam>
 		/// <param name="tokens">The first token is considered to be the main token, the others act as overrides.</param>
 		/// <returns>An instance of <typeparamref name="TConfiguration"/>.</returns>
-		TConfiguration Convert<TConfiguration>(JToken[] tokens);
+		[CanBeNull]
+		TConfiguration Convert<TConfiguration>([ItemCanBeNull, NotNull] JToken[] tokens);
 	}
 }

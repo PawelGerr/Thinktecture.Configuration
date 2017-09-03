@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 
 namespace Thinktecture.Configuration
@@ -18,7 +19,7 @@ namespace Thinktecture.Configuration
 		/// <typeparam name="T">Type an instance to create of.</typeparam>
 		/// <param name="configuration">Provides values to populate an instance of type <typeparamref name="T"/>.</param>
 		/// <returns>A new instance of type <typeparamref name="T"/>.</returns>
-		T Convert<T>(IConfiguration configuration);
+		T Convert<T>([NotNull] IConfiguration configuration);
 
 		/// <summary>
 		/// Creates a new instance of provided <paramref name="type"/> and populates it with values from <paramref name="configuration"/>.
@@ -26,6 +27,6 @@ namespace Thinktecture.Configuration
 		/// <param name="configuration">Provides values to populate an instance of type <paramref name="type"/>.</param>
 		/// <param name="type">Type an instance to create of.</param>
 		/// <returns>A new instance of provided <paramref name="type"/>.</returns>
-		object Convert(IConfiguration configuration, Type type);
+		object Convert([NotNull] IConfiguration configuration, [NotNull] Type type);
 	}
 }

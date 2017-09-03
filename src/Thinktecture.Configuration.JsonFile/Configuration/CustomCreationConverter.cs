@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace Thinktecture.Configuration
@@ -14,7 +15,7 @@ namespace Thinktecture.Configuration
 		/// </summary>
 		/// <param name="type">The type to convert.</param>
 		/// <exception cref="ArgumentNullException">Thrown if the provided <paramref name="type"/> is <c>null</c>.</exception>
-		protected CustomCreationConverter(Type type)
+		protected CustomCreationConverter([NotNull] Type type)
 		{
 			_type = type ?? throw new ArgumentNullException(nameof(type));
 		}
@@ -42,7 +43,8 @@ namespace Thinktecture.Configuration
 		/// <param name="existingValue">The existing value of object being read.</param>
 		/// <param name="serializer">The calling serializer.</param>
 		/// <returns>The object value.</returns>
-		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+		[CanBeNull]
+		public override object ReadJson([NotNull] JsonReader reader, Type objectType, object existingValue, [NotNull] JsonSerializer serializer)
 		{
 			if (reader == null)
 				throw new ArgumentNullException(nameof(reader));
@@ -75,7 +77,7 @@ namespace Thinktecture.Configuration
 		/// <returns>
 		/// 	<c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
 		/// </returns>
-		public override bool CanConvert(Type objectType)
+		public override bool CanConvert([NotNull] Type objectType)
 		{
 			if (objectType == null)
 				throw new ArgumentNullException(nameof(objectType));

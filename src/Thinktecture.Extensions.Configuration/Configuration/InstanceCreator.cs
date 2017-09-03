@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace Thinktecture.Configuration
 {
@@ -19,7 +20,7 @@ namespace Thinktecture.Configuration
 		/// Initializes new instance of type <see cref="InstanceCreator"/>.
 		/// </summary>
 		/// <param name="culture">Culture to be used during conversion.</param>
-		protected InstanceCreator(CultureInfo culture)
+		protected InstanceCreator([NotNull] CultureInfo culture)
 		{
 			Culture = culture ?? throw new ArgumentNullException(nameof(culture));
 		}
@@ -37,7 +38,7 @@ namespace Thinktecture.Configuration
 			{
 				if (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
 				{
-					if (string.IsNullOrWhiteSpace(value))
+					if (String.IsNullOrWhiteSpace(value))
 						return new ConversionResult(null);
 
 					type = Nullable.GetUnderlyingType(type);

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace Thinktecture.Configuration
@@ -15,7 +16,7 @@ namespace Thinktecture.Configuration
 		/// Creates new <see cref="JsonFileConfigurationSelector"/>.
 		/// </summary>
 		/// <param name="propertyPath">The path of the property to select, e.g. <c>MyProperty.AnotherProperty</c> </param>
-		public JsonFileConfigurationSelector(string propertyPath)
+		public JsonFileConfigurationSelector([NotNull] string propertyPath)
 		{
 			if (propertyPath == null)
 				throw new ArgumentNullException(nameof(propertyPath));
@@ -30,7 +31,8 @@ namespace Thinktecture.Configuration
 		}
 
 		/// <inheritdoc />
-		public JToken Select(JToken token)
+		[CanBeNull]
+		public JToken Select([NotNull] JToken token)
 		{
 			if (token == null)
 				throw new ArgumentNullException(nameof(token));
@@ -38,6 +40,7 @@ namespace Thinktecture.Configuration
 			foreach (var propertyName in _pathFragments)
 			{
 				token = GetChild(token, propertyName);
+
 				if (token == null)
 					return null;
 			}
@@ -45,7 +48,7 @@ namespace Thinktecture.Configuration
 			return token;
 		}
 
-		private JToken GetChild(JToken token, string propertyName)
+		private JToken GetChild([NotNull] JToken token, [NotNull] string propertyName)
 		{
 			if (token == null)
 				throw new ArgumentNullException(nameof(token));
@@ -54,12 +57,8 @@ namespace Thinktecture.Configuration
 
 			foreach (var child in token)
 			{
-				var prop = child as JProperty;
-
-				if ((prop != null) && StringComparer.OrdinalIgnoreCase.Equals(prop.Name, propertyName))
-				{
+				if ((child is JProperty prop) && StringComparer.OrdinalIgnoreCase.Equals(prop.Name, propertyName))
 					return prop.Value;
-				}
 			}
 			return null;
 		}

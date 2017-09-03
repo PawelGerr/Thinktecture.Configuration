@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Thinktecture.IO;
@@ -31,7 +32,8 @@ namespace Thinktecture.Configuration
 		/// <param name="encoding">Encoding to be used for reading json file.</param>
 		/// <param name="jsonSerializerSettingsProvider">Provides <see cref="JsonSerializerSettings"/> for deserialization of file content to <see cref="JToken"/>.</param>
 		/// <param name="jsonConfigurationProviderFactory">A factory for creation of <see cref="IConfigurationProvider{TRawDataIn,TRawDataOut}"/>.</param>
-		public JsonFileConfigurationLoader(IFile file, IJsonTokenConverter tokenConverter, string[] filePaths, IEncoding encoding = null, Func<JsonSerializerSettings> jsonSerializerSettingsProvider = null, Func<JToken[], IJsonTokenConverter, IConfigurationProvider<JToken, JToken>> jsonConfigurationProviderFactory = null)
+		public JsonFileConfigurationLoader([NotNull] IFile file, [NotNull] IJsonTokenConverter tokenConverter, [NotNull] string[] filePaths, [CanBeNull] IEncoding encoding = null,
+			[CanBeNull] Func<JsonSerializerSettings> jsonSerializerSettingsProvider = null, [CanBeNull] Func<JToken[], IJsonTokenConverter, IConfigurationProvider<JToken, JToken>> jsonConfigurationProviderFactory = null)
 		{
 			if (filePaths == null)
 				throw new ArgumentNullException(nameof(filePaths));
@@ -53,6 +55,7 @@ namespace Thinktecture.Configuration
 			return _jsonConfigurationProviderFactory(tokens, _tokenConverter);
 		}
 
+		[NotNull]
 		private JToken[] GetTokens()
 		{
 			var serializer = (_jsonSerializerSettingsProvider == null) ? JsonSerializer.CreateDefault() : JsonSerializer.CreateDefault(_jsonSerializerSettingsProvider());

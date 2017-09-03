@@ -22,18 +22,19 @@ namespace Thinktecture.Configuration
 		/// <param name="scope">Autofac container.</param>
 		/// <param name="typesToConvertViaAutofac">Types that should be converted using autofac.</param>
 		/// <param name="jsonSerializerSettingsProvider">Provides <see cref="JsonSerializerSettings"/> to be used by <see cref="JsonSerializer"/>.</param>
-		public AutofacJsonTokenConverter([NotNull] ILifetimeScope scope, IEnumerable<AutofacJsonTokenConverterType> typesToConvertViaAutofac, [CanBeNull] IAutofacJsonTokenConverterJsonSettingsProvider jsonSerializerSettingsProvider = null)
+		public AutofacJsonTokenConverter([NotNull] ILifetimeScope scope, [NotNull] IEnumerable<AutofacJsonTokenConverterType> typesToConvertViaAutofac, [CanBeNull] IAutofacJsonTokenConverterJsonSettingsProvider jsonSerializerSettingsProvider = null)
 		{
 			if (scope == null)
 				throw new ArgumentNullException(nameof(scope));
+			if (typesToConvertViaAutofac == null)
+				throw new ArgumentNullException(nameof(typesToConvertViaAutofac));
 
 			_jsonSerializerSettingsProvider = jsonSerializerSettingsProvider;
-			_converters = typesToConvertViaAutofac?.Select(t => new AutofacCreationJsonConverter(t.Type, scope)).ToList() ?? throw new ArgumentNullException(nameof(typesToConvertViaAutofac));
+			_converters = typesToConvertViaAutofac.Select(t => new AutofacCreationJsonConverter(t.Type, scope)).ToList();
 		}
 
 		/// <inheritdoc />
-		[CanBeNull]
-		public TConfiguration Convert<TConfiguration>([ItemCanBeNull, NotNull] JToken[] tokens)
+		public TConfiguration Convert<TConfiguration>(JToken[] tokens)
 		{
 			if (tokens == null)
 				throw new ArgumentNullException(nameof(tokens));
@@ -58,18 +59,18 @@ namespace Thinktecture.Configuration
 			var startToken = tokens.Skip(startIndex).First(t => t != null && t.Type != JTokenType.Null);
 			var config = startToken.ToObject<TConfiguration>(serializer);
 
-			if (!ReferenceEquals(config, null))
-			{
-				for (var i = startIndex + 1; i < tokens.Length; i++)
-				{
-					var token = tokens[i];
+			if (ReferenceEquals(config, null))
+				return default;
 
-					if (!IsNull(token))
+			for (var i = startIndex + 1; i < tokens.Length; i++)
+			{
+				var token = tokens[i];
+
+				if (!IsNull(token))
+				{
+					using (var reader = new JTokenReader(token))
 					{
-						using (var reader = new JTokenReader(token))
-						{
-							serializer.Populate(reader, config);
-						}
+						serializer.Populate(reader, config);
 					}
 				}
 			}

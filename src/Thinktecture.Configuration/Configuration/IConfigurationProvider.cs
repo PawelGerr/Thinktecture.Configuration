@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using JetBrains.Annotations;
 
 namespace Thinktecture.Configuration
 {
@@ -10,10 +11,12 @@ namespace Thinktecture.Configuration
 	public interface IConfigurationProvider<out TRawDataIn, in TRawDataOut>
 	{
 		/// <summary>
-		/// Gets the value as a type <typeparam name="TConfiguration">TConfiguration</typeparam>
+		/// Gets the value as a typed configuration.
 		/// </summary>
+		/// <typeparam name="TConfiguration">Type of the configuration.</typeparam>
 		/// <param name="selector">Identifies the configuration.</param>
 		/// <returns>Configuration value.</returns>
-		TConfiguration GetConfiguration<TConfiguration>(IConfigurationSelector<TRawDataIn, TRawDataOut> selector = null);
+		[CanBeNull]
+		TConfiguration GetConfiguration<TConfiguration>([CanBeNull] IConfigurationSelector<TRawDataIn, TRawDataOut> selector = null);
 	}
 }

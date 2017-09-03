@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
@@ -28,7 +28,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 			return new AutofacJsonTokenConverter(_builder.Build(), _typesToConvertViaAutofac);
 		}
 
-		private JToken[] GetTokens(params object[] objects)
+		private static JToken[] GetTokens(params object[] objects)
 		{
 			return objects.Select(o => o == null ? null : JToken.FromObject(o)).ToArray();
 		}
@@ -51,7 +51,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_return_null_if_token_is_nulltoken()
 		{
-			var config = Create().Convert<ConfigurationWithDefaultCtor>(new JToken[] { JToken.Parse("null") });
+			var config = Create().Convert<ConfigurationWithDefaultCtor>(new[] { JToken.Parse("null") });
 			config.Should().BeNull();
 		}
 
@@ -302,9 +302,9 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		public void Should_ignore_null_values()
 		{
 			var tokens = GetTokens(new
-									{
-										InnerConfiguration = new { InnerConfiguration = new ConfigurationWithDefaultCtor() }
-									},
+			{
+				InnerConfiguration = new { InnerConfiguration = new ConfigurationWithDefaultCtor() }
+			},
 									null,
 									new
 									{
@@ -321,9 +321,9 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		public void Should_start_deserializing_after_last_nulltoken()
 		{
 			var tokens = GetTokens(new
-									{
-										InnerConfiguration = new { InnerConfiguration = new ConfigurationWithDefaultCtor() }
-									},
+			{
+				InnerConfiguration = new { InnerConfiguration = new ConfigurationWithDefaultCtor() }
+			},
 									JToken.Parse("null"),
 									new
 									{

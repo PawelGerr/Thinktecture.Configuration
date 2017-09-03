@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 
 namespace Thinktecture.Configuration
@@ -14,13 +15,14 @@ namespace Thinktecture.Configuration
 		/// Initializes a new instance of <see cref="MicrosoftConfigurationSelector"/>.
 		/// </summary>
 		/// <param name="key">The key of the configuration section.</param>
-		public MicrosoftConfigurationSelector(string key)
+		public MicrosoftConfigurationSelector([NotNull] string key)
 		{
 			_key = key ?? throw new ArgumentNullException(nameof(key));
 		}
 
 		/// <inheritdoc />
-		public IConfiguration Select(IConfiguration configuration)
+		[NotNull]
+		public IConfiguration Select([NotNull] IConfiguration configuration)
 		{
 			if (configuration == null)
 				throw new ArgumentNullException(nameof(configuration));

@@ -1,4 +1,6 @@
-﻿namespace Thinktecture.Configuration
+using JetBrains.Annotations;
+
+namespace Thinktecture.Configuration
 {
 	/// <summary>
 	/// Loads configuration.
@@ -11,6 +13,7 @@
 		/// Loads configuration.
 		/// </summary>
 		/// <returns>Configuration provider.</returns>
+		[NotNull]
 		IConfigurationProvider<TRawDataIn, TRawDataOut> Load();
 	}
 }

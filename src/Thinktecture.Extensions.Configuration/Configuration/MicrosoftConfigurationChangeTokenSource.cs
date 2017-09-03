@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 
@@ -15,7 +16,7 @@ namespace Thinktecture.Configuration
 		/// Initializes new instance of <see cref="MicrosoftConfigurationChangeTokenSource"/>.
 		/// </summary>
 		/// <param name="configuration">Configuration.</param>
-		public MicrosoftConfigurationChangeTokenSource(IConfiguration configuration)
+		public MicrosoftConfigurationChangeTokenSource([NotNull] IConfiguration configuration)
 		{
 			_configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 		}

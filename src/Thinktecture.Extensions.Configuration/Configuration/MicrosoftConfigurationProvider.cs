@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 
 namespace Thinktecture.Configuration
@@ -20,7 +21,7 @@ namespace Thinktecture.Configuration
 		/// </summary>
 		/// <param name="configuration">The source to be used during deserialization of the configurations.</param>
 		/// <param name="converter">Reads from <paramref name="configuration"/> and populates the object.</param>
-		public MicrosoftConfigurationProvider(IConfiguration configuration, IMicrosoftConfigurationConverter converter)
+		public MicrosoftConfigurationProvider([NotNull] IConfiguration configuration, [NotNull] IMicrosoftConfigurationConverter converter)
 		{
 			_converter = converter ?? throw new ArgumentNullException(nameof(converter));
 			_configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
@@ -29,13 +30,9 @@ namespace Thinktecture.Configuration
 		/// <inheritdoc />
 		public TConfiguration GetConfiguration<TConfiguration>(IConfigurationSelector<IConfiguration, IConfiguration> selector = null)
 		{
-			var configuration = _configuration;
+			var configuration = selector == null ? _configuration : selector.Select(_configuration);
 
-			if (selector != null)
-				configuration = selector.Select(configuration);
-
-			var config = _converter.Convert<TConfiguration>(configuration);
-			return config;
+			return _converter.Convert<TConfiguration>(configuration);
 		}
 	}
 }

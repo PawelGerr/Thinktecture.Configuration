@@ -14,7 +14,7 @@ namespace Thinktecture.Configuration
 		/// <summary>
 		/// Input that has to be created yet.
 		/// </summary>
-		public static readonly ConversionInstance Empty = new ConversionInstance(false, null);
+		public static readonly ConversionInstance Empty = new ConversionInstance(null, false);
 
 		/// <inheritdoc />
 		public bool IsCreated { get; }
@@ -29,11 +29,11 @@ namespace Thinktecture.Configuration
 		/// </summary>
 		/// <param name="value">Value to be used for population.</param>
 		public ConversionInstance(object value)
-			: this(true, value)
+			: this(value, true)
 		{
 		}
 
-		private ConversionInstance(bool isCreated, object value)
+		private ConversionInstance(object value, bool isCreated)
 		{
 			IsCreated = isCreated;
 			_value = value;

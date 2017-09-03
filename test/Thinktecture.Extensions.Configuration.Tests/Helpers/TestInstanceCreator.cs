@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using Thinktecture.Configuration;
 
@@ -13,7 +13,7 @@ namespace Thinktecture.Helpers
 
 		public override IConversionResult Create(Type type)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 	}
 }

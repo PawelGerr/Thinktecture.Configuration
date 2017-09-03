@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Autofac;
 using Thinktecture.Configuration.JsonFile.Autofac.Example.Configuration;
 using Thinktecture.IO;
@@ -6,7 +6,7 @@ using Thinktecture.IO.Adapters;
 
 namespace Thinktecture.Configuration.JsonFile.Autofac.Example
 {
-	public class Program
+	public static class Program
 	{
 		private const string _CONFIG_FILE_PATH = "Configuration.json";
 		private const string _CONFIG_OVERRIDE_FILE_PATH = "ConfigurationOverride.json";

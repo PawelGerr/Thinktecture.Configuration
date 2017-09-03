@@ -30,12 +30,12 @@ namespace Thinktecture.Helpers
 
 		public IDirectoryContents GetDirectoryContents(string subpath)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		public IChangeToken Watch(string filter)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 	}
 }

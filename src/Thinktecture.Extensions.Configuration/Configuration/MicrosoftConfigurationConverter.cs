@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -20,7 +21,7 @@ namespace Thinktecture.Configuration
 		/// </summary>
 		/// <param name="logger">Logger</param>
 		/// <param name="instanceCreator">Creates new instances of provided type.</param>
-		public MicrosoftConfigurationConverter(ILogger<MicrosoftConfigurationConverter> logger, IInstanceCreator instanceCreator)
+		public MicrosoftConfigurationConverter([NotNull] ILogger<MicrosoftConfigurationConverter> logger, [NotNull] IInstanceCreator instanceCreator)
 		{
 			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			_instanceCreator = instanceCreator ?? throw new ArgumentNullException(nameof(instanceCreator));
@@ -32,6 +33,7 @@ namespace Thinktecture.Configuration
 		/// <typeparam name="T">Type an instance to create of.</typeparam>
 		/// <param name="configuration">Provides values to populate an instance of type <typeparamref name="T"/>.</param>
 		/// <returns>A new instance of type <typeparamref name="T"/>.</returns>
+		[CanBeNull]
 		public T Convert<T>(IConfiguration configuration)
 		{
 			if (configuration == null)
@@ -42,7 +44,7 @@ namespace Thinktecture.Configuration
 			try
 			{
 				if (result == null)
-					return default(T);
+					return default;
 
 				return (T)result;
 			}
@@ -61,6 +63,7 @@ namespace Thinktecture.Configuration
 		/// <param name="configuration">Provides values to populate an instance of provided <paramref name="type"/>.</param>
 		/// <param name="type">Type an instance to create of.</param>
 		/// <returns>A new instance of provided <paramref name="type"/>.</returns>
+		[CanBeNull]
 		public object Convert(IConfiguration configuration, Type type)
 		{
 			if (configuration == null)
@@ -74,7 +77,7 @@ namespace Thinktecture.Configuration
 			return null;
 		}
 
-		private IConversionResult CreateAndPopulate(Type type, IConfiguration config, IConversionInstance instance)
+		private IConversionResult CreateAndPopulate([NotNull] Type type, [NotNull] IConfiguration config, [NotNull] IConversionInstance instance)
 		{
 			if (type == null)
 				throw new ArgumentNullException(nameof(type));
@@ -104,7 +107,7 @@ This array along with its elements are going to be discarded. Please make check 
 					}
 				}
 
-				if (!hasChildConfigs && configValue == String.Empty)
+				if (!hasChildConfigs && configValue?.Length == 0)
 					return new ConversionResult(null);
 
 				return CreateAndPopulateArray(elementType, config);
@@ -112,7 +115,7 @@ This array along with its elements are going to be discarded. Please make check 
 
 			if (IsComplexType(type, config))
 			{
-				if (!hasChildConfigs && configValue == String.Empty)
+				if (!hasChildConfigs && configValue?.Length == 0)
 					return new ConversionResult(null);
 
 				return ConvertComplexType(type, config, instance);
@@ -127,7 +130,7 @@ This array along with its elements are going to be discarded. Please make check 
 			return ConversionResult.Invalid;
 		}
 
-		private bool IsComplexType(Type type, IConfiguration config)
+		private static bool IsComplexType([NotNull] Type type, [NotNull] IConfiguration config)
 		{
 			var typeInfo = type.GetTypeInfo();
 
@@ -148,7 +151,8 @@ This array along with its elements are going to be discarded. Please make check 
 			return (config as IConfigurationSection)?.Value != null;
 		}
 
-		private IConversionResult ConvertComplexType(Type type, IConfiguration config, IConversionInstance instance)
+		[NotNull]
+		private IConversionResult ConvertComplexType([NotNull] Type type, [NotNull] IConfiguration config, [NotNull] IConversionInstance instance)
 		{
 			if (type == null)
 				throw new ArgumentNullException(nameof(type));
@@ -161,6 +165,7 @@ This array along with its elements are going to be discarded. Please make check 
 			{
 				var result = _instanceCreator.Create(type);
 
+				// ReSharper disable once ConditionIsAlwaysTrueOrFalse
 				if (result == null)
 					throw new ConfigurationSerializationException($"Instance creator returned null when trying to create an instance of type {type.FullName}");
 
@@ -187,7 +192,7 @@ This array along with its elements are going to be discarded. Please make check 
 			return new ConversionResult(instance.Value);
 		}
 
-		private void Populate(IConfiguration config, IConversionInstance instance)
+		private void Populate([NotNull] IConfiguration config, [NotNull] IConversionInstance instance)
 		{
 			if (config == null)
 				throw new ArgumentNullException(nameof(config));
@@ -209,7 +214,7 @@ This array along with its elements are going to be discarded. Please make check 
 			}
 		}
 
-		private void SetProperty(PropertyInfo property, IConfiguration config, IConversionInstance instance)
+		private void SetProperty([NotNull] PropertyInfo property, [NotNull] IConfiguration config, [NotNull] IConversionInstance instance)
 		{
 			if (property == null)
 				throw new ArgumentNullException(nameof(property));
@@ -218,7 +223,7 @@ This array along with its elements are going to be discarded. Please make check 
 			if (instance == null)
 				throw new ArgumentNullException(nameof(instance));
 			if (instance.Value == null)
-				throw new ArgumentNullException(nameof(instance), "Instance cannot be null when setting a property.");
+				throw new ArgumentException("ConversionInstance value cannot be null when setting a property.", nameof(instance));
 
 			if (!HasPublicGetter(property))
 				return;
@@ -244,7 +249,7 @@ This array along with its elements are going to be discarded. Please make check 
 			}
 		}
 
-		private static bool HasPublicGetter(PropertyInfo property)
+		private static bool HasPublicGetter([NotNull] PropertyInfo property)
 		{
 			if (property == null)
 				throw new ArgumentNullException(nameof(property));
@@ -253,8 +258,10 @@ This array along with its elements are going to be discarded. Please make check 
 					&& property.GetMethod.GetParameters().Length == 0;
 		}
 
-		private void PopulateCollection(Type elementType, IConfiguration config, IConversionInstance instance)
+		private void PopulateCollection([NotNull] Type elementType, [NotNull] IConfiguration config, [NotNull] IConversionInstance instance)
 		{
+			if (elementType == null)
+				throw new ArgumentNullException(nameof(elementType));
 			if (instance == null)
 				throw new ArgumentNullException(nameof(instance));
 			if (instance.Value == null)
@@ -268,10 +275,12 @@ This array along with its elements are going to be discarded. Please make check 
 				PopulateCollection(instance.Value, elementType, (Array)arrayResult.Value);
 		}
 
-		private void PopulateCollection(object collection, Type elementType, Array children)
+		private void PopulateCollection([NotNull] object collection, [NotNull] Type elementType, [NotNull] Array children)
 		{
 			if (collection == null)
 				throw new ArgumentNullException(nameof(collection));
+			if (elementType == null)
+				throw new ArgumentNullException(nameof(elementType));
 			if (children == null)
 				throw new ArgumentNullException(nameof(children));
 
@@ -297,7 +306,8 @@ This array along with its elements are going to be discarded. Please make check 
 			}
 		}
 
-		private MethodInfo FindMethod(Type type, string name, params Type[] paramTypes)
+		[CanBeNull]
+		private MethodInfo FindMethod([NotNull] Type type, [NotNull] string name, [NotNull] params Type[] paramTypes)
 		{
 			if (type == null)
 				throw new ArgumentNullException(nameof(type));
@@ -327,7 +337,7 @@ This array along with its elements are going to be discarded. Please make check 
 											if (parameters.Length != paramTypes.Length)
 												return false;
 
-											for (int i = 0; i < parameters.Length; i++)
+											for (var i = 0; i < parameters.Length; i++)
 											{
 												if (parameters[i].ParameterType != paramTypes[i])
 													return false;
@@ -345,7 +355,7 @@ This array along with its elements are going to be discarded. Please make check 
 			return null;
 		}
 
-		private bool TryGetCollectionElementType(Type type, out Type elementType)
+		private bool TryGetCollectionElementType([NotNull] Type type, [CanBeNull] out Type elementType)
 		{
 			var collectionType = FindGenericImplementedType(typeof(IList<>), type)
 								?? FindGenericImplementedType(typeof(ICollection<>), type)
@@ -358,7 +368,7 @@ This array along with its elements are going to be discarded. Please make check 
 			return elementType != null;
 		}
 
-		private bool TryGetDictionaryTypes(Type type, out (Type KeyType, Type ValueType) types)
+		private bool TryGetDictionaryTypes([NotNull] Type type, out (Type KeyType, Type ValueType) types)
 		{
 			var dictionaryInterface = FindGenericImplementedType(typeof(IDictionary<,>), type)
 									?? FindGenericImplementedType(typeof(IReadOnlyDictionary<,>), type);
@@ -374,7 +384,7 @@ This array along with its elements are going to be discarded. Please make check 
 			return false;
 		}
 
-		private void PopulateDictionary(Type keyType, Type valueType, IConfiguration config, IConversionInstance instance)
+		private void PopulateDictionary([NotNull] Type keyType, [NotNull] Type valueType, [NotNull] IConfiguration config, [NotNull] IConversionInstance instance)
 		{
 			if (instance == null)
 				throw new ArgumentNullException(nameof(instance));
@@ -410,7 +420,8 @@ This array along with its elements are going to be discarded. Please make check 
 			}
 		}
 
-		private IConversionResult CreateAndPopulateArray(Type elementType, IConfiguration config)
+		[NotNull]
+		private IConversionResult CreateAndPopulateArray([NotNull] Type elementType, [NotNull] IConfiguration config)
 		{
 			if (elementType == null)
 				throw new ArgumentNullException(nameof(elementType));
@@ -420,8 +431,7 @@ This array along with its elements are going to be discarded. Please make check 
 			var children = config.GetChildren()
 								.Select(c =>
 								{
-									int index;
-									if (c.Key == null || !Int32.TryParse(c.Key, out index))
+									if (c.Key == null || !Int32.TryParse(c.Key, out var index))
 									{
 										_logger.LogWarning("The index of the collection of type {type} is not an integer. Key: {key}, path: {path}", elementType.FullName, c.Key, c.Path);
 										return null;
@@ -432,13 +442,13 @@ This array along with its elements are going to be discarded. Please make check 
 								.Where(i => i != null)
 								.ToArray();
 
-			if (children.Length == 0)
-			{
-				if ((config as IConfigurationSection)?.Value == null)
-					return new ConversionResult(null);
-			}
+			if (children.Length == 0 && (config as IConfigurationSection)?.Value == null)
+				return new ConversionResult(null);
 
 			var array = _instanceCreator.CreateArray(elementType, children.Length == 0 ? 0 : children.Max(c => c.Index) + 1);
+
+			if (array == null)
+				throw new ConfigurationSerializationException($"Instance creator returned null instead of an array of type {elementType.Name}");
 
 			foreach (var child in children)
 			{
@@ -450,7 +460,8 @@ This array along with its elements are going to be discarded. Please make check 
 			return new ConversionResult(array);
 		}
 
-		private IConversionResult ConvertFromString(Type type, string value)
+		[NotNull]
+		private IConversionResult ConvertFromString([NotNull] Type type, [CanBeNull] string value)
 		{
 			if (type == null)
 				throw new ArgumentNullException(nameof(type));
@@ -461,8 +472,14 @@ This array along with its elements are going to be discarded. Please make check 
 			return _instanceCreator.Create(type, value);
 		}
 
-		private Type FindGenericImplementedType(Type expected, Type actual)
+		[CanBeNull]
+		private Type FindGenericImplementedType([NotNull] Type expected, [NotNull] Type actual)
 		{
+			if (expected == null)
+				throw new ArgumentNullException(nameof(expected));
+			if (actual == null)
+				throw new ArgumentNullException(nameof(actual));
+
 			var actualTypeInfo = actual.GetTypeInfo();
 
 			if (actualTypeInfo.IsGenericType && actual.GetGenericTypeDefinition() == expected)
@@ -477,8 +494,12 @@ This array along with its elements are going to be discarded. Please make check 
 			return null;
 		}
 
-		private List<PropertyInfo> GetProperties(Type type)
+		[NotNull]
+		private static List<PropertyInfo> GetProperties([NotNull] Type type)
 		{
+			if (type == null)
+				throw new ArgumentNullException(nameof(type));
+
 			var props = new List<PropertyInfo>();
 
 			while (type != typeof(object))

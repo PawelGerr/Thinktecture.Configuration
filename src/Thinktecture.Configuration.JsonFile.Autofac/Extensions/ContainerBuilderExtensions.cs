@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -29,7 +29,7 @@ namespace Thinktecture
 		/// <param name="configurationFilePaths">Paths to the configuration files. The first file is considred to be the main file, the others are overrides.</param>
 		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> or the <paramref name="configurationFilePaths"/> is null.</exception>
 		/// <exception cref="ArgumentException">Is thrown if the <paramref name="configurationFilePaths"/> contains an empty string.</exception>
-		public static void RegisterJsonFileConfigurationProvider(this ContainerBuilder builder, params string[] configurationFilePaths)
+		public static void RegisterJsonFileConfigurationProvider([NotNull] this ContainerBuilder builder, [NotNull, ItemNotNull] params string[] configurationFilePaths)
 		{
 			if (builder == null)
 				throw new ArgumentNullException(nameof(builder));
@@ -57,7 +57,8 @@ namespace Thinktecture
 		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> or the <paramref name="configurationFilePaths"/> is null.</exception>
 		/// <exception cref="ArgumentException">Is thrown if the <paramref name="configurationFilePaths"/> is an empty string.</exception>
 		/// <returns>A registrationKey the <see cref="IConfigurationProvider{TRawDataIn,TRawDataOut}"/> is registered with.</returns>
-		public static AutofacConfigurationProviderKey RegisterKeyedJsonFileConfigurationProvider(this ContainerBuilder builder, params string[] configurationFilePaths)
+		[NotNull]
+		public static AutofacConfigurationProviderKey RegisterKeyedJsonFileConfigurationProvider([NotNull] this ContainerBuilder builder, [ItemNotNull, NotNull] params string[] configurationFilePaths)
 		{
 			if (builder == null)
 				throw new ArgumentNullException(nameof(builder));
@@ -96,6 +97,7 @@ namespace Thinktecture
 		/// <param name="resolveNewInstanceIfNull">If <c>true</c> then a new instance of <typeparamref name="T"/> is returned even if the configuration is missing or is <c>null</c>; otherwise Autofac will raise an error.</param>
 		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> is null.</exception>
 		/// <returns>Autofac registration builder.</returns>
+		[NotNull]
 		public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterJsonFileConfiguration<T>([NotNull] this ContainerBuilder builder, [CanBeNull] string propertyName = null, bool resolveNewInstanceIfNull = true)
 		{
 			if (builder == null)
@@ -121,7 +123,8 @@ namespace Thinktecture
 		/// <param name="resolveNewInstanceIfNull">If <c>true</c> then a new instance of <typeparamref name="T"/> is returned even if the configuration is missing or is <c>null</c>; otherwise Autofac will raise an error.</param>
 		/// <exception cref="ArgumentNullException">Is thrown if the <paramref name="builder"/> or the <paramref name="registrationKey"/> is null.</exception>
 		/// <returns>Autofac registration builder.</returns>
-		public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterJsonFileConfiguration<T>([NotNull] this ContainerBuilder builder, [NotNull] AutofacConfigurationProviderKey registrationKey, string propertyName = null, bool resolveNewInstanceIfNull = true)
+		[NotNull]
+		public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterJsonFileConfiguration<T>([NotNull] this ContainerBuilder builder, [NotNull] AutofacConfigurationProviderKey registrationKey, [CanBeNull] string propertyName = null, bool resolveNewInstanceIfNull = true)
 		{
 			if (builder == null)
 				throw new ArgumentNullException(nameof(builder));
@@ -143,7 +146,7 @@ namespace Thinktecture
 		/// </summary>
 		/// <typeparam name="T">Type to register.</typeparam>
 		/// <param name="builder">Container builder the type to register with.</param>
-		public static void RegisterJsonFileConfigurationType<T>(this ContainerBuilder builder)
+		public static void RegisterJsonFileConfigurationType<T>([NotNull] this ContainerBuilder builder)
 		{
 			if (builder == null)
 				throw new ArgumentNullException(nameof(builder));
@@ -157,7 +160,7 @@ namespace Thinktecture
 		/// <typeparam name="TImplementation">Type to instantiate if <typeparamref name="TAbstraction"/> is required.</typeparam>
 		/// <typeparam name="TAbstraction">Type to make resolvable.</typeparam>
 		/// <param name="builder">Contianer builder to register the type with.</param>
-		public static void RegisterJsonFileConfigurationType<TImplementation, TAbstraction>(this ContainerBuilder builder)
+		public static void RegisterJsonFileConfigurationType<TImplementation, TAbstraction>([NotNull] this ContainerBuilder builder)
 			where TImplementation : TAbstraction
 		{
 			if (builder == null)
@@ -166,7 +169,7 @@ namespace Thinktecture
 			RegisterType<TImplementation, TAbstraction>(builder);
 		}
 
-		private static void RegisterTypeOnce<T>(ContainerBuilder builder)
+		private static void RegisterTypeOnce<T>([NotNull] ContainerBuilder builder)
 		{
 			var types = GetRegisteredTypes(builder);
 
@@ -183,7 +186,8 @@ namespace Thinktecture
 			}
 		}
 
-		private static IRegistrationBuilder<TImplementation, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterType<TImplementation, TAbstraction>(this ContainerBuilder builder)
+		[NotNull]
+		private static IRegistrationBuilder<TImplementation, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterType<TImplementation, TAbstraction>([NotNull] this ContainerBuilder builder)
 			where TImplementation : TAbstraction
 		{
 			if (builder == null)
@@ -196,11 +200,11 @@ namespace Thinktecture
 			return builder.RegisterType<TImplementation>().Keyed<TAbstraction>(ConfigurationRegistrationKey);
 		}
 
-		private static HashSet<Type> GetRegisteredTypes(ContainerBuilder builder)
+		[NotNull]
+		private static HashSet<Type> GetRegisteredTypes([NotNull] ContainerBuilder builder)
 		{
 			HashSet<Type> types;
-			object value;
-			if (builder.Properties.TryGetValue(_registeredTypesKey, out value))
+			if (builder.Properties.TryGetValue(_registeredTypesKey, out var value))
 			{
 				types = (HashSet<Type>)value;
 			}

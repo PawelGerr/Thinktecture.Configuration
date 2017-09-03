@@ -14,7 +14,7 @@ namespace Thinktecture.Configuration
 		/// <summary>
 		/// Represents an invalid conversion result.
 		/// </summary>
-		public static readonly ConversionResult Invalid = new ConversionResult(false, null);
+		public static readonly ConversionResult Invalid = new ConversionResult(null, false);
 
 		/// <inheritdoc />
 		public bool IsValid { get; }
@@ -29,11 +29,11 @@ namespace Thinktecture.Configuration
 		/// </summary>
 		/// <param name="value">Valid value to be used by the <see cref="IMicrosoftConfigurationConverter"/>.</param>
 		public ConversionResult(object value)
-			: this(true, value)
+			: this(value, true)
 		{
 		}
 
-		private ConversionResult(bool isValid, object value)
+		private ConversionResult(object value, bool isValid)
 		{
 			IsValid = isValid;
 			_value = value;

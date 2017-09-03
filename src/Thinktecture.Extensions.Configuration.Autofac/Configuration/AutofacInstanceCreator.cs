@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Globalization;
 using Autofac;
+using JetBrains.Annotations;
 
 namespace Thinktecture.Configuration
 {
@@ -16,7 +17,7 @@ namespace Thinktecture.Configuration
 		/// </summary>
 		/// <param name="container">Autofac container.</param>
 		/// <param name="culture">Culture to be used during conversion.</param>
-		public AutofacInstanceCreator(IComponentContext container, CultureInfo culture)
+		public AutofacInstanceCreator([NotNull] IComponentContext container, [NotNull] CultureInfo culture)
 			: base(culture)
 		{
 			_container = container ?? throw new ArgumentNullException(nameof(container));

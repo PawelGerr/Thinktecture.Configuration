@@ -6,9 +6,9 @@ using Thinktecture.Extensions.Configuration.Example.Configuration;
 
 namespace Thinktecture.Extensions.Configuration.Example
 {
-	class Program
+	public static class Program
 	{
-		static void Main(string[] args)
+		public static void Main(string[] args)
 		{
 			var loggerConfig = new LoggerFactory()
 				.AddConsole(LogLevel.Trace);

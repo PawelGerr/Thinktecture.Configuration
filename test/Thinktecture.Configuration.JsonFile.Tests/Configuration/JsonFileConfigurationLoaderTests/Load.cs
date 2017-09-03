@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -30,7 +30,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 			});
 		}
 
-		private IFileStream GetStream(string content)
+		private static IFileStream GetStream(string content)
 		{
 			var stream = new MemoryStream(Encoding.UTF8.GetBytes(content));
 
