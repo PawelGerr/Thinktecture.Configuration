@@ -302,9 +302,9 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		public void Should_ignore_null_values()
 		{
 			var tokens = GetTokens(new
-			{
-				InnerConfiguration = new { InnerConfiguration = new ConfigurationWithDefaultCtor() }
-			},
+									{
+										InnerConfiguration = new { InnerConfiguration = new ConfigurationWithDefaultCtor() }
+									},
 									null,
 									new
 									{
@@ -321,9 +321,9 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		public void Should_start_deserializing_after_last_nulltoken()
 		{
 			var tokens = GetTokens(new
-			{
-				InnerConfiguration = new { InnerConfiguration = new ConfigurationWithDefaultCtor() }
-			},
+									{
+										InnerConfiguration = new { InnerConfiguration = new ConfigurationWithDefaultCtor() }
+									},
 									JToken.Parse("null"),
 									new
 									{

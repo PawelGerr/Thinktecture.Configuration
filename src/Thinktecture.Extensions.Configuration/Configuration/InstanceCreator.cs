@@ -29,7 +29,7 @@ namespace Thinktecture.Configuration
 		public abstract IConversionResult Create(Type type);
 
 		/// <inheritdoc />
-		public IConversionResult Create(Type type, string value)
+		public virtual IConversionResult Create(Type type, string value)
 		{
 			if (type == null)
 				throw new ArgumentNullException(nameof(type));
@@ -55,7 +55,7 @@ namespace Thinktecture.Configuration
 		}
 
 		/// <inheritdoc />
-		public Array CreateArray(Type elementType, int length)
+		public virtual Array CreateArray(Type elementType, int length)
 		{
 			if (elementType == null)
 				throw new ArgumentNullException(nameof(elementType));

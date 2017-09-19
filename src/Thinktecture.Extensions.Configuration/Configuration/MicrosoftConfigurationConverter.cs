@@ -93,25 +93,7 @@ namespace Thinktecture.Configuration
 				return new ConversionResult(null);
 
 			if (type.IsArray)
-			{
-				var elementType = type.GetElementType();
-
-				if (instance.IsCreated)
-				{
-					var currentArraySize = (instance.Value as Array)?.Length;
-
-					if (currentArraySize > 0)
-					{
-						_logger.LogWarning(@"One of the parent configuration objects has a property of type {type} that contains {size} elements before deserializion. 
-This array along with its elements are going to be discarded. Please make check that no memory leaks occur. Configuration path: {path}", $"{elementType.Name}[]", currentArraySize, (config as IConfigurationSection)?.Path);
-					}
-				}
-
-				if (!hasChildConfigs && configValue?.Length == 0)
-					return new ConversionResult(null);
-
-				return CreateAndPopulateArray(elementType, config);
-			}
+				return CreateAndPopulateArray(type, config, instance);
 
 			if (IsComplexType(type, config))
 			{
@@ -128,6 +110,77 @@ This array along with its elements are going to be discarded. Please make check 
 				return new ConversionResult(instance.Value);
 
 			return ConversionResult.Invalid;
+		}
+
+		[NotNull]
+		private IConversionResult CreateAndPopulateArray([NotNull] Type type, [NotNull] IConfiguration config, [NotNull] IConversionInstance instance)
+		{
+			if (type == null)
+				throw new ArgumentNullException(nameof(type));
+			if (config == null)
+				throw new ArgumentNullException(nameof(config));
+			if (instance == null)
+				throw new ArgumentNullException(nameof(instance));
+
+			var elementType = type.GetElementType();
+
+			if (instance.IsCreated)
+			{
+				var currentArraySize = (instance.Value as Array)?.Length;
+
+				if (currentArraySize > 0)
+				{
+					_logger.LogWarning(@"One of the parent configuration objects has a property of type {type} that contains {size} elements before deserializion. 
+This array along with its elements are going to be discarded. Please make check that no memory leaks occur. Configuration path: {path}", $"{elementType.Name}[]", currentArraySize, (config as IConfigurationSection)?.Path);
+				}
+			}
+
+			var hasChildConfigs = config.GetChildren().Any();
+			var configValue = (config as IConfigurationSection)?.Value;
+
+			if (!hasChildConfigs && configValue?.Length == 0)
+				return new ConversionResult(null);
+
+			return CreateAndPopulateArray(elementType, config);
+		}
+
+		[NotNull]
+		private IConversionResult CreateAndPopulateArray([NotNull] Type elementType, [NotNull] IConfiguration config)
+		{
+			if (elementType == null)
+				throw new ArgumentNullException(nameof(elementType));
+			if (config == null)
+				throw new ArgumentNullException(nameof(config));
+
+			var children = config.GetChildren()
+								.Select(c =>
+								{
+									if (c.Key != null && Int32.TryParse(c.Key, out var index))
+										return new { Index = index, Configuration = c };
+
+									_logger.LogWarning("The index of the collection of type {type} is not an integer. Key: {key}, path: {path}", elementType.FullName, c.Key, c.Path);
+									return null;
+								})
+								.Where(i => i != null)
+								.ToArray();
+
+			if (children.Length == 0 && (config as IConfigurationSection)?.Value == null)
+				return new ConversionResult(null);
+
+			var array = _instanceCreator.CreateArray(elementType, children.Length == 0 ? 0 : children.Max(c => c.Index) + 1);
+
+			if (array == null)
+				throw new ConfigurationSerializationException($"Instance creator returned null instead of an array of type {elementType.Name}");
+
+			foreach (var child in children)
+			{
+				var itemResult = CreateAndPopulate(elementType, child.Configuration, ConversionInstance.Empty);
+
+				if (itemResult.IsValid)
+					array.SetValue(itemResult.Value, child.Index);
+			}
+
+			return new ConversionResult(array);
 		}
 
 		private static bool IsComplexType([NotNull] Type type, [NotNull] IConfiguration config)
@@ -418,46 +471,6 @@ This array along with its elements are going to be discarded. Please make check 
 						addMethod.Invoke(dictionary, new[] { keyResult.Value, itemResult.Value });
 				}
 			}
-		}
-
-		[NotNull]
-		private IConversionResult CreateAndPopulateArray([NotNull] Type elementType, [NotNull] IConfiguration config)
-		{
-			if (elementType == null)
-				throw new ArgumentNullException(nameof(elementType));
-			if (config == null)
-				throw new ArgumentNullException(nameof(config));
-
-			var children = config.GetChildren()
-								.Select(c =>
-								{
-									if (c.Key == null || !Int32.TryParse(c.Key, out var index))
-									{
-										_logger.LogWarning("The index of the collection of type {type} is not an integer. Key: {key}, path: {path}", elementType.FullName, c.Key, c.Path);
-										return null;
-									}
-
-									return new { Index = index, Configuration = c };
-								})
-								.Where(i => i != null)
-								.ToArray();
-
-			if (children.Length == 0 && (config as IConfigurationSection)?.Value == null)
-				return new ConversionResult(null);
-
-			var array = _instanceCreator.CreateArray(elementType, children.Length == 0 ? 0 : children.Max(c => c.Index) + 1);
-
-			if (array == null)
-				throw new ConfigurationSerializationException($"Instance creator returned null instead of an array of type {elementType.Name}");
-
-			foreach (var child in children)
-			{
-				var itemResult = CreateAndPopulate(elementType, child.Configuration, ConversionInstance.Empty);
-				if (itemResult.IsValid)
-					array.SetValue(itemResult.Value, child.Index);
-			}
-
-			return new ConversionResult(array);
 		}
 
 		[NotNull]

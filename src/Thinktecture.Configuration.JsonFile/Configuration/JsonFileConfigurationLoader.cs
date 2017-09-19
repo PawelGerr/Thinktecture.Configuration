@@ -33,7 +33,8 @@ namespace Thinktecture.Configuration
 		/// <param name="jsonSerializerSettingsProvider">Provides <see cref="JsonSerializerSettings"/> for deserialization of file content to <see cref="JToken"/>.</param>
 		/// <param name="jsonConfigurationProviderFactory">A factory for creation of <see cref="IConfigurationProvider{TRawDataIn,TRawDataOut}"/>.</param>
 		public JsonFileConfigurationLoader([NotNull] IFile file, [NotNull] IJsonTokenConverter tokenConverter, [NotNull] string[] filePaths, [CanBeNull] IEncoding encoding = null,
-			[CanBeNull] Func<JsonSerializerSettings> jsonSerializerSettingsProvider = null, [CanBeNull] Func<JToken[], IJsonTokenConverter, IConfigurationProvider<JToken, JToken>> jsonConfigurationProviderFactory = null)
+											[CanBeNull] Func<JsonSerializerSettings> jsonSerializerSettingsProvider = null,
+											[CanBeNull] Func<JToken[], IJsonTokenConverter, IConfigurationProvider<JToken, JToken>> jsonConfigurationProviderFactory = null)
 		{
 			if (filePaths == null)
 				throw new ArgumentNullException(nameof(filePaths));

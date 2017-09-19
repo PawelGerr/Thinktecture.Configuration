@@ -13,6 +13,7 @@ namespace Thinktecture.Configuration
 	{
 		[NotNull]
 		private readonly Func<IConfiguration, MicrosoftConfigurationProvider> _providerFactory;
+
 		[NotNull]
 		private readonly IConfiguration _configuration;
 
@@ -22,7 +23,7 @@ namespace Thinktecture.Configuration
 		/// <param name="configuration">The source to be used during deserialization of the configurations.</param>
 		/// <param name="providerFactory">Factory for creation of <see cref="IMicrosoftConfigurationConverter"/>.</param>
 		public MicrosoftConfigurationLoader([NotNull] IConfiguration configuration,
-			[NotNull] Func<IConfiguration, MicrosoftConfigurationProvider> providerFactory)
+											[NotNull] Func<IConfiguration, MicrosoftConfigurationProvider> providerFactory)
 		{
 			_providerFactory = providerFactory ?? throw new ArgumentNullException(nameof(providerFactory));
 			_configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
