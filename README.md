@@ -40,7 +40,7 @@ Although the latter one seems to be unnecessary it has some benefits over `IConf
 
 All in all the `IConfiguration` is more versatile but using JSON files only is a more powerful approach.
 
-To get a better feeling of the library read the next section about how to **[Use JSON Files as Data Source](#Use-JSON-Files-as-Data-Source)** or jump right to **[Use `IConfiguration` as Data Source](#Use-IConfiguration-as-Data-Source)**
+To get a better feeling of the library read the next section about how to **[Use JSON Files as Data Source](#Use-JSON-Files-as-Data-Source)** or jump right to **[Use `IConfiguration` as Data Source](#use-iconfiguration-as-data-source)**
 
 ## Use JSON Files as Data Source
 
