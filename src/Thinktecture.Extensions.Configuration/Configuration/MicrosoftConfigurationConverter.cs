@@ -6,6 +6,10 @@ using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
+#if NETSTANDARD2_0
+using Microsoft.Extensions.Logging.Abstractions;
+#endif
+
 namespace Thinktecture.Configuration
 {
 	/// <summary>
@@ -15,6 +19,15 @@ namespace Thinktecture.Configuration
 	{
 		private readonly ILogger<MicrosoftConfigurationConverter> _logger;
 		private readonly IInstanceCreator _instanceCreator;
+
+		/// <summary>
+		/// Initializes new instance of <see cref="MicrosoftConfigurationConverter"/>.
+		/// </summary>
+		/// <param name="instanceCreator">Creates new instances of provided type.</param>
+		public MicrosoftConfigurationConverter([NotNull] IInstanceCreator instanceCreator)
+			: this(NullLogger<MicrosoftConfigurationConverter>.Instance, instanceCreator)
+		{
+		}
 
 		/// <summary>
 		/// Initializes new instance of <see cref="MicrosoftConfigurationConverter"/>.
