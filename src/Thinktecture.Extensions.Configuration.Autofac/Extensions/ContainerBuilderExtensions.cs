@@ -109,7 +109,7 @@ namespace Thinktecture
 					.WithParameter(new TypedParameter(typeof(CultureInfo), converterCulture ?? CultureInfo.InvariantCulture))
 					.IfNotRegistered(typeof(IInstanceCreator));
 
-			if (!builder.IsTypeRegistered(typeof(List<>)))
+			if (builder.FlagTypeAsRegistered(typeof(List<>)))
 			{
 				builder.RegisterGeneric(typeof(List<>))
 						.Keyed(RegistrationKey, typeof(List<>))
@@ -118,13 +118,13 @@ namespace Thinktecture
 						.Keyed(RegistrationKey, typeof(IEnumerable<>));
 			}
 
-			if (!builder.IsTypeRegistered(typeof(Collection<>)))
+			if (builder.FlagTypeAsRegistered(typeof(Collection<>)))
 			{
 				builder.RegisterGeneric(typeof(Collection<>))
 						.Keyed(RegistrationKey, typeof(Collection<>));
 			}
 
-			if (!builder.IsTypeRegistered(typeof(Dictionary<,>)))
+			if (builder.FlagTypeAsRegistered(typeof(Dictionary<,>)))
 			{
 				builder.RegisterGeneric(typeof(Dictionary<,>))
 						.Keyed(RegistrationKey, typeof(Dictionary<,>))
@@ -235,7 +235,7 @@ namespace Thinktecture
 			if (builder == null)
 				throw new ArgumentNullException(nameof(builder));
 
-			if (builder.IsTypeRegistered(typeof(T)))
+			if (!builder.FlagTypeAsRegistered(typeof(T)))
 				return;
 
 			var registration = builder.RegisterType<T>().Keyed<T>(RegistrationKey);
@@ -249,7 +249,11 @@ namespace Thinktecture
 			}
 		}
 
-		private static bool IsTypeRegistered([NotNull] this ContainerBuilder builder, [NotNull] Type type)
+		/// <summary>
+		/// Flags a type as registered.
+		/// </summary>
+		/// <returns><c>true</c> if type has been flagged as registered; <c>false</c> if the type was flagged already.</returns>
+		private static bool FlagTypeAsRegistered([NotNull] this ContainerBuilder builder, [NotNull] Type type)
 		{
 			if (builder == null)
 				throw new ArgumentNullException(nameof(builder));
@@ -257,7 +261,7 @@ namespace Thinktecture
 				throw new ArgumentNullException(nameof(type));
 
 			var types = GetRegisteredTypes(builder);
-			return types.Contains(type);
+			return types.Add(type);
 		}
 
 		private static HashSet<Type> GetRegisteredTypes([NotNull] ContainerBuilder builder)

@@ -173,7 +173,7 @@ namespace Thinktecture
 		{
 			var types = GetRegisteredTypes(builder);
 
-			if (types.Contains(typeof(T)))
+			if (!types.Add(typeof(T)))
 				return;
 
 			var registration = builder.RegisterType<T, T>();
