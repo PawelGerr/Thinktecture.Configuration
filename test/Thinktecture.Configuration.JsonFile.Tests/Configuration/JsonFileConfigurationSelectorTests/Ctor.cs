@@ -15,7 +15,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationSelectorTests
 			Action ctor = () => new JsonFileConfigurationSelector(null);
 
 			ctor.Invoking(c => c())
-			    .ShouldThrow<ArgumentNullException>();
+			    .Should().Throw<ArgumentNullException>();
 		}
 
 		[Fact]
@@ -24,7 +24,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationSelectorTests
 			Action ctor = () => new JsonFileConfigurationSelector(" ");
 
 			ctor.Invoking(c => c())
-			    .ShouldThrow<ArgumentException>();
+			    .Should().Throw<ArgumentException>();
 		}
 
 		[Fact]
@@ -33,7 +33,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationSelectorTests
 			Action ctor = () => new JsonFileConfigurationSelector("Parent..Child");
 
 			ctor.Invoking(c => c())
-			    .ShouldThrow<ArgumentException>();
+			    .Should().Throw<ArgumentException>();
 		}
 
 		[Fact]

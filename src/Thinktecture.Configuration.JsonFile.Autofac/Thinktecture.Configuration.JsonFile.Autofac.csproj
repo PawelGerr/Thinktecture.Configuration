@@ -21,7 +21,7 @@
     <ProjectReference Include="..\Thinktecture.Configuration.JsonFile\Thinktecture.Configuration.JsonFile.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.6.1" />
+    <PackageReference Include="Autofac" Version="4.6.2" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
     <Reference Include="System" />

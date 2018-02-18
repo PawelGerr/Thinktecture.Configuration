@@ -26,7 +26,7 @@ namespace Thinktecture.Extensions
 		{
 			((ContainerBuilder)null)
 				.Invoking(b => b.RegisterJsonFileConfiguration<ConfigurationWithDefaultCtor>())
-				.ShouldThrow<ArgumentNullException>();
+				.Should().Throw<ArgumentNullException>();
 		}
 
 		[Fact]
@@ -36,7 +36,7 @@ namespace Thinktecture.Extensions
 
 			_builder.Build()
 			        .Invoking(c => c.Resolve<ConfigurationWithDefaultCtor>())
-			        .ShouldThrow<DependencyResolutionException>();
+			        .Should().Throw<DependencyResolutionException>();
 		}
 
 		[Fact]
@@ -77,9 +77,9 @@ namespace Thinktecture.Extensions
 			var container = _builder.Build();
 
 			container.Invoking(c => c.Resolve<ConfigurationWithDefaultCtor>())
-			         .ShouldThrow<DependencyResolutionException>()
+			         .Should().Throw<DependencyResolutionException>()
 			         .WithInnerException<DependencyResolutionException>()
-			         .WithInnerMessage($"A delegate registered to create instances of '{typeof(ConfigurationWithDefaultCtor).FullName}' returned null.");
+			         .WithMessage($"A delegate registered to create instances of '{typeof(ConfigurationWithDefaultCtor).FullName}' returned null.");
 		}
 	}
 }

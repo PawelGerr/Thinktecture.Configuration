@@ -29,7 +29,7 @@ namespace Thinktecture.Configuration.AutofacCreationJsonConverterTests
 			// ReSharper disable once AssignNullToNotNullAttribute
 			CreateConverter()
 				.Invoking(c => c.Create(null))
-				.ShouldThrow<ArgumentNullException>();
+				.Should().Throw<ArgumentNullException>();
 		}
 
 		[Fact]
@@ -37,7 +37,7 @@ namespace Thinktecture.Configuration.AutofacCreationJsonConverterTests
 		{
 			CreateConverter()
 				.Invoking(c => c.Create(_type))
-				.ShouldThrow<DependencyResolutionException>();
+				.Should().Throw<DependencyResolutionException>();
 		}
 
 		[Fact]

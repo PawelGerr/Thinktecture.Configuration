@@ -14,7 +14,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<int>>("P1", "42")
-				.P1.ShouldBeEquivalentTo(42);
+				.P1.Should().Be(42);
 		}
 
 		[Fact]
@@ -23,14 +23,14 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString<int>("42", v => throw new Exception("Error!"));
 
 			Action action = () => RoundtripConvert<TestConfiguration<int>>("P1", "42");
-			action.ShouldThrow<Exception>().WithMessage("Error!");
+			action.Should().Throw<Exception>().WithMessage("Error!");
 		}
 
 		[Fact]
 		public void Should_throw_if_value_is_null_but_the_type_is_not_nullable()
 		{
 			Action action = () => RoundtripConvert<TestConfiguration<int>>("P1", null);
-			action.ShouldThrow<ConfigurationSerializationException>().WithMessage("Cannot assign null to non-nullable type System.Int32. Path: P1");
+			action.Should().Throw<ConfigurationSerializationException>().WithMessage("Cannot assign null to non-nullable type System.Int32. Path: P1");
 		}
 
 		[Fact]

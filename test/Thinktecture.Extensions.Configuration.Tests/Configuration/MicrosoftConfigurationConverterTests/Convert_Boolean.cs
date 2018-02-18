@@ -6,13 +6,14 @@ using Xunit;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
+	// ReSharper disable once InconsistentNaming
 	public class Convert_Boolean : ConvertBase
 	{
 		[Fact]
 		public void Should_throw_if_value_is_null_but_the_type_is_not_nullable()
 		{
 			Action action = () => RoundtripConvert<TestConfiguration<bool>>("P1", null);
-			action.ShouldThrow<ConfigurationSerializationException>().WithMessage("Cannot assign null to non-nullable type System.Boolean. Path: P1");
+			action.Should().Throw<ConfigurationSerializationException>().WithMessage("Cannot assign null to non-nullable type System.Boolean. Path: P1");
 		}
 
 		[Fact]
@@ -39,7 +40,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString<bool>("true", s => throw new Exception("Error!"));
 
 			Action action = () => RoundtripConvert<TestConfiguration<bool>>("P1", "true");
-			action.ShouldThrow<Exception>().WithMessage("Error!");
+			action.Should().Throw<Exception>().WithMessage("Error!");
 		}
 
 		[Fact]

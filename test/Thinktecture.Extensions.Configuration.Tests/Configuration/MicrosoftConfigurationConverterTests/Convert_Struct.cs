@@ -5,20 +5,23 @@ using Xunit;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
+	// ReSharper disable once InconsistentNaming
 	public class Convert_Struct : ConvertBase
 	{
 		[Fact]
 		public void Should_throw_if_configuration_is_null()
 		{
+			// ReSharper disable once AssignNullToNotNullAttribute
 			Action action = () => Converter.Convert<TestStruct>(null);
-			action.ShouldThrow<ArgumentNullException>();
+			action.Should().Throw<ArgumentNullException>();
 		}
 
 		[Fact]
 		public void Should_throw_if_configuration_is_null_using_non_generic_overload()
 		{
+			// ReSharper disable once AssignNullToNotNullAttribute
 			Action action = () => Converter.Convert(null, typeof(TestStruct));
-			action.ShouldThrow<ArgumentNullException>();
+			action.Should().Throw<ArgumentNullException>();
 		}
 
 		[Fact]
@@ -47,7 +50,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 				P1 = new TestConfiguration<TestStruct>() { P1 = new TestStruct() { Value = "struct value" } }
 			});
 
-			result.ShouldBeEquivalentTo(new TestConfiguration<TestConfiguration<TestStruct>>()
+			result.Should().BeEquivalentTo(new TestConfiguration<TestConfiguration<TestStruct>>()
 			{
 				P1 = new TestConfiguration<TestStruct>() { P1 = new TestStruct() { Value = "struct value" } }
 			});

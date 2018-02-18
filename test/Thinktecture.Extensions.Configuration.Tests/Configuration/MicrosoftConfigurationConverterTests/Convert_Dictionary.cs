@@ -7,6 +7,7 @@ using Xunit;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
+	// ReSharper disable once InconsistentNaming
 	public class Convert_Dictionary : ConvertBase
 	{
 		public Convert_Dictionary()
@@ -34,10 +35,10 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_dictionary_with_one_value()
 		{
-			SetupCreateFromString<int>("42", 42);
+			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<Dictionary<string, int>>>("P1:foo", "42")
-				.P1.ShouldBeEquivalentTo(new Dictionary<string, int>() { ["foo"] = 42 });
+				.P1.Should().BeEquivalentTo(new Dictionary<string, int>() { ["foo"] = 42 });
 		}
 
 		[Fact]
@@ -46,7 +47,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<IDictionary<string, int>>>("P1:foo", "42")
-				.P1.ShouldBeEquivalentTo(new Dictionary<string, int>() { ["foo"] = 42 });
+				.P1.Should().BeEquivalentTo(new Dictionary<string, int>() { ["foo"] = 42 });
 		}
 
 		[Fact]
@@ -55,7 +56,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<IReadOnlyDictionary<string, int>>>("P1:foo", "42")
-				.P1.ShouldBeEquivalentTo(new Dictionary<string, int>() { ["foo"] = 42 });
+				.P1.Should().BeEquivalentTo(new Dictionary<string, int>() { ["foo"] = 42 });
 		}
 	}
 }

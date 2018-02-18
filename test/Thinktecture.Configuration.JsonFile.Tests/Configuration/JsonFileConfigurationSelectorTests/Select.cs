@@ -18,7 +18,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationSelectorTests
 			// ReSharper disable once AssignNullToNotNullAttribute
 			CreateSelector("Property")
 				.Invoking(s => s.Select(null))
-				.ShouldThrow<ArgumentNullException>();
+				.Should().Throw<ArgumentNullException>();
 		}
 
 		[Fact]

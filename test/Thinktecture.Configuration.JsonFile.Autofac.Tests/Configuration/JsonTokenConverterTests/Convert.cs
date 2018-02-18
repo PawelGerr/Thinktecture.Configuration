@@ -40,7 +40,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 			// ReSharper disable once AssignNullToNotNullAttribute
 			Create()
 				.Invoking(c => c.Convert<ConfigurationWithDefaultCtor>(null))
-				.ShouldThrow<ArgumentNullException>();
+				.Should().Throw<ArgumentNullException>();
 		}
 
 		[Fact]
@@ -154,7 +154,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 
 			Create()
 				.Invoking(c => c.Convert<IConfigurationWithDefaultCtor>(tokens))
-				.ShouldThrow<JsonSerializationException>();
+				.Should().Throw<JsonSerializationException>();
 		}
 
 		[Fact]
@@ -165,7 +165,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 
 			Create()
 				.Invoking(c => c.Convert<ConfigurationWithDefaultCtor>(tokens))
-				.ShouldThrow<ComponentNotRegisteredException>();
+				.Should().Throw<ComponentNotRegisteredException>();
 		}
 
 		[Fact]
@@ -176,7 +176,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 
 			Create()
 				.Invoking(c => c.Convert<IConfigurationWithDefaultCtor>(tokens))
-				.ShouldThrow<ComponentNotRegisteredException>();
+				.Should().Throw<ComponentNotRegisteredException>();
 		}
 
 		[Fact]
@@ -219,7 +219,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 
 			Create()
 				.Invoking(c => c.Convert<ConfigurationWithNonDefaultCtor>(tokens))
-				.ShouldThrow<DependencyResolutionException>();
+				.Should().Throw<DependencyResolutionException>();
 		}
 
 		[Fact]
@@ -345,7 +345,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 
 			Create()
 				.Invoking(c => c.Convert<ConfigurationWithPropertyOfAbstractType>(tokens))
-				.ShouldThrow<JsonSerializationException>();
+				.Should().Throw<JsonSerializationException>();
 		}
 
 		[Fact]

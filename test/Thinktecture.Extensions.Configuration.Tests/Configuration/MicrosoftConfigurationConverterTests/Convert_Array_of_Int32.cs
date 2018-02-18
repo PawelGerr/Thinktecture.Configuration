@@ -34,7 +34,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<int[]>>(c => c.P1 = new[] { 42 })
-				.P1.ShouldBeEquivalentTo(new[] { 42 });
+				.P1.Should().BeEquivalentTo(new[] { 42 });
 		}
 
 		[Fact]
@@ -44,7 +44,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString("43", 43);
 
 			RoundtripConvert<TestConfiguration<int[]>>(c => c.P1 = new[] { 42, 43 })
-				.P1.ShouldBeEquivalentTo(new[] { 42, 43 });
+				.P1.Should().BeEquivalentTo(new[] { 42, 43 });
 		}
 
 		[Fact]
@@ -58,7 +58,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 					dictionary.Add("P1:1", "42");
 					dictionary.Add("P1:3", "43");
 				})
-				.P1.ShouldBeEquivalentTo(new[] { 0, 42, 0, 43 });
+				.P1.Should().BeEquivalentTo(new[] { 0, 42, 0, 43 });
 		}
 
 		[Fact]
@@ -73,7 +73,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 					dictionary.Add("P1:Foo", "1");
 					dictionary.Add("P1:2", "43");
 				})
-				.P1.ShouldBeEquivalentTo(new[] { 42, 0, 43 });
+				.P1.Should().BeEquivalentTo(new[] { 42, 0, 43 });
 		}
 
 		[Fact]
@@ -89,7 +89,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 					dictionary.Add("P1:1", "Foo");
 					dictionary.Add("P1:2", "43");
 				})
-				.P1.ShouldBeEquivalentTo(new[] { 42, 0, 43 });
+				.P1.Should().BeEquivalentTo(new[] { 42, 0, 43 });
 		}
 
 		[Fact]
@@ -112,7 +112,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreate(new TestConfiguration<int[]>() { P1 = new[] { 1 } });
 
 			RoundtripConvert<TestConfiguration<int[]>>("P1:0", "42", false)
-				.P1.ShouldBeEquivalentTo(new[] { 42 });
+				.P1.Should().BeEquivalentTo(new[] { 42 });
 		}
 
 		[Fact]

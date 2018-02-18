@@ -14,7 +14,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 			// ReSharper disable once AssignNullToNotNullAttribute
 			Action ctor = () => new JsonFileConfigurationLoader(null, ConverterMock.Object, new[] { FilePath });
 
-			ctor.Invoking(c => c()).ShouldThrow<ArgumentNullException>();
+			ctor.Invoking(c => c()).Should().Throw<ArgumentNullException>();
 		}
 
 		[Fact]
@@ -23,7 +23,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 			// ReSharper disable once AssignNullToNotNullAttribute
 			Action ctor = () => new JsonFileConfigurationLoader(FileMock.Object, ConverterMock.Object, null);
 
-			ctor.Invoking(c => c()).ShouldThrow<ArgumentNullException>();
+			ctor.Invoking(c => c()).Should().Throw<ArgumentNullException>();
 		}
 
 		[Fact]
@@ -31,7 +31,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 		{
 			Action ctor = () => new JsonFileConfigurationLoader(FileMock.Object, ConverterMock.Object, new string[] { null });
 
-			ctor.Invoking(c => c()).ShouldThrow<ArgumentException>();
+			ctor.Invoking(c => c()).Should().Throw<ArgumentException>();
 		}
 
 		[Fact]
@@ -39,7 +39,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 		{
 			Action ctor = () => new JsonFileConfigurationLoader(FileMock.Object, ConverterMock.Object, new[] { " " });
 
-			ctor.Invoking(c => c()).ShouldThrow<ArgumentException>();
+			ctor.Invoking(c => c()).Should().Throw<ArgumentException>();
 		}
 
 		[Fact]
@@ -48,7 +48,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 			// ReSharper disable once AssignNullToNotNullAttribute
 			Action ctor = () => new JsonFileConfigurationLoader(FileMock.Object, null, new[] { FilePath });
 
-			ctor.Invoking(c => c()).ShouldThrow<ArgumentNullException>();
+			ctor.Invoking(c => c()).Should().Throw<ArgumentNullException>();
 		}
 
 		[Fact]

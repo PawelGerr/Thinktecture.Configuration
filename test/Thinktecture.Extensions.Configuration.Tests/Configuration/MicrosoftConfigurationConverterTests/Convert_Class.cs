@@ -5,20 +5,23 @@ using Xunit;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
+	// ReSharper disable once InconsistentNaming
 	public class Convert_Class : ConvertBase
 	{
 		[Fact]
 		public void Should_throw_if_configuration_is_null()
 		{
+			// ReSharper disable once AssignNullToNotNullAttribute
 			Action action = () => Converter.Convert<TestConfiguration<int>>(null);
-			action.ShouldThrow<ArgumentNullException>();
+			action.Should().Throw<ArgumentNullException>();
 		}
 
 		[Fact]
 		public void Should_throw_if_configuration_is_null_using_non_generic_overload()
 		{
+			// ReSharper disable once AssignNullToNotNullAttribute
 			Action action = () => Converter.Convert(null, typeof(TestConfiguration<int>));
-			action.ShouldThrow<ArgumentNullException>();
+			action.Should().Throw<ArgumentNullException>();
 		}
 
 		[Fact]
@@ -46,7 +49,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString<TestConfiguration<int>>(String.Empty, ConversionResult.Invalid);
 
 			var result = RoundtripConvert<TestConfiguration<TestConfiguration<int>>>(dictionary => dictionary["P1"] = String.Empty);
-			result.P1.ShouldBeEquivalentTo(new TestConfiguration<int>());
+			result.P1.Should().BeEquivalentTo(new TestConfiguration<int>());
 		}
 
 		[Fact]
@@ -60,7 +63,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 				P1 = new TestConfiguration<decimal>() { P1 = 42 }
 			});
 
-			result.ShouldBeEquivalentTo(new TestConfiguration<TestConfiguration<decimal>>()
+			result.Should().BeEquivalentTo(new TestConfiguration<TestConfiguration<decimal>>()
 			{
 				P1 = new TestConfiguration<decimal>() { P1 = 42 }
 			});

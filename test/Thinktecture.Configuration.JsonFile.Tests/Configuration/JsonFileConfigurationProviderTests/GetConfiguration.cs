@@ -16,7 +16,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationProviderTests
 
 			CreateProvider(new { })
 				.Invoking(p => p.GetConfiguration<string>())
-				.ShouldThrow<InvalidCastException>();
+				.Should().Throw<InvalidCastException>();
 		}
 
 		[Fact]

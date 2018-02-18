@@ -30,7 +30,7 @@ namespace Thinktecture.Configuration.InstanceCreatorTests
 		private void Should_throw<T>(string input)
 		{
 			Action action = () => _creator.Create(typeof(T), input);
-			action.ShouldThrow<ConfigurationSerializationException>();
+			action.Should().Throw<ConfigurationSerializationException>();
 		}
 
 		[Fact]
@@ -185,7 +185,7 @@ namespace Thinktecture.Configuration.InstanceCreatorTests
 		public void Should_create_class_with_typeconverter()
 		{
 			_creator.Create(typeof(ClassWithTypeConverter), "value")
-			        .Value.ShouldBeEquivalentTo(new ClassWithTypeConverter() { Prop = "value" });
+			        .Value.Should().BeEquivalentTo(new ClassWithTypeConverter() { Prop = "value" });
 		}
 
 		[Fact]

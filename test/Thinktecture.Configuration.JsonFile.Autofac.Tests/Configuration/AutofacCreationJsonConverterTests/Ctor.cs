@@ -24,7 +24,7 @@ namespace Thinktecture.Configuration.AutofacCreationJsonConverterTests
 			// ReSharper disable once AssignNullToNotNullAttribute
 			Action ctor = () => new AutofacCreationJsonConverter(null, _containerMock.Object);
 
-			ctor.Invoking(c => c()).ShouldThrow<ArgumentNullException>();
+			ctor.Invoking(c => c()).Should().Throw<ArgumentNullException>();
 		}
 
 		[Fact]
@@ -33,7 +33,7 @@ namespace Thinktecture.Configuration.AutofacCreationJsonConverterTests
 			// ReSharper disable once AssignNullToNotNullAttribute
 			Action ctor = () => new AutofacCreationJsonConverter(typeof(ConfigurationWithDefaultCtor), null);
 
-			ctor.Invoking(c => c()).ShouldThrow<ArgumentNullException>();
+			ctor.Invoking(c => c()).Should().Throw<ArgumentNullException>();
 		}
 
 		[Fact]

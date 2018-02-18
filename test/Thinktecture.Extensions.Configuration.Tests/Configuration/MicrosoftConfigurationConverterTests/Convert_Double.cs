@@ -14,7 +14,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString("42.1", 42.1d);
 
 			RoundtripConvert<TestConfiguration<double>>("P1", "42.1")
-				.P1.ShouldBeEquivalentTo(42.1d);
+				.P1.Should().Be(42.1d);
 		}
 
 		[Fact]
@@ -23,7 +23,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString("42", 42d);
 
 			RoundtripConvert<TestConfiguration<double>>("P1", "42")
-				.P1.ShouldBeEquivalentTo(42d);
+				.P1.Should().Be(42d);
 		}
 
 		[Fact]
@@ -32,7 +32,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString("42", 42d);
 
 			RoundtripConvert<TestConfiguration<double?>>("P1", "42")
-				.P1.ShouldBeEquivalentTo(42d);
+				.P1.Should().Be(42d);
 		}
 
 		[Fact]

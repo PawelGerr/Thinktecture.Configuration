@@ -8,6 +8,7 @@ using Xunit;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
+	// ReSharper disable once InconsistentNaming
 	public class Convert_Collection : ConvertBase
 	{
 		public Convert_Collection()
@@ -47,7 +48,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<ICollection<int>>>("P1:0", "42")
-				.P1.ShouldBeEquivalentTo(new List<int> { 42 });
+				.P1.Should().BeEquivalentTo(new List<int> { 42 });
 		}
 
 		[Fact]
@@ -61,7 +62,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 					dictionary.Add("P1:0", "42");
 					dictionary.Add("P1:1", "43");
 				})
-				.P1.ShouldBeEquivalentTo(new List<int> { 42, 43 });
+				.P1.Should().BeEquivalentTo(new List<int> { 42, 43 });
 		}
 
 		[Fact]
@@ -75,7 +76,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 					dictionary.Add("P1:0", "42");
 					dictionary.Add("P1:2", "43");
 				})
-				.P1.ShouldBeEquivalentTo(new List<int> { 42, 0, 43 });
+				.P1.Should().BeEquivalentTo(new List<int> { 42, 0, 43 });
 		}
 
 		[Fact]
@@ -90,7 +91,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 					dictionary.Add("P1:Foo", "1");
 					dictionary.Add("P1:2", "43");
 				})
-				.P1.ShouldBeEquivalentTo(new List<int> { 42, 0, 43 });
+				.P1.Should().BeEquivalentTo(new List<int> { 42, 0, 43 });
 		}
 
 		[Fact]
@@ -106,7 +107,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 					dictionary.Add("P1:1", "Foo");
 					dictionary.Add("P1:2", "43");
 				})
-				.P1.ShouldBeEquivalentTo(new List<int> { 42, 0, 43 });
+				.P1.Should().BeEquivalentTo(new List<int> { 42, 0, 43 });
 		}
 
 		[Fact]
@@ -115,7 +116,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<IEnumerable<int>>>("P1:0", "42")
-				.P1.ShouldBeEquivalentTo(new List<int> { 42 });
+				.P1.Should().BeEquivalentTo(new List<int> { 42 });
 		}
 
 		[Fact]
@@ -124,7 +125,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<List<int>>>("P1:0", "42")
-				.P1.ShouldBeEquivalentTo(new List<int> { 42 });
+				.P1.Should().BeEquivalentTo(new List<int> { 42 });
 		}
 
 		[Fact]
@@ -133,7 +134,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<IReadOnlyCollection<int>>>("P1:0", "42")
-				.P1.ShouldBeEquivalentTo(new List<int> { 42 });
+				.P1.Should().BeEquivalentTo(new List<int> { 42 });
 		}
 
 		[Fact]
@@ -142,7 +143,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<IReadOnlyList<int>>>("P1:0", "42")
-				.P1.ShouldBeEquivalentTo(new List<int> { 42 });
+				.P1.Should().BeEquivalentTo(new List<int> { 42 });
 		}
 
 		[Fact]
@@ -151,7 +152,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfigurationWithInitializedProperty<List<int>>>("P1:0", "42")
-				.P1.ShouldBeEquivalentTo(new List<int> { 42 });
+				.P1.Should().BeEquivalentTo(new List<int> { 42 });
 		}
 	}
 }

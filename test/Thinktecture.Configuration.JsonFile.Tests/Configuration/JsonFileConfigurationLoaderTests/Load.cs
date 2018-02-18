@@ -49,7 +49,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 
 			CreateLoader(FilePath)
 				.Invoking(l => l.Load())
-				.ShouldThrow<FileNotFoundException>();
+				.Should().Throw<FileNotFoundException>();
 		}
 
 		[Fact]
@@ -62,7 +62,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 
 				CreateLoader(FilePath)
 					.Invoking(l => l.Load())
-					.ShouldThrow<JsonReaderException>();
+					.Should().Throw<JsonReaderException>();
 			}
 		}
 
