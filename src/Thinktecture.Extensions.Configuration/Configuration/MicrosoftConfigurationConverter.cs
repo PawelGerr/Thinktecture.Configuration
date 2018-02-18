@@ -152,7 +152,7 @@ namespace Thinktecture.Configuration
 				if (currentArraySize > 0)
 				{
 					_logger.LogWarning(@"One of the parent configuration objects has a property of type {type} that contains {size} elements before deserializion.
-This array along with its elements are going to be discarded. Please make check that no memory leaks occur. Configuration path: {path}", $"{elementType.Name}[]", currentArraySize, (config as IConfigurationSection)?.Path);
+This array along with its elements are going to be discarded. Please check that no memory leaks occur. Configuration path: {path}", $"{elementType.Name}[]", currentArraySize, (config as IConfigurationSection)?.Path);
 				}
 			}
 

@@ -1,15 +1,18 @@
-﻿using System;
-using FluentAssertions;
-using Microsoft.Extensions.Logging;
-using Moq;
+﻿using FluentAssertions;
 using Thinktecture.Helpers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
 	// ReSharper disable once InconsistentNaming
 	public class Convert_Array_of_Int32 : ConvertBase
 	{
+		public Convert_Array_of_Int32(ITestOutputHelper outputHelper)
+			: base(outputHelper)
+		{
+		}
+
 		[Fact]
 		public void Should_convert_null_to_null()
 		{
@@ -113,17 +116,6 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 
 			RoundtripConvert<TestConfiguration<int[]>>("P1:0", "42", false)
 				.P1.Should().BeEquivalentTo(new[] { 42 });
-		}
-
-		[Fact]
-		public void Should_write_a_warning_if_non_empty_array_is_replaced_by_new_array()
-		{
-			SetupCreateFromString("42", 42);
-			SetupCreate(new TestConfiguration<int[]>() { P1 = new[] { 1 } });
-
-			RoundtripConvert<TestConfiguration<int[]>>("P1:0", "42", false);
-
-			LoggerMock.Verify(l => l.Log(LogLevel.Warning, 0, It.IsAny<object>(), null, It.IsAny<Func<object, Exception, string>>()), Times.Once);
 		}
 	}
 }

@@ -1,13 +1,15 @@
 ﻿using FluentAssertions;
 using Thinktecture.Helpers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
 	// ReSharper disable once InconsistentNaming
 	public class Convert_CollectionSubclass : ConvertBase
 	{
-		public Convert_CollectionSubclass()
+		public Convert_CollectionSubclass(ITestOutputHelper outputHelper)
+			: base(outputHelper)
 		{
 			InstanceCreatorMock.Setup(c => c.Create(typeof(TestList<int, string>))).Returns(() => new ConversionResult(new TestList<int, string>()));
 		}

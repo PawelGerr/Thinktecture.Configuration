@@ -5,13 +5,15 @@ using FluentAssertions;
 using Moq;
 using Thinktecture.Helpers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
 	// ReSharper disable once InconsistentNaming
 	public class Convert_Collection : ConvertBase
 	{
-		public Convert_Collection()
+		public Convert_Collection(ITestOutputHelper outputHelper)
+			: base(outputHelper)
 		{
 			InstanceCreatorMock.Setup(c => c.Create(It.IsAny<Type>()))
 			                   .Returns<Type>(type => new ConversionResult(type.GetTypeInfo().IsGenericType ? (object)new List<int>() : new List<object>()));

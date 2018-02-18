@@ -2,12 +2,18 @@ using System;
 using FluentAssertions;
 using Thinktecture.Helpers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
 	// ReSharper disable once InconsistentNaming
 	public class Convert_TimeSpan : ConvertBase
 	{
+		public Convert_TimeSpan(ITestOutputHelper outputHelper)
+			: base(outputHelper)
+		{
+		}
+
 		[Fact]
 		public void Should_set_property_when_creator_returns_valid_result()
 		{

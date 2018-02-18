@@ -2,12 +2,18 @@
 using FluentAssertions;
 using Thinktecture.Helpers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
 	// ReSharper disable once InconsistentNaming
 	public class Convert_Struct : ConvertBase
 	{
+		public Convert_Struct(ITestOutputHelper outputHelper)
+			: base(outputHelper)
+		{
+		}
+
 		[Fact]
 		public void Should_throw_if_configuration_is_null()
 		{

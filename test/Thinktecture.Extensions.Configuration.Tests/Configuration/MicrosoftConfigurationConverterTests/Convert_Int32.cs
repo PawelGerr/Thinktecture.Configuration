@@ -2,12 +2,18 @@
 using FluentAssertions;
 using Thinktecture.Helpers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
 	// ReSharper disable once InconsistentNaming
 	public class Convert_Int32 : ConvertBase
 	{
+		public Convert_Int32(ITestOutputHelper outputHelper)
+			: base(outputHelper)
+		{
+		}
+
 		[Fact]
 		public void Should_convert_int_property_if_value_is_not_null()
 		{

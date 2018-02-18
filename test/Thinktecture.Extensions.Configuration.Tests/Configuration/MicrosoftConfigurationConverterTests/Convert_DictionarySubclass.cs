@@ -1,13 +1,15 @@
 ﻿using FluentAssertions;
 using Thinktecture.Helpers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
 	// ReSharper disable once InconsistentNaming
 	public class Convert_DictionarySubclass : ConvertBase
 	{
-		public Convert_DictionarySubclass()
+		public Convert_DictionarySubclass(ITestOutputHelper outputHelper)
+			: base(outputHelper)
 		{
 			InstanceCreatorMock.Setup(c => c.Create(typeof(TestDictionary<int, string, string>)))
 			                   .Returns(() => new ConversionResult(new TestDictionary<int, string, string>()));

@@ -3,12 +3,18 @@ using FluentAssertions;
 using Moq;
 using Thinktecture.Helpers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
 	// ReSharper disable once InconsistentNaming
 	public class Convert_Boolean : ConvertBase
 	{
+		public Convert_Boolean(ITestOutputHelper outputHelper)
+			: base(outputHelper)
+		{
+		}
+
 		[Fact]
 		public void Should_throw_if_value_is_null_but_the_type_is_not_nullable()
 		{

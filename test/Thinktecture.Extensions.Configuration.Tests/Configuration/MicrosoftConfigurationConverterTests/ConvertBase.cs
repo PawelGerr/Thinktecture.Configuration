@@ -3,24 +3,37 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Serilog;
 using Thinktecture.Helpers;
+using Xunit.Abstractions;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
 	public abstract class ConvertBase
 	{
-		protected Mock<ILogger<MicrosoftConfigurationConverter>> LoggerMock;
+		protected ILogger<MicrosoftConfigurationConverter> Logger;
 		protected Mock<IInstanceCreator> InstanceCreatorMock;
 		protected MicrosoftConfigurationConverter Converter;
 
-		protected ConvertBase()
+		protected ConvertBase(ITestOutputHelper outputHelper)
 		{
-			LoggerMock = new Mock<ILogger<MicrosoftConfigurationConverter>>(MockBehavior.Loose);
+			Logger = CreateLogger(outputHelper);
 			InstanceCreatorMock = new Mock<IInstanceCreator>(MockBehavior.Strict);
-			Converter = new MicrosoftConfigurationConverter(LoggerMock.Object, InstanceCreatorMock.Object);
+			Converter = new MicrosoftConfigurationConverter(Logger, InstanceCreatorMock.Object);
 
 			InstanceCreatorMock.Setup(c => c.CreateArray(typeof(int), It.IsAny<int>())).Returns<Type, int>((t, l) => new int[l]);
 			InstanceCreatorMock.Setup(c => c.Create(typeof(string), It.IsAny<string>())).Returns<Type, string>((t, v) => new ConversionResult(v));
+		}
+
+		private ILogger<MicrosoftConfigurationConverter> CreateLogger(ITestOutputHelper outputHelper)
+		{
+			var serilog = new LoggerConfiguration()
+			              .WriteTo.TestOutput(outputHelper)
+			              .CreateLogger();
+
+			return new LoggerFactory()
+			         .AddSerilog(serilog)
+			         .CreateLogger<MicrosoftConfigurationConverter>();
 		}
 
 		protected void SetupCreateFromString<T>(string input, T output)
