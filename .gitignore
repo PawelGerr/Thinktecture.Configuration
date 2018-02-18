@@ -1,4 +1,5 @@
 .vs/
+.idea/**
 project.lock.json
 *.xproj.user
 *.sln.DotSettings.user

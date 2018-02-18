@@ -23,7 +23,7 @@ namespace Thinktecture.Configuration.InstanceCreatorTests
 		private void Should_create<T>(string input, T output)
 		{
 			_creator.Create(typeof(T), input)
-					.Value.Should().Be(output);
+			        .Value.Should().Be(output);
 		}
 
 		private void Should_throw<T>(string input)
@@ -59,7 +59,7 @@ namespace Thinktecture.Configuration.InstanceCreatorTests
 		[Fact]
 		public void Should_create_nullable_int_from_empty_string()
 		{
-			Should_create<int?>(" ", null);
+			Should_create<int?>(String.Empty, null);
 		}
 
 		[Fact]
@@ -178,6 +178,62 @@ namespace Thinktecture.Configuration.InstanceCreatorTests
 		public void Should_create_timespan()
 		{
 			Should_create("1.23:45:56", new TimeSpan(1, 23, 45, 56));
+		}
+
+		[Fact]
+		public void Should_create_class_with_typeconverter()
+		{
+			_creator.Create(typeof(ClassWithTypeConverter), "value")
+			        .Value.ShouldBeEquivalentTo(new ClassWithTypeConverter() { Prop = "value" });
+		}
+
+		[Fact]
+		public void Should_return_invalid_result_if_creation_from_non_empty_string_is_not_possible()
+		{
+			var result = _creator.Create(typeof(TestConfiguration<int>), "value");
+			result.IsValid.Should().BeFalse();
+		}
+
+		[Fact]
+		public void Should_return_invalid_result_if_creation_from_empty_string_is_not_possible()
+		{
+			var result = _creator.Create(typeof(TestConfiguration<int>), "");
+			result.IsValid.Should().BeFalse();
+		}
+
+		[Fact]
+		public void Should_return_invalid_result_if_creation_from_null_string_is_not_possible()
+		{
+			var result = _creator.Create(typeof(TestConfiguration<int>), null);
+			result.IsValid.Should().BeFalse();
+		}
+
+		[Fact]
+		public void Should_return_invalid_result_if_creation_of_struct_from_null_string_is_not_possible()
+		{
+			var result = _creator.Create(typeof(TestStruct), null);
+			result.IsValid.Should().BeFalse();
+		}
+
+		[Fact]
+		public void Should_return_invalid_result_if_creation_of_struct_from_empty_string_is_not_possible()
+		{
+			var result = _creator.Create(typeof(TestStruct), "");
+			result.IsValid.Should().BeFalse();
+		}
+
+		[Fact]
+		public void Should_return_invalid_result_if_creation_of_nullable_struct_from_empty_string_is_not_possible()
+		{
+			var result = _creator.Create(typeof(TestStruct?), "");
+			result.IsValid.Should().BeFalse();
+		}
+
+		[Fact]
+		public void Should_return_invalid_result_if_creation_of_nullable_struct_from_null_string_is_not_possible()
+		{
+			var result = _creator.Create(typeof(TestStruct?), null);
+			result.IsValid.Should().BeFalse();
 		}
 	}
 }

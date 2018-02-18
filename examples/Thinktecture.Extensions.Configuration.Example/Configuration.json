@@ -9,5 +9,9 @@
 	"stringIntDictionary": {
 		"a": 1,
 		"b": 2
+	},
+  	"classWithTypeConverter": "ClassWithTypeConverter",
+  	"StructConfiguration": {
+	  "Value": "struct value"
 	}
 }

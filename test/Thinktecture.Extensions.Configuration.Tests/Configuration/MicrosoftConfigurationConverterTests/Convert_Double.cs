@@ -5,12 +5,13 @@ using Xunit;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
+	// ReSharper disable once InconsistentNaming
 	public class Convert_Double : ConvertBase
 	{
 		[Fact]
 		public void Should_convert_when_value_is_not_empty()
 		{
-			SetupCreateFromString<double>("42.1", new ConversionResult(42.1));
+			SetupCreateFromString("42.1", 42.1d);
 
 			RoundtripConvert<TestConfiguration<double>>("P1", "42.1")
 				.P1.ShouldBeEquivalentTo(42.1d);
@@ -19,7 +20,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_double_property()
 		{
-			SetupCreateFromString<double>("42", new ConversionResult(42d));
+			SetupCreateFromString("42", 42d);
 
 			RoundtripConvert<TestConfiguration<double>>("P1", "42")
 				.P1.ShouldBeEquivalentTo(42d);
@@ -28,7 +29,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_nullable_double_property_if_value_is_not_null()
 		{
-			SetupCreateFromString<double?>("42", new ConversionResult(42d));
+			SetupCreateFromString("42", 42d);
 
 			RoundtripConvert<TestConfiguration<double?>>("P1", "42")
 				.P1.ShouldBeEquivalentTo(42d);

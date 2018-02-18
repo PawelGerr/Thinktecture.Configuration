@@ -14,5 +14,7 @@ namespace Thinktecture.Extensions.Configuration.Example.Configuration
 		int[] IntArray { get; }
 		ICollection<int> IntCollection { get; }
 		IDictionary<string, int> StringIntDictionary { get; }
+		ClassWithTypeConverter ClassWithTypeConverter { get; }
+		StructConfiguration StructConfiguration { get; }
 	}
 }

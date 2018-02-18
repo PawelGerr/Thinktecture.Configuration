@@ -25,16 +25,18 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		}
 
 		[Fact]
-		public void Should_convert_empty_string_to_null()
+		public void Should_convert_empty_string_to_empty_collection()
 		{
-			RoundtripConvert<TestConfiguration<ICollection<int>>>(c => c.P1 = null)
-				.P1.Should().BeNull();
+			SetupCreateFromString<ICollection<int>>(String.Empty, ConversionResult.Invalid);
+
+			RoundtripConvert<TestConfiguration<ICollection<int>>>("P1", String.Empty)
+				.P1.Should().BeEmpty();
 		}
 
 		[Fact]
 		public void Should_convert_collection_to_list()
 		{
-			SetupCreateFromString<int>("42", new ConversionResult(42));
+			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<ICollection<int>>>("P1:0", "42")
 				.P1.Should().BeOfType<List<int>>();
@@ -43,7 +45,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_collection_with_one_value()
 		{
-			SetupCreateFromString<int>("42", new ConversionResult(42));
+			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<ICollection<int>>>("P1:0", "42")
 				.P1.ShouldBeEquivalentTo(new List<int> { 42 });
@@ -52,8 +54,8 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_collection_with_two_values()
 		{
-			SetupCreateFromString<int>("42", new ConversionResult(42));
-			SetupCreateFromString<int>("43", new ConversionResult(43));
+			SetupCreateFromString("42", 42);
+			SetupCreateFromString("43", 43);
 
 			RoundtripConvert<TestConfiguration<ICollection<int>>>(dictionary =>
 				{
@@ -66,8 +68,8 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_collection_with_two_non_adjacent_values()
 		{
-			SetupCreateFromString<int>("42", new ConversionResult(42));
-			SetupCreateFromString<int>("43", new ConversionResult(43));
+			SetupCreateFromString("42", 42);
+			SetupCreateFromString("43", 43);
 
 			RoundtripConvert<TestConfiguration<ICollection<int>>>(dictionary =>
 				{
@@ -80,8 +82,8 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_ignore_invalid_indexes()
 		{
-			SetupCreateFromString<int>("42", new ConversionResult(42));
-			SetupCreateFromString<int>("43", new ConversionResult(43));
+			SetupCreateFromString("42", 42);
+			SetupCreateFromString("43", 43);
 
 			RoundtripConvert<TestConfiguration<ICollection<int>>>(dictionary =>
 				{
@@ -95,8 +97,8 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_ignore_invalid_values()
 		{
-			SetupCreateFromString<int>("42", new ConversionResult(42));
-			SetupCreateFromString<int>("43", new ConversionResult(43));
+			SetupCreateFromString("42", 42);
+			SetupCreateFromString("43", 43);
 			SetupCreateFromString<int>("Foo", ConversionResult.Invalid);
 
 			RoundtripConvert<TestConfiguration<ICollection<int>>>(dictionary =>
@@ -111,7 +113,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_enumerable_of_int32()
 		{
-			SetupCreateFromString<int>("42", new ConversionResult(42));
+			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<IEnumerable<int>>>("P1:0", "42")
 				.P1.ShouldBeEquivalentTo(new List<int> { 42 });
@@ -120,7 +122,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_list_of_int32()
 		{
-			SetupCreateFromString<int>("42", new ConversionResult(42));
+			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<List<int>>>("P1:0", "42")
 				.P1.ShouldBeEquivalentTo(new List<int> { 42 });
@@ -129,7 +131,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_readonlycollection()
 		{
-			SetupCreateFromString<int>("42", new ConversionResult(42));
+			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<IReadOnlyCollection<int>>>("P1:0", "42")
 				.P1.ShouldBeEquivalentTo(new List<int> { 42 });
@@ -138,7 +140,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_readonlylist()
 		{
-			SetupCreateFromString<int>("42", new ConversionResult(42));
+			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<IReadOnlyList<int>>>("P1:0", "42")
 				.P1.ShouldBeEquivalentTo(new List<int> { 42 });
@@ -147,7 +149,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_populate_existing_collection()
 		{
-			SetupCreateFromString<int>("42", new ConversionResult(42));
+			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfigurationWithInitializedProperty<List<int>>>("P1:0", "42")
 				.P1.ShouldBeEquivalentTo(new List<int> { 42 });

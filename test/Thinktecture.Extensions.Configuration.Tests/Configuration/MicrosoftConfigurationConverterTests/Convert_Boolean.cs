@@ -22,7 +22,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_set_property_when_creator_returns_valid_result()
 		{
-			SetupCreateFromString<bool>("true", new ConversionResult(true));
+			SetupCreateFromString("true", true);
 
 			RoundtripConvert<TestConfiguration<bool>>("P1", "true")
 				.P1.Should().BeTrue();
@@ -60,7 +60,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_nullable_boolean_using_instance_creator_if_value_is_not_null()
 		{
-			SetupCreateFromString<bool?>("true", true);
+			SetupCreateFromString("true", true);
 
 			RoundtripConvert<TestConfiguration<bool?>>("P1", "true")
 				.P1.Should().BeTrue();

@@ -24,6 +24,7 @@ namespace Thinktecture.Configuration
 		/// Initializes new instance of <see cref="MicrosoftConfigurationConverter"/>.
 		/// </summary>
 		/// <param name="instanceCreator">Creates new instances of provided type.</param>
+		// ReSharper disable once UnusedMember.Global
 		public MicrosoftConfigurationConverter([NotNull] IInstanceCreator instanceCreator)
 			: this(NullLogger<MicrosoftConfigurationConverter>.Instance, instanceCreator)
 		{
@@ -84,8 +85,14 @@ namespace Thinktecture.Configuration
 
 			var result = CreateAndPopulate(type, configuration, ConversionInstance.Empty);
 
-			if (result.IsValid && result.Value != null)
+			if (!result.IsValid)
+			{
+				_logger.LogWarning("The configuration of type {type} could not be deserialized.", type.FullName);
+			}
+			else if (result.Value != null)
+			{
 				return result.Value;
+			}
 
 			return null;
 		}
@@ -108,16 +115,17 @@ namespace Thinktecture.Configuration
 			if (type.IsArray)
 				return CreateAndPopulateArray(type, config, instance);
 
-			if (IsComplexType(type, config))
+			if (configValue != null)
 			{
-				if (!hasChildConfigs && configValue?.Length == 0)
-					return new ConversionResult(null);
-
-				return ConvertComplexType(type, config, instance);
+				var result = ConvertFromString(type, configValue);
+				if (result.IsValid)
+					return result;
 			}
 
-			if (configValue != null)
-				return ConvertFromString(type, configValue);
+			var isSimpleType = IsSimpleType(type);
+
+			if (!isSimpleType)
+				return ConvertComplexType(type, config, instance);
 
 			if (instance.IsCreated)
 				return new ConversionResult(instance.Value);
@@ -143,7 +151,7 @@ namespace Thinktecture.Configuration
 
 				if (currentArraySize > 0)
 				{
-					_logger.LogWarning(@"One of the parent configuration objects has a property of type {type} that contains {size} elements before deserializion. 
+					_logger.LogWarning(@"One of the parent configuration objects has a property of type {type} that contains {size} elements before deserializion.
 This array along with its elements are going to be discarded. Please make check that no memory leaks occur. Configuration path: {path}", $"{elementType.Name}[]", currentArraySize, (config as IConfigurationSection)?.Path);
 				}
 			}
@@ -166,16 +174,16 @@ This array along with its elements are going to be discarded. Please make check 
 				throw new ArgumentNullException(nameof(config));
 
 			var children = config.GetChildren()
-								.Select(c =>
-								{
-									if (c.Key != null && Int32.TryParse(c.Key, out var index))
-										return new { Index = index, Configuration = c };
+			                     .Select(c =>
+			                     {
+				                     if (c.Key != null && Int32.TryParse(c.Key, out var index))
+					                     return new { Index = index, Configuration = c };
 
-									_logger.LogWarning("The index of the collection of type {type} is not an integer. Key: {key}, path: {path}", elementType.FullName, c.Key, c.Path);
-									return null;
-								})
-								.Where(i => i != null)
-								.ToArray();
+				                     _logger.LogWarning("The index of the collection of type {type} is not an integer. Key: {key}, path: {path}", elementType.FullName, c.Key, c.Path);
+				                     return null;
+			                     })
+			                     .Where(i => i != null)
+			                     .ToArray();
 
 			if (children.Length == 0 && (config as IConfigurationSection)?.Value == null)
 				return new ConversionResult(null);
@@ -196,25 +204,19 @@ This array along with its elements are going to be discarded. Please make check 
 			return new ConversionResult(array);
 		}
 
-		private static bool IsComplexType([NotNull] Type type, [NotNull] IConfiguration config)
+		private static bool IsSimpleType(Type type)
 		{
 			var typeInfo = type.GetTypeInfo();
 
 			var isSimpleType = typeInfo.IsPrimitive
-								|| type == typeof(string)
-								|| type == typeof(decimal)
-								|| type == typeof(DateTime)
-								|| type == typeof(TimeSpan)
-								|| type == typeof(Guid)
-								|| (typeInfo.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
+			                   || type == typeof(string)
+			                   || type == typeof(decimal)
+			                   || type == typeof(DateTime)
+			                   || type == typeof(TimeSpan)
+			                   || type == typeof(Guid)
+			                   || (typeInfo.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
 
-			if (isSimpleType)
-				return false;
-
-			if (config.GetChildren().Any())
-				return true;
-
-			return (config as IConfigurationSection)?.Value != null;
+			return isSimpleType;
 		}
 
 		[NotNull]
@@ -232,6 +234,7 @@ This array along with its elements are going to be discarded. Please make check 
 				var result = _instanceCreator.Create(type);
 
 				// ReSharper disable once ConditionIsAlwaysTrueOrFalse
+				// ReSharper disable once HeuristicUnreachableCode
 				if (result == null)
 					throw new ConfigurationSerializationException($"Instance creator returned null when trying to create an instance of type {type.FullName}");
 
@@ -296,21 +299,33 @@ This array along with its elements are going to be discarded. Please make check 
 
 			var propertyValue = property.GetValue(instance.Value);
 			var hasPublicSetter = property.SetMethod?.IsPublic == true;
+			var propTypeInfo = property.PropertyType.GetTypeInfo();
 
-			if (!hasPublicSetter && propertyValue == null)
-				return;
+			if (!hasPublicSetter)
+			{
+				if (propertyValue == null)
+				{
+					_logger.LogWarning("Cannot set property {type}.{property} because it has not setter and the property didn't return a valid instance of {propType} either.", instance.Value.GetType().FullName, property.Name, propTypeInfo.Name);
+					return;
+				}
+
+				if (!propTypeInfo.IsClass)
+				{
+					_logger.LogWarning("Cannot set property {type}.{property} of type because it has not setter. A struct-property requires a setter.", instance.Value.GetType().FullName, property.Name, propTypeInfo.Name);
+					return;
+				}
+			}
 
 			var newValueResult = CreateAndPopulate(property.PropertyType, config, new ConversionInstance(propertyValue));
 
-			if (newValueResult.IsValid && hasPublicSetter && !ReferenceEquals(propertyValue, newValueResult.Value))
+			if (newValueResult.IsValid && hasPublicSetter && (!ReferenceEquals(propertyValue, newValueResult.Value) || !propTypeInfo.IsClass))
 			{
 				if (newValueResult.Value == null)
 				{
-					var typeInfo = property.PropertyType.GetTypeInfo();
-
-					if (typeInfo.IsValueType && !(typeInfo.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)))
+					if (propTypeInfo.IsValueType && !(propTypeInfo.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)))
 						throw new ConfigurationSerializationException($"Cannot assign null to non-nullable type {property.PropertyType.FullName}. Path: {(config as IConfigurationSection)?.Path}");
 				}
+
 				property.SetValue(instance.Value, newValueResult.Value);
 			}
 		}
@@ -321,7 +336,7 @@ This array along with its elements are going to be discarded. Please make check 
 				throw new ArgumentNullException(nameof(property));
 
 			return property.GetMethod?.IsPublic == true
-					&& property.GetMethod.GetParameters().Length == 0;
+			       && property.GetMethod.GetParameters().Length == 0;
 		}
 
 		private void PopulateCollection([NotNull] Type elementType, [NotNull] IConfiguration config, [NotNull] IConversionInstance instance)
@@ -393,24 +408,24 @@ This array along with its elements are going to be discarded. Please make check 
 					return null;
 
 				var methodInfo = typeInfo.DeclaredMethods
-										.FirstOrDefault(m =>
-										{
-											if (!StringComparer.OrdinalIgnoreCase.Equals(m.Name, name))
-												return false;
+				                         .FirstOrDefault(m =>
+				                         {
+					                         if (!StringComparer.OrdinalIgnoreCase.Equals(m.Name, name))
+						                         return false;
 
-											var parameters = m.GetParameters();
+					                         var parameters = m.GetParameters();
 
-											if (parameters.Length != paramTypes.Length)
-												return false;
+					                         if (parameters.Length != paramTypes.Length)
+						                         return false;
 
-											for (var i = 0; i < parameters.Length; i++)
-											{
-												if (parameters[i].ParameterType != paramTypes[i])
-													return false;
-											}
+					                         for (var i = 0; i < parameters.Length; i++)
+					                         {
+						                         if (parameters[i].ParameterType != paramTypes[i])
+							                         return false;
+					                         }
 
-											return true;
-										});
+					                         return true;
+				                         });
 
 				if (methodInfo != null)
 					return methodInfo;
@@ -421,13 +436,13 @@ This array along with its elements are going to be discarded. Please make check 
 			return null;
 		}
 
-		private bool TryGetCollectionElementType([NotNull] Type type, [CanBeNull] out Type elementType)
+		private bool TryGetCollectionElementType([NotNull] Type type, out Type elementType)
 		{
 			var collectionType = FindGenericImplementedType(typeof(IList<>), type)
-								?? FindGenericImplementedType(typeof(ICollection<>), type)
-								?? FindGenericImplementedType(typeof(IReadOnlyList<>), type)
-								?? FindGenericImplementedType(typeof(IReadOnlyCollection<>), type)
-								?? FindGenericImplementedType(typeof(IEnumerable<>), type);
+			                     ?? FindGenericImplementedType(typeof(ICollection<>), type)
+			                     ?? FindGenericImplementedType(typeof(IReadOnlyList<>), type)
+			                     ?? FindGenericImplementedType(typeof(IReadOnlyCollection<>), type)
+			                     ?? FindGenericImplementedType(typeof(IEnumerable<>), type);
 
 			elementType = collectionType?.GetTypeInfo().GenericTypeArguments[0];
 
@@ -437,7 +452,7 @@ This array along with its elements are going to be discarded. Please make check 
 		private bool TryGetDictionaryTypes([NotNull] Type type, out (Type KeyType, Type ValueType) types)
 		{
 			var dictionaryInterface = FindGenericImplementedType(typeof(IDictionary<,>), type)
-									?? FindGenericImplementedType(typeof(IReadOnlyDictionary<,>), type);
+			                          ?? FindGenericImplementedType(typeof(IReadOnlyDictionary<,>), type);
 
 			if (dictionaryInterface != null)
 			{
@@ -494,6 +509,14 @@ This array along with its elements are going to be discarded. Please make check 
 
 			if (type == typeof(object))
 				return new ConversionResult(value);
+
+			if (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+			{
+				if (String.IsNullOrWhiteSpace(value))
+					return new ConversionResult(null);
+
+				type = Nullable.GetUnderlyingType(type);
+			}
 
 			return _instanceCreator.Create(type, value);
 		}

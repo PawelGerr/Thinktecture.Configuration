@@ -5,12 +5,13 @@ using Xunit;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
+	// ReSharper disable once InconsistentNaming
 	public class Convert_Decimal : ConvertBase
 	{
 		[Fact]
 		public void Should_convert_decimal_property_if_value_is_not_null()
 		{
-			SetupCreateFromString<decimal>("42.1", new ConversionResult(42.1m));
+			SetupCreateFromString("42.1", 42.1m);
 
 			RoundtripConvert<TestConfiguration<decimal>>("P1", "42.1")
 				.P1.ShouldBeEquivalentTo(42.1m);
@@ -19,7 +20,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_decimal_property()
 		{
-			SetupCreateFromString<decimal>("42", new ConversionResult(42m));
+			SetupCreateFromString("42", 42m);
 
 			RoundtripConvert<TestConfiguration<decimal>>("P1", "42")
 				.P1.ShouldBeEquivalentTo(42m);
@@ -28,7 +29,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_nullable_decimal_property_if_value_is_not_null()
 		{
-			SetupCreateFromString<decimal?>("42", new ConversionResult(42m));
+			SetupCreateFromString("42", 42m);
 
 			RoundtripConvert<TestConfiguration<decimal?>>("P1", "42")
 				.P1.ShouldBeEquivalentTo(42m);

@@ -5,12 +5,13 @@ using Xunit;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
+	// ReSharper disable once InconsistentNaming
 	public class Convert_Int32 : ConvertBase
 	{
 		[Fact]
 		public void Should_convert_int_property_if_value_is_not_null()
 		{
-			SetupCreateFromString<int>("42", new ConversionResult(42));
+			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<int>>("P1", "42")
 				.P1.ShouldBeEquivalentTo(42);
@@ -35,7 +36,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_value_using_instance_creator_when_value_is_empty_string()
 		{
-			SetupCreateFromString<int>(String.Empty, new ConversionResult(42));
+			SetupCreateFromString(String.Empty, 42);
 
 			RoundtripConvert<TestConfiguration<int>>("P1", String.Empty)
 				.P1.Should().Be(42);
@@ -44,7 +45,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_value_using_instance_creator_when_value_is_an_invalid_integer()
 		{
-			SetupCreateFromString<int>("not-an-int", new ConversionResult(42));
+			SetupCreateFromString("not-an-int", 42);
 
 			RoundtripConvert<TestConfiguration<int>>("P1", "not-an-int")
 				.P1.Should().Be(42);
@@ -53,7 +54,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_nullable_int_property_if_value_is_not_null()
 		{
-			SetupCreateFromString<int?>("42", new ConversionResult(42));
+			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<int?>>("P1", "42")
 				.P1.Should().Be(42);
@@ -69,8 +70,6 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_nullable_int_property_if_value_is_empty_string()
 		{
-			SetupCreateFromString<int?>(String.Empty, new ConversionResult(null));
-
 			RoundtripConvert<TestConfiguration<int?>>("P1", String.Empty)
 				.P1.Should().BeNull();
 		}

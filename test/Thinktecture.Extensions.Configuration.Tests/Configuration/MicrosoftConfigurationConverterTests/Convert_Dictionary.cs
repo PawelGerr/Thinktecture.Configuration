@@ -23,16 +23,18 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		}
 
 		[Fact]
-		public void Should_convert_empty_string_to_null()
+		public void Should_convert_empty_string_to_empty_collection()
 		{
-			RoundtripConvert<TestConfiguration<Dictionary<string, int>>>(c => c.P1 = null)
-				.P1.Should().BeNull();
+			SetupCreateFromString<Dictionary<string, int>>(String.Empty, ConversionResult.Invalid);
+
+			RoundtripConvert<TestConfiguration<Dictionary<string, int>>>("P1", String.Empty)
+				.P1.Should().BeEmpty();
 		}
 
 		[Fact]
 		public void Should_convert_dictionary_with_one_value()
 		{
-			SetupCreateFromString<int>("42", new ConversionResult(42));
+			SetupCreateFromString<int>("42", 42);
 
 			RoundtripConvert<TestConfiguration<Dictionary<string, int>>>("P1:foo", "42")
 				.P1.ShouldBeEquivalentTo(new Dictionary<string, int>() { ["foo"] = 42 });
@@ -41,7 +43,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_idictionary_with_one_value()
 		{
-			SetupCreateFromString<int>("42", new ConversionResult(42));
+			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<IDictionary<string, int>>>("P1:foo", "42")
 				.P1.ShouldBeEquivalentTo(new Dictionary<string, int>() { ["foo"] = 42 });
@@ -50,7 +52,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_ireadonlydictionary_with_one_value()
 		{
-			SetupCreateFromString<int>("42", new ConversionResult(42));
+			SetupCreateFromString("42", 42);
 
 			RoundtripConvert<TestConfiguration<IReadOnlyDictionary<string, int>>>("P1:foo", "42")
 				.P1.ShouldBeEquivalentTo(new Dictionary<string, int>() { ["foo"] = 42 });

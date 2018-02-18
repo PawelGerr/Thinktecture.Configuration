@@ -15,7 +15,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_populate_custom_propery_on_collection()
 		{
-			SetupCreateFromString<int>("1", new ConversionResult(1));
+			SetupCreateFromString("1", 1);
 
 			RoundtripConvert<TestConfiguration<TestList<int, string>>>(dictionary =>
 				{
@@ -28,8 +28,8 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_populate_collection_values()
 		{
-			SetupCreateFromString<int>("1", new ConversionResult(1));
-			SetupCreateFromString<int>("2", new ConversionResult(2));
+			SetupCreateFromString("1", 1);
+			SetupCreateFromString("2", 2);
 
 			RoundtripConvert<TestConfiguration<TestList<int, string>>>(dictionary =>
 				{
@@ -52,8 +52,8 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_populate_custom_propery()
 		{
-			SetupCreateFromString<int>("1", new ConversionResult(1));
-			SetupCreateFromString<int>("42", new ConversionResult(42));
+			SetupCreateFromString("1", 1);
+			SetupCreateFromString("42", 42);
 			SetupCreateFromString<int>("Property", ConversionResult.Invalid);
 
 			RoundtripConvert<TestConfiguration<TestDictionary<int, string, string>>>(dictionary =>
@@ -67,10 +67,10 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_populate_collection_values()
 		{
-			SetupCreateFromString<int>("1", new ConversionResult(1));
-			SetupCreateFromString<int>("2", new ConversionResult(2));
-			SetupCreateFromString<int>("42", new ConversionResult(42));
-			SetupCreateFromString<int>("43", new ConversionResult(43));
+			SetupCreateFromString("1", 1);
+			SetupCreateFromString("2", 2);
+			SetupCreateFromString("42", 42);
+			SetupCreateFromString("43", 43);
 			SetupCreateFromString<int>("Property", ConversionResult.Invalid);
 
 			RoundtripConvert<TestConfiguration<TestDictionary<int, string, string>>>(dictionary =>

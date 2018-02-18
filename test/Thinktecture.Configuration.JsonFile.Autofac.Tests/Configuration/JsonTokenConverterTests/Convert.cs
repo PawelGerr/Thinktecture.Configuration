@@ -387,5 +387,14 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 			config.Should().NotBeNull();
 			config.InnerConfiguration.Should().NotBeNull();
 		}
+
+		[Fact]
+		public void Should_convert_type_via_typeconverter()
+		{
+			var tokens = GetTokens("value");
+			var config = Create().Convert<ClassWithTypeConverter>(tokens);
+			config.Should().BeOfType<ClassWithTypeConverter>();
+			config.Prop.Should().Be("value");
+		}
 	}
 }

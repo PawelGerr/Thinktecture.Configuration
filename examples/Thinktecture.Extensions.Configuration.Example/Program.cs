@@ -32,6 +32,9 @@ namespace Thinktecture.Extensions.Configuration.Example
 			var container = builder.Build();
 			var myConfig = container.Resolve<IMyConfiguration>();
 
+			Console.WriteLine($"myConfig.ClassWithTypeConverter.Prop: {myConfig.ClassWithTypeConverter?.Prop}");
+			Console.WriteLine($"StructConfiguration.Value: {myConfig.StructConfiguration.Value}");
+
 			while (true)
 			{
 				var myConfig2 = container.Resolve<IMyConfiguration>();
@@ -39,6 +42,7 @@ namespace Thinktecture.Extensions.Configuration.Example
 				Console.WriteLine($"myConfig.Value: {myConfig.Value}");
 				Console.WriteLine($"myConfig2.Value: {myConfig2.Value}");
 				Console.WriteLine($"myConfig == myConfig2: {ReferenceEquals(myConfig, myConfig2)}");
+
 				Console.WriteLine("Press ENTER to re-resolve");
 				Console.ReadLine();
 			}

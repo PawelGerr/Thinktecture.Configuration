@@ -27,6 +27,8 @@ namespace Thinktecture.Configuration.JsonFile.Autofac.Example
 
 				var componentConfig = scope.Resolve<IMyComponentConfiguration>();
 				Console.WriteLine($"{Environment.NewLine}Is \"IMyComponentConfiguration.OtherConfiguration\" == \"IMyComponentOtherConfiguration\": {(componentConfig.OtherConfiguration == otherConfig ? "yes" : "no")}");
+				Console.WriteLine($"ClassWithTypeConverter.Prop: {componentConfig.ClassWithTypeConverter?.Prop}");
+				Console.WriteLine($"StructConfiguration.Value: {componentConfig.StructConfiguration.Value}");
 
 				var configFromOtherFile = scope.Resolve<IConfigurationFromOtherFile>();
 				Console.WriteLine($"{Environment.NewLine}\"IConfigurationFromOtherFile\": {configFromOtherFile.Value}");

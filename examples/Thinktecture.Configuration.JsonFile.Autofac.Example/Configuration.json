@@ -6,6 +6,12 @@
 
 		"OtherConfiguration": {
 			"OtherComponentValue": 12.34
+		},
+
+	    "ClassWithTypeConverter": "ClassWithTypeConverter",
+
+	    "StructConfiguration": {
+		  "Value" : "struct value"
 		}
 	}
 }

@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
-using System.Reflection;
 using JetBrains.Annotations;
 
 namespace Thinktecture.Configuration
@@ -14,6 +13,7 @@ namespace Thinktecture.Configuration
 		/// <summary>
 		/// Culture to be used for parsing of values.
 		/// </summary>
+		// ReSharper disable once MemberCanBePrivate.Global
 		protected readonly CultureInfo Culture;
 
 		/// <summary>
@@ -36,15 +36,12 @@ namespace Thinktecture.Configuration
 
 			try
 			{
-				if (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-				{
-					if (String.IsNullOrWhiteSpace(value))
-						return new ConversionResult(null);
+				var converter = TypeDescriptor.GetConverter(type);
 
-					type = Nullable.GetUnderlyingType(type);
-				}
+				if(!converter.CanConvertFrom(typeof(string)))
+					return ConversionResult.Invalid;
 
-				var instance = TypeDescriptor.GetConverter(type).ConvertFromString(null, Culture, value);
+				var instance = converter.ConvertFromString(null, Culture, value);
 
 				return new ConversionResult(instance);
 			}

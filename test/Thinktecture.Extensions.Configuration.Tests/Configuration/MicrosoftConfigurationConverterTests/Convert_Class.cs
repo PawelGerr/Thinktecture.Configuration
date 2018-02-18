@@ -26,7 +26,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_return_default_value_if_creation_of_config_failed()
 		{
-			InstanceCreatorMock.Setup(c => c.Create(typeof(int))).Returns(ConversionResult.Invalid);
+			SetupCreate<TestConfiguration<int>>(ConversionResult.Invalid);
 
 			var config = GetConfig(new object());
 			Converter.Convert<int>(config).Should().Be(0);
@@ -35,15 +35,27 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		[Fact]
 		public void Should_convert_null_to_null()
 		{
-			var result = RoundtripConvert<TestConfiguration<TestConfiguration<int>>>(c => c.P1 = null);
+			SetupCreateFromString<TestConfiguration<int>>(String.Empty, ConversionResult.Invalid);
+
+			var result = RoundtripConvert<TestConfiguration<TestConfiguration<int>>>(dictionary => dictionary["P1"] = null);
 			result.P1.Should().BeNull();
+		}
+
+		[Fact]
+		public void Should_convert_empty_string_to_empty_object()
+		{
+			SetupCreate<TestConfiguration<int>>(new ConversionResult(new TestConfiguration<int>()));
+			SetupCreateFromString<TestConfiguration<int>>(String.Empty, ConversionResult.Invalid);
+
+			var result = RoundtripConvert<TestConfiguration<TestConfiguration<int>>>(dictionary => dictionary["P1"] = String.Empty);
+			result.P1.ShouldBeEquivalentTo(new TestConfiguration<int>());
 		}
 
 		[Fact]
 		public void Should_convert_inner_complex_property()
 		{
 			SetupCreate<TestConfiguration<decimal>>(new ConversionResult(new TestConfiguration<decimal>()));
-			SetupCreateFromString<decimal>("42", new ConversionResult(42m));
+			SetupCreateFromString("42", 42m);
 
 			var result = RoundtripConvert(new TestConfiguration<TestConfiguration<decimal>>()
 			{
