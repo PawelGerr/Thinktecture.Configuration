@@ -12,6 +12,7 @@ using Xunit;
 
 namespace Thinktecture.Configuration.JsonTokenConverterTests
 {
+	// ReSharper disable PossibleNullReferenceException
 	public class Convert
 	{
 		private readonly ContainerBuilder _builder;
@@ -36,6 +37,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_throw_argnull_if_jtokens_are_null()
 		{
+			// ReSharper disable once AssignNullToNotNullAttribute
 			Create()
 				.Invoking(c => c.Convert<ConfigurationWithDefaultCtor>(null))
 				.ShouldThrow<ArgumentNullException>();
@@ -302,14 +304,14 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		public void Should_ignore_null_values()
 		{
 			var tokens = GetTokens(new
-									{
-										InnerConfiguration = new { InnerConfiguration = new ConfigurationWithDefaultCtor() }
-									},
-									null,
-									new
-									{
-										InnerConfiguration = new { }
-									});
+			                       {
+				                       InnerConfiguration = new { InnerConfiguration = new ConfigurationWithDefaultCtor() }
+			                       },
+			                       null,
+			                       new
+			                       {
+				                       InnerConfiguration = new { }
+			                       });
 
 			var config = Create().Convert<DoubleNestedConfiguration>(tokens);
 			config.Should().NotBeNull();
@@ -321,14 +323,14 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		public void Should_start_deserializing_after_last_nulltoken()
 		{
 			var tokens = GetTokens(new
-									{
-										InnerConfiguration = new { InnerConfiguration = new ConfigurationWithDefaultCtor() }
-									},
-									JToken.Parse("null"),
-									new
-									{
-										InnerConfiguration = new { }
-									});
+			                       {
+				                       InnerConfiguration = new { InnerConfiguration = new ConfigurationWithDefaultCtor() }
+			                       },
+			                       JToken.Parse("null"),
+			                       new
+			                       {
+				                       InnerConfiguration = new { }
+			                       });
 
 			var config = Create().Convert<DoubleNestedConfiguration>(tokens);
 			config.Should().NotBeNull();

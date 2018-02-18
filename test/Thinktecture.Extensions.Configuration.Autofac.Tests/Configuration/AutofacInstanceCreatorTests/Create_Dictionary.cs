@@ -9,6 +9,7 @@ using Xunit;
 
 namespace Thinktecture.Configuration.AutofacInstanceCreatorTests
 {
+	// ReSharper disable once InconsistentNaming
 	public class Create_Dictionary
 	{
 		private readonly AutofacInstanceCreator _creator;

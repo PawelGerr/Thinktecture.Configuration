@@ -6,6 +6,7 @@ using Xunit;
 
 namespace Thinktecture.Configuration.InstanceCreatorTests
 {
+	// ReSharper disable once InconsistentNaming
 	public class Create_FromValue
 	{
 		private TestInstanceCreator _creator;

@@ -91,8 +91,8 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		protected IConfigurationRoot GetConfig(object obj)
 		{
 			var config = new ConfigurationBuilder()
-				.AddJsonFile(new TestFileProvider(obj), "configuration.json", false, false)
-				.Build();
+			             .AddJsonFile(new TestFileProvider(obj), "configuration.json", false, false)
+			             .Build();
 
 			return config;
 		}
@@ -103,8 +103,8 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 			addValues?.Invoke(values);
 
 			var config = new ConfigurationBuilder()
-				.AddInMemoryCollection(values)
-				.Build();
+			             .AddInMemoryCollection(values)
+			             .Build();
 
 			return config;
 		}

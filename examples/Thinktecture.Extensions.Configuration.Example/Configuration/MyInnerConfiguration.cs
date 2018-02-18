@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Thinktecture.Extensions.Configuration.Example.Configuration
 {
+	// ReSharper disable once ClassNeverInstantiated.Global
+	// ReSharper disable UnusedAutoPropertyAccessor.Global
+	// ReSharper disable MemberCanBePrivate.Global
 	public class MyInnerConfiguration : IMyInnerConfiguration
 	{
 		public string InnerValue { get; set; }

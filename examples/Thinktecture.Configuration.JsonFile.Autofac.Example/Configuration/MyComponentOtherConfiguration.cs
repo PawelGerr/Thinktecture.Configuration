@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Thinktecture.IO;
 
 namespace Thinktecture.Configuration.JsonFile.Autofac.Example.Configuration
 {
+	// ReSharper disable UnusedAutoPropertyAccessor.Global
+	// ReSharper disable once ClassNeverInstantiated.Global
 	public class MyComponentOtherConfiguration : IMyComponentOtherConfiguration
 	{
 		public decimal OtherComponentValue { get; set; }

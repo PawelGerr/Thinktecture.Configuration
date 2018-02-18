@@ -7,6 +7,7 @@ using Xunit;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
+	// ReSharper disable once InconsistentNaming
 	public class Convert_Array_of_Int32 : ConvertBase
 	{
 		[Fact]

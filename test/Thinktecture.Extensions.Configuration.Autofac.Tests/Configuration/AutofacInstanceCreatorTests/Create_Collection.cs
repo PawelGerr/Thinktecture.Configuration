@@ -10,6 +10,7 @@ using Xunit;
 
 namespace Thinktecture.Configuration.AutofacInstanceCreatorTests
 {
+	// ReSharper disable once InconsistentNaming
 	public class Create_Collection
 	{
 		private readonly AutofacInstanceCreator _creator;

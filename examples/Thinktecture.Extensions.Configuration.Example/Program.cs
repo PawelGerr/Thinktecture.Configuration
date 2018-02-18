@@ -8,14 +8,15 @@ namespace Thinktecture.Extensions.Configuration.Example
 {
 	public static class Program
 	{
-		public static void Main(string[] args)
+		// ReSharper disable once FunctionNeverReturns
+		public static void Main()
 		{
 			var loggerConfig = new LoggerFactory()
 				.AddConsole(LogLevel.Trace);
 
 			IConfiguration config = new ConfigurationBuilder()
-				.AddJsonFile("configuration.json", false, true)
-				.Build();
+			                        .AddJsonFile("configuration.json", false, true)
+			                        .Build();
 
 			var builder = new ContainerBuilder();
 			builder.RegisterInstance(loggerConfig).As<ILoggerFactory>();

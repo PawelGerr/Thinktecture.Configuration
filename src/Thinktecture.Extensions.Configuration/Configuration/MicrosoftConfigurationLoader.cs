@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 
@@ -9,6 +7,7 @@ namespace Thinktecture.Configuration
 	/// <summary>
 	/// Uses <see cref="IConfiguration"/> as the source during deserialization of the configurations.
 	/// </summary>
+	// ReSharper disable once ClassNeverInstantiated.Global
 	public class MicrosoftConfigurationLoader : IConfigurationLoader<IConfiguration, IConfiguration>
 	{
 		[NotNull]
@@ -23,7 +22,7 @@ namespace Thinktecture.Configuration
 		/// <param name="configuration">The source to be used during deserialization of the configurations.</param>
 		/// <param name="providerFactory">Factory for creation of <see cref="IMicrosoftConfigurationConverter"/>.</param>
 		public MicrosoftConfigurationLoader([NotNull] IConfiguration configuration,
-											[NotNull] Func<IConfiguration, MicrosoftConfigurationProvider> providerFactory)
+		                                    [NotNull] Func<IConfiguration, MicrosoftConfigurationProvider> providerFactory)
 		{
 			_providerFactory = providerFactory ?? throw new ArgumentNullException(nameof(providerFactory));
 			_configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Thinktecture.Configuration.JsonFile.Autofac.Example.Configuration
+﻿namespace Thinktecture.Configuration.JsonFile.Autofac.Example.Configuration
 {
+	// ReSharper disable once ClassNeverInstantiated.Global
 	public class MyApplicationConfiguration : IMyApplicationConfiguration
 	{
 		public string ApplicationValue { get; set; }

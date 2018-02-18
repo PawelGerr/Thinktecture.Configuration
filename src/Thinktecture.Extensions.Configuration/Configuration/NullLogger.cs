@@ -1,9 +1,9 @@
+#if NETSTANDARD1_1
 using System;
 using Microsoft.Extensions.Logging;
 
 namespace Thinktecture.Configuration
 {
-#if NETSTANDARD1_1
 	internal class NullLogger<T> : ILogger<T>
 	{
 		public static readonly NullLogger<T> Instance = new NullLogger<T>();
@@ -24,12 +24,13 @@ namespace Thinktecture.Configuration
 
 		private class NullDisposable : IDisposable
 		{
-			public static readonly NullDisposable Instance = new NullLogger<T>.NullDisposable();
+			// ReSharper disable once MemberHidesStaticFromOuterClass
+			public static readonly NullDisposable Instance = new NullDisposable();
 
 			public void Dispose()
 			{
 			}
 		}
 	}
-#endif
 }
+#endif

@@ -38,9 +38,10 @@ namespace Thinktecture.Configuration
 			{
 				var converter = TypeDescriptor.GetConverter(type);
 
-				if(!converter.CanConvertFrom(typeof(string)))
+				if (!converter.CanConvertFrom(typeof(string)))
 					return ConversionResult.Invalid;
 
+				// ReSharper disable once AssignNullToNotNullAttribute
 				var instance = converter.ConvertFromString(null, Culture, value);
 
 				return new ConversionResult(instance);

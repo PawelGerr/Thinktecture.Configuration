@@ -26,6 +26,7 @@ namespace Thinktecture.Configuration.AutofacCreationJsonConverterTests
 		[Fact]
 		public void Should_throw_argnull_if_type_is_null()
 		{
+			// ReSharper disable once AssignNullToNotNullAttribute
 			CreateConverter()
 				.Invoking(c => c.Create(null))
 				.ShouldThrow<ArgumentNullException>();

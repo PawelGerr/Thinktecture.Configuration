@@ -1,4 +1,3 @@
-using System;
 using JetBrains.Annotations;
 
 namespace Thinktecture.Configuration

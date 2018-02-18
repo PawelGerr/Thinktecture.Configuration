@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using FluentAssertions;
 using Moq;
@@ -14,7 +13,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		public Convert_Collection()
 		{
 			InstanceCreatorMock.Setup(c => c.Create(It.IsAny<Type>()))
-								.Returns<Type>(type => new ConversionResult(type.GetTypeInfo().IsGenericType ? (object)new List<int>() : new List<object>()));
+			                   .Returns<Type>(type => new ConversionResult(type.GetTypeInfo().IsGenericType ? (object)new List<int>() : new List<object>()));
 		}
 
 		[Fact]

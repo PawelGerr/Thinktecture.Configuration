@@ -11,10 +11,11 @@ namespace Thinktecture.Configuration.JsonFileConfigurationSelectorTests
 		[Fact]
 		public void Should_throw_argnull_if_property_name_is_null()
 		{
+			// ReSharper disable once AssignNullToNotNullAttribute
 			Action ctor = () => new JsonFileConfigurationSelector(null);
 
 			ctor.Invoking(c => c())
-				.ShouldThrow<ArgumentNullException>();
+			    .ShouldThrow<ArgumentNullException>();
 		}
 
 		[Fact]
@@ -23,7 +24,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationSelectorTests
 			Action ctor = () => new JsonFileConfigurationSelector(" ");
 
 			ctor.Invoking(c => c())
-				.ShouldThrow<ArgumentException>();
+			    .ShouldThrow<ArgumentException>();
 		}
 
 		[Fact]
@@ -32,7 +33,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationSelectorTests
 			Action ctor = () => new JsonFileConfigurationSelector("Parent..Child");
 
 			ctor.Invoking(c => c())
-				.ShouldThrow<ArgumentException>();
+			    .ShouldThrow<ArgumentException>();
 		}
 
 		[Fact]

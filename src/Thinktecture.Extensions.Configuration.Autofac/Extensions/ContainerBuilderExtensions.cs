@@ -40,13 +40,13 @@ namespace Thinktecture
 			builder.RegisterInstance(new MicrosoftConfigurationChangeTokenSource(configuration)).AsSelf();
 
 			builder.RegisterType<MicrosoftConfigurationLoader>()
-					.WithParameter(new TypedParameter(typeof(IConfiguration), configuration))
-					.As<IConfigurationLoader<IConfiguration, IConfiguration>>()
-					.SingleInstance();
+			       .WithParameter(new TypedParameter(typeof(IConfiguration), configuration))
+			       .As<IConfigurationLoader<IConfiguration, IConfiguration>>()
+			       .SingleInstance();
 
 			builder.Register(context => context.Resolve<IConfigurationLoader<IConfiguration, IConfiguration>>().Load())
-					.As<IConfigurationProvider<IConfiguration, IConfiguration>>()
-					.SingleInstance();
+			       .As<IConfigurationProvider<IConfiguration, IConfiguration>>()
+			       .SingleInstance();
 		}
 
 		/// <summary>
@@ -70,16 +70,16 @@ namespace Thinktecture
 			var key = new AutofacConfigurationProviderKey();
 
 			builder.RegisterInstance(new MicrosoftConfigurationChangeTokenSource(configuration))
-					.Keyed<MicrosoftConfigurationChangeTokenSource>(key);
+			       .Keyed<MicrosoftConfigurationChangeTokenSource>(key);
 
 			builder.RegisterType<MicrosoftConfigurationLoader>()
-					.WithParameter(new TypedParameter(typeof(IConfiguration), configuration))
-					.Keyed<IConfigurationLoader<IConfiguration, IConfiguration>>(key)
-					.SingleInstance();
+			       .WithParameter(new TypedParameter(typeof(IConfiguration), configuration))
+			       .Keyed<IConfigurationLoader<IConfiguration, IConfiguration>>(key)
+			       .SingleInstance();
 
 			builder.Register(context => context.ResolveKeyed<IConfigurationLoader<IConfiguration, IConfiguration>>(key).Load())
-					.Keyed<IConfigurationProvider<IConfiguration, IConfiguration>>(key)
-					.SingleInstance();
+			       .Keyed<IConfigurationProvider<IConfiguration, IConfiguration>>(key)
+			       .SingleInstance();
 
 			return key;
 		}
@@ -97,39 +97,39 @@ namespace Thinktecture
 				throw new ArgumentNullException(nameof(builder));
 
 			builder.RegisterType<MicrosoftConfigurationProvider>()
-					.AsSelf()
-					.IfNotRegistered(typeof(MicrosoftConfigurationProvider));
+			       .AsSelf()
+			       .IfNotRegistered(typeof(MicrosoftConfigurationProvider));
 
 			builder.RegisterType<MicrosoftConfigurationConverter>()
-					.As<IMicrosoftConfigurationConverter>()
-					.IfNotRegistered(typeof(IMicrosoftConfigurationConverter));
+			       .As<IMicrosoftConfigurationConverter>()
+			       .IfNotRegistered(typeof(IMicrosoftConfigurationConverter));
 
 			builder.RegisterType<AutofacInstanceCreator>()
-					.As<IInstanceCreator>()
-					.WithParameter(new TypedParameter(typeof(CultureInfo), converterCulture ?? CultureInfo.InvariantCulture))
-					.IfNotRegistered(typeof(IInstanceCreator));
+			       .As<IInstanceCreator>()
+			       .WithParameter(new TypedParameter(typeof(CultureInfo), converterCulture ?? CultureInfo.InvariantCulture))
+			       .IfNotRegistered(typeof(IInstanceCreator));
 
 			if (builder.FlagTypeAsRegistered(typeof(List<>)))
 			{
 				builder.RegisterGeneric(typeof(List<>))
-						.Keyed(RegistrationKey, typeof(List<>))
-						.Keyed(RegistrationKey, typeof(IList<>))
-						.Keyed(RegistrationKey, typeof(ICollection<>))
-						.Keyed(RegistrationKey, typeof(IEnumerable<>));
+				       .Keyed(RegistrationKey, typeof(List<>))
+				       .Keyed(RegistrationKey, typeof(IList<>))
+				       .Keyed(RegistrationKey, typeof(ICollection<>))
+				       .Keyed(RegistrationKey, typeof(IEnumerable<>));
 			}
 
 			if (builder.FlagTypeAsRegistered(typeof(Collection<>)))
 			{
 				builder.RegisterGeneric(typeof(Collection<>))
-						.Keyed(RegistrationKey, typeof(Collection<>));
+				       .Keyed(RegistrationKey, typeof(Collection<>));
 			}
 
 			if (builder.FlagTypeAsRegistered(typeof(Dictionary<,>)))
 			{
 				builder.RegisterGeneric(typeof(Dictionary<,>))
-						.Keyed(RegistrationKey, typeof(Dictionary<,>))
-						.Keyed(RegistrationKey, typeof(IDictionary<,>))
-						.Keyed(RegistrationKey, typeof(IReadOnlyDictionary<,>));
+				       .Keyed(RegistrationKey, typeof(Dictionary<,>))
+				       .Keyed(RegistrationKey, typeof(IDictionary<,>))
+				       .Keyed(RegistrationKey, typeof(IReadOnlyDictionary<,>));
 			}
 
 			return builder;
@@ -156,9 +156,9 @@ namespace Thinktecture
 			if (reuseInstance)
 			{
 				builder.RegisterType<MicrosoftConfigurationCache<T>>()
-						.WithParameter(new TypedParameter(typeof(IConfigurationSelector<IConfiguration, IConfiguration>), selector))
-						.As<IConfigurationCache<T>>()
-						.SingleInstance();
+				       .WithParameter(new TypedParameter(typeof(IConfigurationSelector<IConfiguration, IConfiguration>), selector))
+				       .As<IConfigurationCache<T>>()
+				       .SingleInstance();
 
 				return builder.Register(context => context.Resolve<IConfigurationCache<T>>().CurrentValue);
 			}
@@ -190,11 +190,11 @@ namespace Thinktecture
 			if (reuseInstance)
 			{
 				builder.RegisterType<MicrosoftConfigurationCache<T>>()
-						.WithParameter(new ResolvedParameter((info, context) => info.ParameterType == typeof(IConfigurationProvider<IConfiguration, IConfiguration>), (info, context) => context.ResolveKeyed<IConfigurationProvider<IConfiguration, IConfiguration>>(registrationKey)))
-						.WithParameter(new TypedParameter(typeof(IConfigurationSelector<IConfiguration, IConfiguration>), selector))
-						.WithParameter(new ResolvedParameter((info, context) => info.ParameterType == typeof(MicrosoftConfigurationChangeTokenSource), (info, context) => context.ResolveKeyed<MicrosoftConfigurationChangeTokenSource>(registrationKey)))
-						.Keyed<IConfigurationCache<T>>(registrationKey)
-						.SingleInstance();
+				       .WithParameter(new ResolvedParameter((info, context) => info.ParameterType == typeof(IConfigurationProvider<IConfiguration, IConfiguration>), (info, context) => context.ResolveKeyed<IConfigurationProvider<IConfiguration, IConfiguration>>(registrationKey)))
+				       .WithParameter(new TypedParameter(typeof(IConfigurationSelector<IConfiguration, IConfiguration>), selector))
+				       .WithParameter(new ResolvedParameter((info, context) => info.ParameterType == typeof(MicrosoftConfigurationChangeTokenSource), (info, context) => context.ResolveKeyed<MicrosoftConfigurationChangeTokenSource>(registrationKey)))
+				       .Keyed<IConfigurationCache<T>>(registrationKey)
+				       .SingleInstance();
 
 				return builder.Register(context => context.ResolveKeyed<IConfigurationCache<T>>(registrationKey).CurrentValue);
 			}

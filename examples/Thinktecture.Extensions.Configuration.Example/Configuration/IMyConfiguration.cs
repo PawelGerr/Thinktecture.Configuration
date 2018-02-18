@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Thinktecture.Extensions.Configuration.Example.Configuration
 {
+	// ReSharper disable UnusedMember.Global
 	public interface IMyConfiguration
 	{
 		int Value { get; }

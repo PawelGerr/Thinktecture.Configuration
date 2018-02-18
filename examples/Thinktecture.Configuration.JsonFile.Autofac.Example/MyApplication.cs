@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Thinktecture.Configuration.JsonFile.Autofac.Example.Configuration;
 
 namespace Thinktecture.Configuration.JsonFile.Autofac.Example
 {
+	// ReSharper disable once ClassNeverInstantiated.Global
 	public class MyApplication : IMyApplication
 	{
 		private readonly IMyComponent _component;

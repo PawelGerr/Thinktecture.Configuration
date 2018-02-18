@@ -11,6 +11,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 		[Fact]
 		public void Should_throw_if_file_is_null()
 		{
+			// ReSharper disable once AssignNullToNotNullAttribute
 			Action ctor = () => new JsonFileConfigurationLoader(null, ConverterMock.Object, new[] { FilePath });
 
 			ctor.Invoking(c => c()).ShouldThrow<ArgumentNullException>();
@@ -19,6 +20,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 		[Fact]
 		public void Should_throw_if_filepaths_are_null()
 		{
+			// ReSharper disable once AssignNullToNotNullAttribute
 			Action ctor = () => new JsonFileConfigurationLoader(FileMock.Object, ConverterMock.Object, null);
 
 			ctor.Invoking(c => c()).ShouldThrow<ArgumentNullException>();
@@ -43,6 +45,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationLoaderTests
 		[Fact]
 		public void Should_throw_if_converter_is_null()
 		{
+			// ReSharper disable once AssignNullToNotNullAttribute
 			Action ctor = () => new JsonFileConfigurationLoader(FileMock.Object, null, new[] { FilePath });
 
 			ctor.Invoking(c => c()).ShouldThrow<ArgumentNullException>();

@@ -15,6 +15,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationSelectorTests
 		[Fact]
 		public void Should_throw_if_token_is_null()
 		{
+			// ReSharper disable once AssignNullToNotNullAttribute
 			CreateSelector("Property")
 				.Invoking(s => s.Select(null))
 				.ShouldThrow<ArgumentNullException>();
@@ -31,6 +32,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationSelectorTests
 		[Fact]
 		public void Should_return_null_token_if_value_of_property_is_null()
 		{
+			// ReSharper disable once PossibleNullReferenceException
 			CreateSelector("Property")
 				.Select(JToken.FromObject(new { Property = (string)null }))
 				.Type.Should().Be(JTokenType.Null);

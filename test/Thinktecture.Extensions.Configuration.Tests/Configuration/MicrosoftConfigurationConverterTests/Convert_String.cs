@@ -5,6 +5,7 @@ using Xunit;
 
 namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 {
+	// ReSharper disable once InconsistentNaming
 	public class Convert_String : ConvertBase
 	{
 		[Fact]

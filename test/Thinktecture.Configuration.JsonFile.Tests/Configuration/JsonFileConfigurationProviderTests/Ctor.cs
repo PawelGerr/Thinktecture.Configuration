@@ -12,9 +12,10 @@ namespace Thinktecture.Configuration.JsonFileConfigurationProviderTests
 		[Fact]
 		public void Should_throw_argnull_if_token_collection_is_null()
 		{
+			// ReSharper disable once AssignNullToNotNullAttribute
 			Action ctor = () => new JsonFileConfigurationProvider(null, ConverterMock.Object);
 			ctor.Invoking(c => c())
-				.ShouldThrow<ArgumentNullException>();
+			    .ShouldThrow<ArgumentNullException>();
 		}
 
 		[Fact]
@@ -22,7 +23,7 @@ namespace Thinktecture.Configuration.JsonFileConfigurationProviderTests
 		{
 			Action ctor = () => new JsonFileConfigurationProvider(new JToken[0], ConverterMock.Object);
 			ctor.Invoking(c => c())
-				.ShouldThrow<ArgumentException>();
+			    .ShouldThrow<ArgumentException>();
 		}
 
 		[Fact]
@@ -30,15 +31,16 @@ namespace Thinktecture.Configuration.JsonFileConfigurationProviderTests
 		{
 			Action ctor = () => new JsonFileConfigurationProvider(new JToken[] { null }, ConverterMock.Object);
 			ctor.Invoking(c => c())
-				.ShouldNotThrow<Exception>();
+			    .ShouldNotThrow<Exception>();
 		}
 
 		[Fact]
 		public void Should_throw_argnull_if_converter_is_null()
 		{
+			// ReSharper disable once AssignNullToNotNullAttribute
 			Action ctor = () => new JsonFileConfigurationProvider(GetTokens(new { }), null);
 			ctor.Invoking(c => c())
-				.ShouldThrow<ArgumentNullException>();
+			    .ShouldThrow<ArgumentNullException>();
 		}
 
 		[Fact]

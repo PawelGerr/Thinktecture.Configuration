@@ -1,7 +1,10 @@
 using System;
-using System.Reflection;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+
+#if NETSTANDARD1_3
+using System.Reflection;
+#endif
 
 namespace Thinktecture.Configuration
 {

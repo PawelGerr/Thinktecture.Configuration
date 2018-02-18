@@ -60,6 +60,7 @@ namespace Thinktecture.Configuration
 				if ((child is JProperty prop) && StringComparer.OrdinalIgnoreCase.Equals(prop.Name, propertyName))
 					return prop.Value;
 			}
+
 			return null;
 		}
 	}

@@ -23,6 +23,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_throw_argnull_if_scope_is_null()
 		{
+			// ReSharper disable once AssignNullToNotNullAttribute
 			Action ctor = () => new AutofacJsonTokenConverter(null, Enumerable.Empty<AutofacJsonTokenConverterType>());
 
 			ctor.Invoking(a => a()).ShouldThrow<ArgumentNullException>();
@@ -31,6 +32,7 @@ namespace Thinktecture.Configuration.JsonTokenConverterTests
 		[Fact]
 		public void Should_throw_argnull_if_enumerable_is_null()
 		{
+			// ReSharper disable once AssignNullToNotNullAttribute
 			Action ctor = () => new AutofacJsonTokenConverter(_scopeMock.Object, null);
 
 			ctor.Invoking(a => a()).ShouldThrow<ArgumentNullException>();

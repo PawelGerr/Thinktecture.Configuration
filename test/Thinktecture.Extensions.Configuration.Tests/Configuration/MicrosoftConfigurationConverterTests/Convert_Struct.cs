@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using FluentAssertions;
 using Thinktecture.Helpers;
 using Xunit;
@@ -51,7 +49,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 
 			result.ShouldBeEquivalentTo(new TestConfiguration<TestConfiguration<TestStruct>>()
 			{
-				P1 = new TestConfiguration<TestStruct>() { P1 = new TestStruct() { Value = "struct value" }}
+				P1 = new TestConfiguration<TestStruct>() { P1 = new TestStruct() { Value = "struct value" } }
 			});
 		}
 	}

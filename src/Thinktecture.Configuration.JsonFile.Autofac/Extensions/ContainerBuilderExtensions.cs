@@ -42,11 +42,11 @@ namespace Thinktecture
 
 			RegisterConverterOnce(builder);
 			builder.Register(context => new JsonFileConfigurationLoader(context.Resolve<IFile>(), context.Resolve<IJsonTokenConverter>(), configurationFilePaths))
-					.As<IConfigurationLoader<JToken, JToken>>()
-					.SingleInstance();
+			       .As<IConfigurationLoader<JToken, JToken>>()
+			       .SingleInstance();
 			builder.Register(context => context.Resolve<IConfigurationLoader<JToken, JToken>>().Load())
-					.As<IConfigurationProvider<JToken, JToken>>()
-					.SingleInstance();
+			       .As<IConfigurationProvider<JToken, JToken>>()
+			       .SingleInstance();
 		}
 
 		/// <summary>
@@ -70,11 +70,11 @@ namespace Thinktecture
 			var key = new AutofacConfigurationProviderKey();
 			RegisterConverterOnce(builder);
 			builder.Register(context => new JsonFileConfigurationLoader(context.Resolve<IFile>(), context.Resolve<IJsonTokenConverter>(), configurationFilePaths))
-					.Keyed<IConfigurationLoader<JToken, JToken>>(key)
-					.SingleInstance();
+			       .Keyed<IConfigurationLoader<JToken, JToken>>(key)
+			       .SingleInstance();
 			builder.Register(context => context.ResolveKeyed<IConfigurationLoader<JToken, JToken>>(key).Load())
-					.Keyed<IConfigurationProvider<JToken, JToken>>(key)
-					.SingleInstance();
+			       .Keyed<IConfigurationProvider<JToken, JToken>>(key)
+			       .SingleInstance();
 
 			return key;
 		}

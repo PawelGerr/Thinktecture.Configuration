@@ -12,7 +12,7 @@ namespace Thinktecture.Configuration.MicrosoftConfigurationConverterTests
 		public Convert_Dictionary()
 		{
 			InstanceCreatorMock.Setup(c => c.Create(It.IsAny<Type>()))
-								.Returns<Type>(type => new ConversionResult(new Dictionary<string, int>()));
+			                   .Returns<Type>(type => new ConversionResult(new Dictionary<string, int>()));
 		}
 
 		[Fact]
