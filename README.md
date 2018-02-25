@@ -1,4 +1,5 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/j4nbnc9m8yj5g6bw?svg=true)](https://ci.appveyor.com/project/PawelGerr/thinktecture-configuration)
+[![Thinktecture.Configuration](https://img.shields.io/nuget/v/Thinktecture.Configuration.svg?maxAge=3600)](https://www.nuget.org/packages/Thinktecture.Configuration/)
 
 Configuration is one of the most prominent cornerstones in software systems, and especially in distributed systems. And it has been a point for discussions in .NET for quite some time.
 
