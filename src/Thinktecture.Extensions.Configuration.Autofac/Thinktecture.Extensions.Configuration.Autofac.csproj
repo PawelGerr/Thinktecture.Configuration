@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Description>Uses autofac for creation of instances during deserialization of configurations.</Description>
     <Copyright>(c) 2017, Pawel Gerr. All rights reserved.</Copyright>
-    <VersionPrefix>2.1.0</VersionPrefix>
+    <VersionPrefix>2.1.1</VersionPrefix>
     <Authors>Pawel Gerr</Authors>
     <TargetFrameworks>netstandard1.1;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
