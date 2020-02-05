@@ -55,12 +55,13 @@ namespace Thinktecture.Configuration
 			if (IsNull(lastToken))
 				return default;
 
-			var startIndex = GetStartIndex(tokens);
-			var startToken = tokens.Skip(startIndex).First(t => t != null && t.Type != JTokenType.Null);
+			var startToken = tokens.Skip(GetStartIndex(tokens)).First(t => t != null && t.Type != JTokenType.Null);
 			var config = startToken.ToObject<TConfiguration>(serializer);
 
 			if (ReferenceEquals(config, null))
 				return default;
+
+         var startIndex = Array.IndexOf(tokens, startToken);
 
 			for (var i = startIndex + 1; i < tokens.Length; i++)
 			{
