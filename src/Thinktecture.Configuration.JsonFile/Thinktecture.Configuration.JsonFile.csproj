@@ -21,7 +21,7 @@
     <ProjectReference Include="..\Thinktecture.Configuration\Thinktecture.Configuration.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Thinktecture.IO.FileSystem.Abstractions" Version="2.4.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
